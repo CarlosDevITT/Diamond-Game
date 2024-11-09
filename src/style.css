@@ -1,0 +1,39 @@
+*{ 
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body{
+    background-color: hsl(0, 0%, 0%);
+ 
+}
+.pong-wrapper {
+    padding: 20px;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-top: 3em;
+}
+
+#ping-pong {
+width: 100%;
+max-width: 1000px;
+border: 12px solid white;
+}
+
+@media screen and (max-width: 480px) {
+.header img {
+ width: 60px;
+}
+.buttons button {
+ letter-spacing: 1px;
+ padding: 5px;
+ letter-spacing: 1px;
+ font-size: 0.7em;
+}
+
+.buttons button:hover {
+ text-decoration: underline;
+ font-size: 1.05em;
+}
+}
