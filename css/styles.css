@@ -7,8 +7,8 @@
 
   /*========== Colors ==========*/
   /*Color mode HSL(hue, saturation, lightness)*/
-  --first-color: hsla(239, 69%, 59%, 0.767);
-  --text-color: hsl(0, 0%, 0%);
+  --first-color: hsl(239, 69%, 59%);
+  --text-color: hsl(38, 8%, 8%);
 
   /*========== Font and typography ==========*/
   /*.5rem = 8px | 1rem = 16px ...*/
@@ -35,6 +35,7 @@
 }
 
 body {
+  background-color:  hsl(239, 69%, 59%);
   font-family: var(--body-font);
   font-size: var(--normal-font-size);
   font-weight: 500;
@@ -67,7 +68,7 @@ img {
 
 /*=============== HEADER & NAV ===============*/
 .header {
- 
+  position: fixed;
   width: 100%;
   background-color: transparent;
   top: 0;
@@ -84,38 +85,17 @@ img {
 
 .nav__logo, 
 .nav__toggle {
-  color: rgb(255, 255, 255);
+  color: var(--text-color);
   display: inline-flex;
 }
 
 .nav__logo {
-  font-weight: 700;
+  font-weight: 900;
 }
 
 .nav__toggle {
   font-size: 1.25rem;
   cursor: pointer;
-}
-/* Estilização dos botões */
-.start-btn, .pause-btn, .restart-btn {
-  color: var(--button-text-color, rgb(0, 0, 0)); /* Cor do texto padrão */
-  border: none; /* Remove a borda padrão */
-  border-radius: 5px; /* Bordas arredondadas */
-  padding: 10px 20px; /* Espaçamento interno */
-  font-size: 1rem; /* Tamanho da fonte */
-  cursor: pointer; /* Muda o cursor ao passar o mouse */
-  transition: background-color 0.3s, transform 0.2s; /* Efeitos de transição */
-}
-
-/* Efeito ao passar o mouse */
-.start-btn:hover, .pause-btn:hover, .restart-btn:hover {
-  background-color: var(--button-hover-bg-color, #ffffff8e); /* Cor de fundo ao passar o mouse */
-  transform: scale(1.05); /* Aumenta um pouco o tamanho do botão */
-}
-
-/* Efeito ao clicar */
-.start-btn:active, .pause-btn:active, .restart-btn:active {
-  transform: scale(0.95); /* Diminui um pouco o tamanho do botão ao clicar */
 }
 
 @media screen and (max-width: 767px) {
@@ -206,7 +186,7 @@ img {
 .home__shadow {
   width: 130px;
   height: 24px;
-  background-color: rgba(0, 0, 0, 0.16);
+  background-color: hsla(38, 21%, 19%, .16);
   margin: 0 auto;
   border-radius: 50%;
   filter: blur(7px);
@@ -214,13 +194,45 @@ img {
 }
 
 .home__footer {
+  overflow: hidden;
   display: flex;
   justify-content: center;
   column-gap: .5rem;
   font-size: var(--smaller-font-size);
   align-self: flex-end;
 }
+.footer__socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
 
+.footer__socials ul {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.footer__socials li {
+  margin: 0;
+}
+
+.footer__socials a {
+  padding: 15px 10px;
+  font-size: 1.25rem;
+  color: #ffffff;
+  background-color: var(--secondary-color);
+  border-radius: 100%;
+  transition: 0.3s;
+}
+
+.footer__socials a:hover {
+  color: var(--primary-color);
+  background-color: var(--white);
+}
 /* Animate ghost */
 @keyframes floaty {
   0% {

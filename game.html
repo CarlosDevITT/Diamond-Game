@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--=============== BOXICONS ===============-->
+        <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+
+        <!--=============== CSS ===============-->
+        <link defer rel="stylesheet" href="page/assets/css/styles.css">
+        <link defer rel="stylesheet" href="style.css">
+        <link defer rel="stylesheet" href="page/assets/frame.css">
+
+
+        <title>DIMOND GAME</title>
+    </head>
+    <body>
+        <!--==================== HEADER ====================-->
+        <header class="header">
+            <nav class="nav container">
+                <a href="#" class="nav__logo">
+                   DAIMOND GAME
+                </a>
+
+                <div class="nav__menu" id="nav-menu" class="buttons">
+                    <ul class="nav__list">
+                        <li class="nav__item">
+                            <button class="start-btn"><a href="#" class="nav__link">Start</a></button> 
+                        </li>
+                        <li class="nav__item">
+                            <button  class="pause-btn" ><a href="#" class="nav__link">Pause</a></button> 
+                        </li>
+                        <li class="nav__item">
+                            <button  class="restart-btn" ><a href="#" class="nav__link">Restart</a></button> 
+                        </li>
+                        <li class="nav__item">
+                            <button  class="restart-btn" ><a href="../index.html" class="nav__link">HOME</a></button> 
+                        </li>
+                    </ul>
+
+                    <div class="nav__close" id="nav-close">
+                        <i class='bx bx-x'></i>
+                    </div>
+                </div>
+
+              
+                <!-- Toggle button -->
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-grid-alt'></i>
+                </div>
+            </nav>
+        </header>
+
+        <!--==================== MAIN ====================-->
+        <main> 
+        <div class="pong-wrapper">
+            <canvas id="ping-pong" width="500px" height="300px"></canvas>
+           </div>
+        </main>   
+  <!--==================== MAIN ====================-->  
+
+  <div class="iframe-container">  <iframe style="border-radius:12px" 
+    src="https://open.spotify.com/embed/playlist/37i9dQZF1F0sijgNaJdgit?utm_source=generator&theme=0" 
+    width="250" height="152" frameBorder="0" allowfullscreen="" 
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+ </div>
+
+        <!--=============== SCROLLREVEAL ===============-->
+        <script src="page/assets/js/scrollreveal.min.js"></script>
+
+        <!--=============== GAME JS ===============-->
+        <script src="script.js" defer></script>
+        
+        <!--=============== GAME JS ===============-->
+        <script src="page/assets/js/main.js"></script>
+    </body>
+</html>
