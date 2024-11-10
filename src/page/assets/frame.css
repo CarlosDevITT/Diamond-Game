@@ -1,0 +1,69 @@
+/* Adicione isso ao seu arquivo CSS */
+
+body {
+    margin: 0; /* Remove a margem padrão do body */
+    display: flex;
+    flex-direction: column; /* Organiza os elementos em coluna */
+    height: 100vh; /* Faz o body ocupar toda a altura da viewport */
+}
+
+main {
+    flex: 1; /* Faz o main ocupar o espaço restante */
+    display: flex;
+    justify-content: center; /* Centraliza o conteúdo do main */
+    align-items: center; /* Centraliza verticalmente o conteúdo do main */
+}
+
+.iframe-container {
+    position: fixed; /* Fixa o iframe na parte inferior */
+    bottom: 0; /* Posiciona na parte inferior da viewport */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translateX(-50%); /* Ajusta a posição para centralizar */
+    width: 90%; /* Largura do iframe */
+    max-width: 800px; /* Largura máxima */
+    height: 152px; /* Altura do iframe */
+    border-radius: 12px; /* Bordas arredondadas */
+    overflow: hidden; /* Esconde partes que saem do contêiner */
+    box-shadow: 0 4px 20px rgb(0, 0, 0); /* Sombra suave */
+    transition: transform 0.3s ease; /* Transição suave para efeitos de hover */
+}
+
+.iframe-container:hover {
+    transform: translateX(-50%) scale(1.02); /* Efeito de zoom ao passar o mouse */
+}
+
+iframe {
+    width: 100%; /* Faz o iframe ocupar toda a largura do contêiner */
+    height: 100%; /* Faz o iframe ocupar toda a altura do contêiner */
+    border: none; /* Remove a borda padrão do iframe */
+}
+.iframe-container {
+
+    position: relative; /* Posição relativa para o iframe ser posicionado absolutamente */
+
+    width: 100%; /* Largura total do pai */
+
+    padding-top: 56.25%; /* Proporção 16:9 (altura/largura = 9/16 = 0.5625) */
+
+    overflow: hidden; /* Esconde o conteúdo que excede */
+
+    border-radius: 12px; /* Opcional: bordas arredondadas */
+
+}
+
+
+.iframe-container iframe {
+
+    position: absolute; /* Posição absoluta para preencher o contêiner */
+
+    top: 0; /* Alinha ao topo */
+
+    left: 0; /* Alinha à esquerda */
+
+    width: 100%; /* Largura total */
+
+    height: 100%; /* Altura total */
+
+    border: none; /* Remove a borda padrão */
+
+}
