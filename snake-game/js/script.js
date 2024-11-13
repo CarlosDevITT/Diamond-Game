@@ -163,7 +163,6 @@ document.addEventListener("keydown", ({ key }) => {
         direction = "up";
     }
 });
-
 // Adicionando suporte a toques para dispositivos móveis
 const touchControls = (event) => {
     // Previne o comportamento padrão do toque
@@ -178,14 +177,20 @@ const touchControls = (event) => {
     const canvasY = touchY - canvasRect.top;
 
     // Define a direção com base na posição do toque
-    if (canvasX > canvas.width / 2 && Math.abs(touchY - canvas.height / 2) < canvas.height / 4) {
-        direction = "right";
-    } else if (canvasX < canvas.width / 2 && Math.abs(touchY - canvas.height / 2) < canvas.height / 4) {
-        direction = "left";
-    } else if (canvasY > canvas.height / 2) {
-        direction = "down";
+    if (canvasX > canvas.width / 2) {
+        // Toque na metade direita
+        if (direction !== "left") direction = "right";
     } else {
-        direction = "up";
+        // Toque na metade esquerda
+        if (direction !== "right") direction = "left";
+    }
+
+    if (canvasY > canvas.height / 2) {
+        // Toque na metade inferior
+        if (direction !== "up") direction = "down";
+    } else {
+        // Toque na metade superior
+        if (direction !== "down") direction = "up";
     }
 };
 
@@ -197,7 +202,7 @@ buttonPlay.addEventListener("click", () => {
     score.innerText = "00"; // Reseta o score
     menu.style.display = "none"; // Oculta o menu
     canvas.style.filter = "none"; // Remove o filtro do canvas
-    direction = undefined; // Reseta a direção ao reiniciar
+    direction = "right"; // Define uma direção inicial
     snake = [initialPosition]; // Reseta a posição da cobra
     food.x = randomPosition(); // Reposiciona a comida
     food.y = randomPosition();
