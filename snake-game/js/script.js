@@ -1,6 +1,5 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-
 const score = document.querySelector(".score--value");
 const finalScore = document.querySelector(".final-score > span");
 const menu = document.querySelector(".menu-screen");
@@ -167,6 +166,9 @@ document.addEventListener("keydown", ({ key }) => {
 
 // Adicionando suporte a toques para dispositivos móveis
 const touchControls = (event) => {
+    // Previne o comportamento padrão do toque
+    event.preventDefault();
+
     const touch = event.touches[0];
     const touchX = touch.clientX;
     const touchY = touch.clientY;
@@ -175,21 +177,22 @@ const touchControls = (event) => {
     const canvasX = touchX - canvasRect.left;
     const canvasY = touchY - canvasRect.top;
 
-    if (canvasX > canvas.width / 2) {
+    // Define a direção com base na posição do toque
+    if (canvasX > canvas.width / 2 && Math.abs(touchY - canvas.height / 2) < canvas.height / 4) {
         direction = "right";
-    } else {
+    } else if (canvasX < canvas.width / 2 && Math.abs(touchY - canvas.height / 2) < canvas.height / 4) {
         direction = "left";
-    }
-
-    if (canvasY > canvas.height / 2) {
+    } else if (canvasY > canvas.height / 2) {
         direction = "down";
     } else {
         direction = "up";
     }
 };
 
+// Adiciona o evento de toque
 canvas.addEventListener("touchstart", touchControls);
 
+// Reinicia o jogo ao clicar no botão
 buttonPlay.addEventListener("click", () => {
     score.innerText = "00"; // Reseta o score
     menu.style.display = "none"; // Oculta o menu
