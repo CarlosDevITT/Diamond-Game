@@ -1,0 +1,145 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #191919;
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    font-family: 'Poppins', sans-serif; /* Adiciona a fonte Poppins */
+}
+
+canvas {
+    background-color: #111;
+    border: 1px solid #fff; /* Borda para melhor visualização */
+    max-width: 100%; /* Garante que o canvas não exceda a largura da tela */
+    height: auto; /* Mantém a proporção do canvas */
+    border-radius: 10px; /* Bordas arredondadas */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Sombra para o canvas */
+}
+
+.score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px; /* Espaçamento abaixo da pontuação */
+}
+
+.score--value {
+    font-weight: 700;
+    font-size: 4.5rem;
+    display: block;
+    margin-top: -10px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Sombra para a pontuação */
+}
+
+.menu-screen {
+    position: absolute;
+    display: none; /* Inicialmente oculto, será exibido quando o jogo acabar */
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.8); /* Fundo semi-transparente */
+    border-radius: 10px; /* Bordas arredondadas */
+    padding: 20px; /* Espaçamento interno */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Sombra para o menu */
+}
+
+.game-over {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 3rem;
+    margin-bottom: 10px; /* Espaçamento abaixo do texto "Game Over" */
+    color: #FF5733; /* Cor vibrante para o texto "Game Over" */
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Sombra para o texto */
+}
+
+.final-score {
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin-bottom: 20px; /* Espaçamento abaixo da pontuação final */
+}
+
+.btn-play {
+    border: none;
+    border-radius: 100px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff; /* Cor do texto do botão */
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    background: linear-gradient(90deg, #4CAF50, #45a049); /* Gradiente para o fundo do botão */
+    transition: background-color 0.3s, transform 0.2s; /* Efeito de transição */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para o botão */
+}
+
+.btn-play:hover {
+    background-color: #45a049; /* Cor do botão ao passar o mouse */
+    transform: scale(1.05); /* Aumenta levemente o botão ao passar o mouse */
+}
+
+/* Estilos Responsivos */
+@media (max-width: 600px) {
+    .score {
+        font-size: 1.5rem;
+    }
+
+    .score--value {
+        font-size: 3rem; /* Reduz o tamanho da pontuação em telas menores */
+    }
+
+    .menu-screen {
+        padding: 20px; /* Adiciona um pouco de padding */
+    }
+
+    .game-over {
+        font-size: 2.5rem; /* Reduz o tamanho do texto em telas menores */
+    }
+
+    .final-score {
+        font-size: 1.2rem; /*
+                /* Reduz o tamanho do texto em telas menores */
+    }
+
+    .btn-play {
+        font-size: 0.9rem; /* Reduz o tamanho do texto do botão em telas menores */
+        padding: 8px 12px; /* Ajusta o padding do botão em telas menores */
+    }
+}
+
+/* Animação de entrada para o menu */
+.menu-screen {
+    animation: fadeIn 0.5s ease; /* Animação de desvanecimento ao exibir o menu */
+}
+
+/* Keyframes para a animação de desvanecimento */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px); /* Move o menu para cima ao aparecer */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Retorna à posição original */
+    }
+}
+
+/* Adicionando um efeito de foco para o botão */
+.btn-play:focus {
+    outline: none; /* Remove o contorno padrão do botão */
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.5); /* Sombra de foco */
+}
