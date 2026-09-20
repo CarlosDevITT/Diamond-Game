@@ -11,7 +11,7 @@ registry.register(tankGame);
 const stage=document.createElement("div");
 stage.id="game-stage";stage.className="game-stage";stage.hidden=true;document.body.append(stage);
 
-let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null,activeMatchId=null;
+let match=null,auth=null,authScreen=null,lobby=null,profilePanel=null,pendingGame=null,activeMatchId=null;
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
@@ -35,7 +35,7 @@ const startGame=async(id,options={})=>{
   options.mode==="1v1"&&lobby?lobby.show(registry.list().find(g=>g.id===id)):panel.show();
  },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onLeave:async()=>{if(options.mode==="1v1"){activeMatchId=null;await match?.leaveRoom?.({forfeit:true});}},onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
 };
-const panel=new GamesPanel({games:registry.list(),onPlay:async(id,options={})=>{
+const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await loadOnline();if(!profilePanel){const {ProfilePanel}=await import("./modules/profile-panel/index.js?v=20260920-36");profilePanel=new ProfilePanel({auth,onClose:async action=>{panel.show();if(action?.login){const user=await auth.current();if(!user){panel.hide();authScreen.show();}}}});}panel.hide();await profilePanel.show();}catch(e){console.error("Profile unavailable",e);}},onPlay:async(id,options={})=>{
  if(options.mode==="1v1"){
   try{
    await loadOnline();
@@ -61,3 +61,5 @@ mascot?.addEventListener("pointermove",e=>{if(!dragging)return;rotation+=(e.clie
 ["pointerup","pointercancel"].forEach(type=>mascot?.addEventListener(type,()=>dragging=false));
 
 window.addEventListener("pagehide",()=>{if(activeMatchId)match?.leaveRoom?.({forfeit:true}).catch(()=>{});});
+
+window.addEventListener("diamond:auth-changed",async()=>{try{if(!auth)return panel.setProfile(null);const user=await auth.current();const profile=user?await auth.profile(user.$id):null;panel.setProfile(profile||user);}catch{panel.setProfile(null)}});
