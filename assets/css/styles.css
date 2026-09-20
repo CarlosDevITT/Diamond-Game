@@ -64,3 +64,14 @@ footer{padding:1.5rem;background:#0a0b12;color:#fff;text-align:center}.home__foo
  .tank-fire{right:14px;bottom:14px;width:68px;height:68px;background:#5153e6;color:#fff;border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 26px rgba(81,83,230,.4);z-index:3}
  .tank-countdown{grid-row:1;inset:0 0 50% 0}
 }
+
+/* Tank mobile arena/control balance v4 */
+@media(max-width:767px) and (pointer:coarse){
+ .tank-arena{grid-template-rows:58% 42%}
+ .tank-controls-layer{grid-row:2}
+ .tank-arena canvas{grid-row:1}
+ .tank-countdown{grid-row:1;inset:0 0 42% 0}
+ .tank-control-zone>span{top:9px}
+ .tank-stick{width:min(31vw,128px);height:min(31vw,128px)}
+ .tank-fire{width:62px;height:62px;right:12px;bottom:10px}
+}
