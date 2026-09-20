@@ -22,35 +22,47 @@ document.querySelectorAll(".nav__link").forEach(link => link.addEventListener("c
 
 const diamond = document.querySelector(".home__img img");
 if (diamond) {
-  const rotateDiamond = (event) => {
-    const rect = diamond.getBoundingClientRect();
-    const point = event.touches?.[0] ?? event;
-    const x = Math.max(0, Math.min(rect.width, point.clientX - rect.left));
-    const progress = rect.width ? x / rect.width : 0.5;
-    diamond.style.setProperty("--diamond-rotate", `${progress * 360}deg`);
+  let rotation = 0;
+  let dragging = false;
+  let lastX = 0;
+
+  const beginDrag = (clientX) => {
+    dragging = true;
+    lastX = clientX;
+    diamond.classList.add("is-dragging");
   };
 
-  diamond.addEventListener("pointermove", rotateDiamond);
-  diamond.addEventListener("pointerleave", () => diamond.style.setProperty("--diamond-rotate", "0deg"));
-  let touchStartX = 0;
-  let touchRotation = 0;
+  const drag = (clientX) => {
+    if (!dragging) return;
+    const deltaX = clientX - lastX;
+    rotation += deltaX * 1.8;
+    lastX = clientX;
+    diamond.style.transform = `translateY(0) rotateY(${rotation}deg)`;
+  };
+
+  const endDrag = () => {
+    dragging = false;
+    diamond.classList.remove("is-dragging");
+  };
+
+  diamond.addEventListener("pointerdown", (event) => {
+    beginDrag(event.clientX);
+    diamond.setPointerCapture?.(event.pointerId);
+  });
+
+  diamond.addEventListener("pointermove", (event) => drag(event.clientX));
+  diamond.addEventListener("pointerup", endDrag);
+  diamond.addEventListener("pointercancel", endDrag);
 
   diamond.addEventListener("touchstart", (event) => {
-    touchStartX = event.touches[0].clientX;
-    diamond.classList.add("is-dragging");
+    beginDrag(event.touches[0].clientX);
   }, { passive: true });
 
   diamond.addEventListener("touchmove", (event) => {
-    const currentX = event.touches[0].clientX;
-    const deltaX = currentX - touchStartX;
-    touchRotation += deltaX * 1.25;
-    touchStartX = currentX;
-    diamond.style.setProperty("--diamond-rotate", `${touchRotation}deg`);
+    drag(event.touches[0].clientX);
   }, { passive: true });
 
-  diamond.addEventListener("touchend", () => {
-    diamond.classList.remove("is-dragging");
-  }, { passive: true });
+  diamond.addEventListener("touchend", endDrag, { passive: true });
 }
 
 if (window.ScrollReveal) {
