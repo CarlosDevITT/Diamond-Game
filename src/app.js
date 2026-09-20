@@ -9,18 +9,19 @@ registry.register(snakeGame);
 const stage=document.createElement("div");
 stage.id="game-stage";stage.className="game-stage";stage.hidden=true;document.body.append(stage);
 
-let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null;
+let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null,activeMatchId=null;
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-11"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-10")
+  import("./core/match-client.js?v=20260920-12"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-10")
  ]);
  auth=authService;match=new MatchClient({events});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame});
  events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
- events.on("match:state",row=>{if(row?.status==="countdown"){const game=registry.list().find(g=>g.id===row.game_id);if(game)startGame(game.id,{mode:"1v1",roomCode:match.room?.code,matchId:row.$id,seed:row.seed,startedAt:row.started_at});}});
+ events.on("match:state",async row=>{if(row?.status==="countdown"&&activeMatchId!==row.$id){activeMatchId=row.$id;const game=registry.list().find(g=>g.id===row.game_id);if(game)startGame(game.id,{mode:"1v1",roomCode:match.room?.code,matchId:row.$id,seed:row.seed,startedAt:row.started_at});return;}if(row?.status==="finished"&&activeMatchId===row.$id){const user=await auth.current();const mine=user?.$id;const title=!row.winner_user_id?"EMPATE":row.winner_user_id===mine?"VITÓRIA!":"DERROTA";const detail=`${row.score_a} × ${row.score_b} • ${row.result_reason==="survival"?"desempate por sobrevivência":row.result_reason==="score"?"maior pontuação":"empate total"}`;events.emit("game:match-finished",{title,detail,row});showMatchResult(title,detail);}});
 };
+const showMatchResult=(title,detail)=>{let node=document.getElementById("match-result");if(!node){node=document.createElement("section");node.id="match-result";node.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(5,7,18,.94);display:grid;place-items:center;padding:24px";document.body.append(node);}node.innerHTML=`<div style="width:min(420px,100%);padding:32px;border-radius:24px;background:#11162c;text-align:center;color:white"><small>DIAMOND 1V1</small><h1 style="font-size:42px;margin:12px 0">${title}</h1><p>${detail}</p><button data-result-close style="margin-top:22px;padding:14px 24px;border:0;border-radius:14px;font-weight:800">VOLTAR AO LOBBY</button></div>`;node.hidden=false;node.querySelector("[data-result-close]").onclick=async()=>{node.hidden=true;activeMatchId=null;await registry.close(stage);lobby?.show(registry.list().find(g=>g.id===match.room?.gameId)||registry.list()[0]);};};
 const startGame=async(id,options={})=>{
  panel.hide();lobby?.hide();
  events.emit("game:open",{id,...options});
