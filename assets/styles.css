@@ -75,3 +75,12 @@ footer{padding:1.5rem;background:#0a0b12;color:#fff;text-align:center}.home__foo
  .tank-stick{width:min(31vw,128px);height:min(31vw,128px)}
  .tank-fire{width:62px;height:62px;right:12px;bottom:10px}
 }
+
+
+/* Games panel banners v34 */
+.game-card__visual--banner{position:relative;min-height:0;aspect-ratio:16/9;padding:0;overflow:hidden;background:#080914;isolation:isolate}
+.game-card__visual--banner::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(5,7,18,.02) 45%,rgba(5,7,18,.42) 100%);pointer-events:none}
+.game-card__visual--banner img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:center;transition:transform .35s ease}
+.game-card__visual--banner span{position:absolute;top:12px;left:12px;z-index:2;padding:.42rem .62rem;border:1px solid rgba(105,255,216,.3);border-radius:999px;background:rgba(5,7,18,.72);backdrop-filter:blur(8px);color:#69ffd8;font-weight:700;box-shadow:0 5px 18px rgba(0,0,0,.2)}
+@media(hover:hover){.game-card:hover .game-card__visual--banner img{transform:scale(1.025)}}
+@media(max-width:480px){.game-card__visual--banner{aspect-ratio:16/9}.game-card__visual--banner span{top:9px;left:9px;font-size:.52rem}}
