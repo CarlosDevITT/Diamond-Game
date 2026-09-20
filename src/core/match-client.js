@@ -4,7 +4,7 @@ export class MatchClient {
  #events; #room=null; #unsubscribe=null; #user=null; #matchUnsubscribe=null; #gameUnsubscribe=null; #gameHandlers=new Set(); #seq=0; #lastGameSyncAt=0; #gameSyncBusy=false; #roomPoll=null;
  constructor({events}){this.#events=events;}
  async #auth(){if(!this.#user)this.#user=await ensureSession();return this.#user;}
- #map(room,players=[]){return {id:room.$id,code:room.code,gameId:room.game_id,status:room.status,hostUserId:room.host_user_id,players:players.map(p=>({slot:p.slot,ready:p.ready,userId:p.user_id})),createdAt:room.$createdAt};}
+ #map(room,players=[]){return {id:room.$id,code:room.code,gameId:room.game_id,status:room.status,hostUserId:room.host_user_id,players:players.map(p=>({slot:p.slot,ready:p.ready,connected:p.connected!==false,userId:p.user_id})),createdAt:room.$createdAt};}
  async #players(roomId){const r=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[roomId])]});return r.rows||[];}
  async create(gameId){
   const user=await this.#auth();
@@ -47,10 +47,11 @@ export class MatchClient {
  #watchMatch(matchId){this.#matchUnsubscribe?.();this.#matchUnsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.matches.rows.${matchId}`],response=>{const row=response?.payload||response;this.#events.emit("match:state",row);});}
  #watch(roomId){
   this.#unsubscribe?.();
-  const refresh=async()=>{if(!this.#room||this.#room.id!==roomId)return;try{const [room,players]=await Promise.all([db.getRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:roomId}),this.#players(roomId)]);this.#room=this.#map(room,players);this.#events.emit("match:update",this.room);if(room.status==="countdown"||room.status==="playing"){const match=await this.watchCurrentMatch();if(match)this.#events.emit("match:state",match);}}catch(e){console.warn("Lobby refresh failed",e?.message||e)}};
+  const refresh=async()=>{if(!this.#room||this.#room.id!==roomId)return;try{const [room,players]=await Promise.all([db.getRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:roomId}),this.#players(roomId)]);this.#room=this.#map(room,players);this.#events.emit("match:update",this.room);const opponent=this.#room.players.find(p=>p.userId!==this.#user?.$id);if(opponent&&opponent.connected===false)this.#events.emit("match:opponent-left",{room:this.room,opponent});if(room.status==="countdown"||room.status==="playing"){const match=await this.watchCurrentMatch();if(match)this.#events.emit("match:state",match);}}catch(e){console.warn("Lobby refresh failed",e?.message||e)}};
   this.#unsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.room_players.rows`],refresh);
   setTimeout(refresh,250);clearInterval(this.#roomPoll);this.#roomPoll=setInterval(refresh,1200);
  }
+ async leaveRoom(){const user=await this.#auth();if(!this.#room)return;const rows=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[this.#room.id]),Query.equal("user_id",[user.$id]),Query.limit(1)]});const row=rows.rows?.[0];if(row)await db.updateRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:row.$id,data:{connected:false,ready:false}});this.#events.emit("match:player-left",{userId:user.$id,room:this.room});this.leave();}
  async copyInvite(){if(!this.#room)return false;const url=new URL(location.href);url.searchParams.set("room",this.#room.code);url.searchParams.set("game",this.#room.gameId);try{await navigator.clipboard.writeText(url.toString());return true}catch{return false}}
  async setReady(ready=true){const user=await this.#auth();if(!this.#room)return;const rows=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[this.#room.id]),Query.equal("user_id",[user.$id]),Query.limit(1)]});const row=rows.rows?.[0];if(row)await db.updateRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:row.$id,data:{ready}});}
  leave(){const room=this.room;clearInterval(this.#roomPoll);this.#roomPoll=null;this.#unsubscribe?.();this.#matchUnsubscribe?.();this.#gameUnsubscribe?.();this.#unsubscribe=null;this.#matchUnsubscribe=null;this.#gameUnsubscribe=null;this.#gameHandlers.clear();this.#room=null;this.#events.emit("match:left",room);}
