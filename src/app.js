@@ -18,7 +18,7 @@ const loadOnline=async()=>{
   import("./core/match-client.js?v=20260920-20"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-20")
  ]);
  auth=authService;match=new MatchClient({events});
- events.on("match:opponent-left",async()=>{if(!activeMatchId)return;activeMatchId=null;await registry.close(stage);if(window.Swal)await Swal.fire({title:"Oponente saiu da partida",text:"A partida foi interrompida porque o outro jogador desconectou ou saiu.",icon:"info",confirmButtonText:"Voltar aos jogos",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"});match.leave();panel.show();});
+ events.on("match:opponent-left",async({reason}={})=>{if(!activeMatchId)return;activeMatchId=null;await registry.close(stage);if(window.Swal)await Swal.fire({title:"Oponente saiu da partida",text:reason==="disconnect"?"O outro jogador perdeu a conexão. A partida foi interrompida.":"O outro jogador saiu da partida. A partida foi interrompida.",icon:"info",confirmButtonText:"Voltar aos jogos",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"});match.leave();panel.show();});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame});
  events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
@@ -57,3 +57,5 @@ const mascot=document.querySelector(".home__img img");let dragging=false,lastX=0
 mascot?.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;mascot.setPointerCapture?.(e.pointerId)});
 mascot?.addEventListener("pointermove",e=>{if(!dragging)return;rotation+=(e.clientX-lastX)*1.5;lastX=e.clientX;mascot.style.transform=`rotateY(${rotation}deg)`;});
 ["pointerup","pointercancel"].forEach(type=>mascot?.addEventListener(type,()=>dragging=false));
+
+window.addEventListener("pagehide",()=>{if(activeMatchId)match?.leaveRoom?.().catch(()=>{});});
