@@ -1,30 +1,47 @@
 import { client, db, APPWRITE, ID, Query, Permission, Role, ensureSession } from "../services/appwrite.js";
 
 export class MatchClient {
-  #events; #room=null; #unsubscribe=null; #user=null;
-  constructor({events}){this.#events=events;}
-  async #auth(){if(!this.#user)this.#user=await ensureSession();return this.#user;}
-  #map(room,players=[]){return {id:room.$id,code:room.code,gameId:room.game_id,status:room.status,players:players.map(p=>({slot:p.slot,ready:p.ready,userId:p.user_id})),createdAt:room.$createdAt};}
-  async create(gameId){
-    const user=await this.#auth(),code=Math.random().toString(36).slice(2,8).toUpperCase();
-    const permissions=[Permission.read(Role.any()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))];
-    const room=await db.createRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:ID.unique(),data:{code,game_id:gameId,host_user_id:user.$id,status:"waiting",mode:"1v1"},permissions});
-    await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"A",ready:true,connected:true},permissions:[Permission.read(Role.any()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
-    this.#room=this.#map(room,[{slot:"A",ready:true,user_id:user.$id}]);this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
+ #events; #room=null; #unsubscribe=null; #user=null;
+ constructor({events}){this.#events=events;}
+ async #auth(){if(!this.#user)this.#user=await ensureSession();return this.#user;}
+ #map(room,players=[]){return {id:room.$id,code:room.code,gameId:room.game_id,status:room.status,hostUserId:room.host_user_id,players:players.map(p=>({slot:p.slot,ready:p.ready,userId:p.user_id})),createdAt:room.$createdAt};}
+ async #players(roomId){const r=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[roomId])]});return r.rows||[];}
+ async create(gameId){
+  const user=await this.#auth();
+  for(let attempt=0;attempt<5;attempt++){
+   const code=Math.random().toString(36).slice(2,8).toUpperCase();
+   try{
+    const room=await db.createRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:ID.unique(),data:{code,game_id:gameId,host_user_id:user.$id,status:"waiting",mode:"1v1"},permissions:[Permission.read(Role.users()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
+    await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"A",ready:true,connected:true},permissions:[Permission.read(Role.users()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
+    this.#room=this.#map(room,await this.#players(room.$id));this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
+   }catch(e){if(attempt===4||!/unique|duplicate|already/i.test(String(e?.message||"")))throw e;}
   }
-  async join(code,gameId){
-    const user=await this.#auth();
-    const found=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"rooms",queries:[Query.equal("code",[String(code).toUpperCase()]),Query.limit(1)]});
-    const room=found.rows?.[0];if(!room)throw new Error("Sala não encontrada");
-    const players=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[room.$id])]});
-    if(players.rows.length>=2&&!players.rows.some(p=>p.user_id===user.$id))throw new Error("Sala cheia");
-    if(!players.rows.some(p=>p.user_id===user.$id))await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"B",ready:true,connected:true},permissions:[Permission.read(Role.any()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
-    const fresh=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[room.$id])]});
-    this.#room=this.#map(room,fresh.rows);this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
+ }
+ async join(code,gameId){
+  const user=await this.#auth(),normalized=String(code||"").trim().toUpperCase();
+  const found=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"rooms",queries:[Query.equal("code",[normalized]),Query.limit(1)]});
+  const room=found.rows?.[0];if(!room)throw new Error("Sala não encontrada.");
+  if(room.game_id!==gameId)throw new Error("Esta sala pertence a outro jogo.");
+  if(room.status!=="waiting")throw new Error("Esta sala não está mais disponível.");
+  let players=await this.#players(room.$id);
+  const existing=players.find(p=>p.user_id===user.$id);
+  if(!existing){
+   if(players.length>=2)throw new Error("Sala cheia.");
+   try{
+    await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"B",ready:true,connected:true},permissions:[Permission.read(Role.users()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
+   }catch(e){throw new Error("Não foi possível registrar o Jogador B: "+(e?.message||e));}
+   players=await this.#players(room.$id);
   }
-  #watch(roomId){this.#unsubscribe?.();this.#unsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.room_players.rows`],async()=>{if(!this.#room||this.#room.id!==roomId)return;const p=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[roomId])]});this.#room={...this.#room,players:p.rows.map(x=>({slot:x.slot,ready:x.ready,userId:x.user_id}))};this.#events.emit("match:update",this.room);});}
-  async copyInvite(){if(!this.#room)return false;const url=new URL(location.href);url.searchParams.set("room",this.#room.code);url.searchParams.set("game",this.#room.gameId);try{await navigator.clipboard.writeText(url.toString());return true}catch{return false}}
-  async setReady(ready=true){const user=await this.#auth();if(!this.#room)return;const rows=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[this.#room.id]),Query.equal("user_id",[user.$id]),Query.limit(1)]});const row=rows.rows?.[0];if(row)await db.updateRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:row.$id,data:{ready}});}
-  leave(){const room=this.room;this.#unsubscribe?.();this.#unsubscribe=null;this.#room=null;this.#events.emit("match:left",room);}
-  get room(){return this.#room?{...this.#room,players:this.#room.players.map(p=>({...p}))}:null;}
+  this.#room=this.#map(room,players);this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
+ }
+ #watch(roomId){
+  this.#unsubscribe?.();
+  const refresh=async()=>{if(!this.#room||this.#room.id!==roomId)return;const players=await this.#players(roomId);this.#room={...this.#room,players:players.map(x=>({slot:x.slot,ready:x.ready,userId:x.user_id}))};this.#events.emit("match:update",this.room);};
+  this.#unsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.room_players.rows`],refresh);
+  setTimeout(refresh,400);
+ }
+ async copyInvite(){if(!this.#room)return false;const url=new URL(location.href);url.searchParams.set("room",this.#room.code);url.searchParams.set("game",this.#room.gameId);try{await navigator.clipboard.writeText(url.toString());return true}catch{return false}}
+ async setReady(ready=true){const user=await this.#auth();if(!this.#room)return;const rows=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[this.#room.id]),Query.equal("user_id",[user.$id]),Query.limit(1)]});const row=rows.rows?.[0];if(row)await db.updateRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:row.$id,data:{ready}});}
+ leave(){const room=this.room;this.#unsubscribe?.();this.#unsubscribe=null;this.#room=null;this.#events.emit("match:left",room);}
+ get room(){return this.#room?{...this.#room,players:this.#room.players.map(p=>({...p}))}:null;}
 }
