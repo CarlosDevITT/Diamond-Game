@@ -220,3 +220,14 @@ html{scroll-behavior:smooth}.nav__menu{align-items:center}.nav__link{position:re
  .tank-stick i{width:38px;height:38px;margin:-19px 0 0 -19px}
  .tank-fire{width:50px;height:50px}
 }
+
+
+/* Mobile viewport lock v52 */
+html,body{max-width:100%;overflow-x:hidden}
+#app,main,section,.container{max-width:100%}
+@media(max-width:767px){
+ body{width:100%;overscroll-behavior-x:none}
+ .reveal-horizontal,.reveal-from-left,.reveal-from-right{transform:translate3d(0,24px,0)!important}
+ .reveal-horizontal.horizontal-visible{transform:none!important}
+ .home__container,.experience__container,.about__container,.contact__container,.footer__inner{overflow-x:clip}
+}
