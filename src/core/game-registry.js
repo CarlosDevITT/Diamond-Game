@@ -12,7 +12,7 @@ export class GameRegistry {
   }
 
   list() {
-    return [...this.#games.values()].map(({ id, name, description, rules }) => ({ id, name, description, rules }));
+    return [...this.#games.values()].map(({ id, name, description, rules, status = "available" }) => ({ id, name, description, rules, status }));
   }
 
   async open(id, stage, onClose) {
