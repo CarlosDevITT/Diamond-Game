@@ -1,0 +1,11 @@
+{
+  "name": "diamond-game",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup:db-financial": "node scripts/setupAppwriteFinancialCollections.js"
+  },
+  "dependencies": {
+    "node-appwrite": "^19.0.0"
+  }
+}
