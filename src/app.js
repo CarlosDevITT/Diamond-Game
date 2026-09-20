@@ -3,6 +3,8 @@ import { GamesPanel } from "./modules/games-panel/index.js";
 import { snakeGame } from "./games/snake/index.js";
 import { EventBus } from "./core/event-bus.js";
 import { MatchClient } from "./core/match-client.js";
+import { auth } from "./services/auth.js";
+import { AuthScreen } from "./modules/auth-screen/index.js";
 import { MatchLobby } from "./modules/match-lobby/index.js";
 
 const events = new EventBus();
@@ -62,3 +64,6 @@ mascot.addEventListener("pointermove", e => {
   mascot.style.transform = `rotateY(${rotation}deg)`;
 });
 ["pointerup","pointercancel"].forEach(type => mascot.addEventListener(type, () => dragging = false));
+
+const authScreen=new AuthScreen({auth,onReady:user=>events.emit("auth:ready",{user})});
+authScreen.boot();
