@@ -320,3 +320,20 @@ img {
     zoom: 3.1;
   }
 }
+
+/* Diamond interactive 360° rotation */
+.home__img img {
+  --diamond-rotate: 0deg;
+  transform: translateY(var(--diamond-float, 0px)) rotateY(var(--diamond-rotate));
+  transform-style: preserve-3d;
+  will-change: transform;
+  cursor: grab;
+  transition: transform .18s ease-out;
+  touch-action: pan-y;
+}
+.home__img img:active { cursor: grabbing; }
+
+@keyframes floaty {
+  0% { --diamond-float: 0px; }
+  100% { --diamond-float: 15px; }
+}
