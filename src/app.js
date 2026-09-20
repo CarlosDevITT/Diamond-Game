@@ -30,8 +30,10 @@ const startGame = async (id, options = {}) => {
 const lobby = new MatchLobby({ match, onStart: startGame });
 const panel = new GamesPanel({
   games: registry.list(),
-  onPlay: (id, options = {}) => {
+  onPlay: async (id, options = {}) => {
     if (options.mode === "1v1") {
+      const user = await auth.current();
+      if (!user) { panel.hide(); authScreen.show(); return; }
       panel.hide();
       lobby.show(registry.list().find(game => game.id === id));
       return;
@@ -66,4 +68,4 @@ mascot.addEventListener("pointermove", e => {
 ["pointerup","pointercancel"].forEach(type => mascot.addEventListener(type, () => dragging = false));
 
 const authScreen=new AuthScreen({auth,onReady:user=>events.emit("auth:ready",{user})});
-authScreen.boot();
+events.on("auth:required",()=>authScreen.show());
