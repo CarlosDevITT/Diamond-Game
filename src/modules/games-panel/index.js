@@ -1,71 +1,46 @@
 export class GamesPanel {
-  #root; #games; #onPlay; #screen = null; #keydown;
+  #games; #onPlay; #node = null;
 
-  constructor({ games = [], onPlay }) {
-    this.#root = document.body;
+  constructor({ games, onPlay }) {
     this.#games = games;
     this.#onPlay = onPlay;
-    this.#keydown = e => { if (e.key === "Escape" && this.#screen) this.close(); };
-    document.addEventListener("keydown", this.#keydown);
   }
 
   show() {
-    if (this.#screen) return;
-    this.#screen = document.createElement("main");
-    this.#screen.className = "games-module";
-    this.#screen.innerHTML = this.#template();
-    this.#root.append(this.#screen);
-    document.body.classList.add("games-module-open");
-    this.#bind();
+    if (!this.#node) {
+      this.#node = document.createElement("section");
+      this.#node.className = "games-screen";
+      this.#node.innerHTML = this.#render();
+      document.body.append(this.#node);
+      this.#node.querySelector("[data-back]").addEventListener("click", () => this.hide());
+      this.#node.querySelectorAll("[data-play]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.play)));
+    }
+    this.#node.hidden = false;
+    document.body.classList.add("module-open");
   }
 
-  close() {
-    this.#screen?.remove();
-    this.#screen = null;
-    document.body.classList.remove("games-module-open");
+  hide() {
+    if (this.#node) this.#node.hidden = true;
+    document.body.classList.remove("module-open");
   }
 
-  #bind() {
-    this.#screen.querySelector("[data-games-back]")?.addEventListener("click", () => this.close());
-    this.#screen.querySelectorAll("[data-panel-play]").forEach(button => {
-      button.addEventListener("click", () => {
-        const id = button.dataset.panelPlay;
-        this.close();
-        this.#onPlay?.(id);
-      });
-    });
-  }
-
-  #template() {
-    return `<div class="games-module__page">
-      <header class="games-module__header">
-        <button type="button" class="games-module__back" data-games-back aria-label="Voltar"><i class='bx bx-left-arrow-alt'></i></button>
-        <div><span>DIAMOND GAME</span><strong>Games</strong></div>
+  #render() {
+    return `<div class="games-screen__inner">
+      <header class="module-header">
+        <button type="button" data-back aria-label="Voltar">←</button>
+        <div><small>DIAMOND GAME</small><strong>Games</strong></div>
       </header>
-      <section class="games-module__hero">
-        <span>ARCADE</span>
-        <h1>Escolha seu jogo</h1>
-        <p>Confira as regras, escolha um game e entre na partida.</p>
-      </section>
-      <section class="games-module__grid">${this.#games.map(game => this.#card(game)).join("")}</section>
+      <div class="games-hero"><span>ARCADE</span><h1>Escolha seu jogo</h1><p>Leia as regras e entre na partida.</p></div>
+      <div class="games-grid">${this.#games.map(game => `
+        <article class="game-card">
+          <div class="game-card__visual"><span>DISPONÍVEL</span><b>◈</b></div>
+          <div class="game-card__body">
+            <h2>${game.name}</h2><p>${game.description}</p>
+            <div class="rules"><strong>Como jogar</strong><ul>${game.rules.map(rule => `<li>${rule}</li>`).join("")}</ul></div>
+            <button type="button" data-play="${game.id}">Jogar ${game.name}</button>
+          </div>
+        </article>`).join("")}
+      </div>
     </div>`;
   }
-
-  #card(game) {
-    const rules = game.id === "snake" ? [
-      "Setas ou WASD no computador; deslize no celular.",
-      "Capture os pontos para crescer e aumentar o score.",
-      "A cada 50 pontos o nível e a velocidade aumentam.",
-      "Não encoste nas bordas nem no próprio corpo."
-    ] : ["Regras disponíveis em breve."];
-    return `<article class="game-module-card">
-      <div class="game-module-card__cover"><i class='bx bx-joystick'></i><span>DISPONÍVEL</span></div>
-      <div class="game-module-card__body"><h2>${game.name}</h2><p>${game.description || "Game Diamond."}</p>
-        <div class="game-module-card__rules"><strong>Regras</strong><ul>${rules.map(rule => `<li>${rule}</li>`).join("")}</ul></div>
-        <button type="button" data-panel-play="${game.id}"><i class='bx bx-play'></i> Jogar ${game.name}</button>
-      </div>
-    </article>`;
-  }
-
-  destroy() { document.removeEventListener("keydown", this.#keydown); this.close(); }
 }
