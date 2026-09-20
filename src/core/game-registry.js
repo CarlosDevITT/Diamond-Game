@@ -15,7 +15,7 @@ export class GameRegistry {
     return [...this.#games.values()].map(({ id, name, description, rules, multiplayer = null, status = "available" }) => ({ id, name, description, rules, multiplayer, status }));
   }
 
-  async open(id, stage, onClose) {
+  async open(id, stage, onClose, options = {}) {
     const game = this.#games.get(id);
     if (!game) throw new Error(`Jogo "${id}" não encontrado.`);
     await this.close(stage);
@@ -25,7 +25,7 @@ export class GameRegistry {
       await this.close(stage);
       onClose?.();
     };
-    this.#active = await game.create({ root: stage, close });
+    this.#active = await game.create({ root: stage, close, options });
     await this.#active?.start?.();
   }
 
