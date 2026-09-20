@@ -26,6 +26,7 @@ export class GamesPanel {
   }
 
   #render() {
+    const banners={snake:"./assets/img/file_000000007070820eb1ddd35dbc1b4ab9.png",tank:"./assets/img/file_00000000e83c820e99a0cfbcc1451aa2.png"};
     return `<div class="games-screen__inner">
       <header class="module-header">
         <button type="button" data-back aria-label="Voltar">←</button>
@@ -34,7 +35,7 @@ export class GamesPanel {
       <div class="games-hero"><span>ARCADE</span><h1>Escolha seu jogo</h1><p>Leia as regras e entre na partida.</p></div>
       <div class="games-grid">${this.#games.map(game => `
         <article class="game-card">
-          <div class="game-card__visual"><span>${game.status === "available" ? "DISPONÍVEL" : "EM BREVE"}</span><b>◈</b></div>
+          <div class="game-card__visual ${banners[game.id] ? "game-card__visual--banner" : ""}">${banners[game.id] ? `<img src="${banners[game.id]}" alt="Banner ${game.name}" loading="eager" draggable="false">` : `<b>◈</b>`}<span>${game.status === "available" ? "DISPONÍVEL" : "EM BREVE"}</span></div>
           <div class="game-card__body">
             <h2>${game.name}</h2><p>${game.description}</p>
             <div class="rules"><strong>Como jogar</strong><ul>${game.rules.map(rule => `<li>${rule}</li>`).join("")}</ul></div>
