@@ -14,19 +14,19 @@ export class GamesPanel {
     if (this.#open) return;
     this.#open = true;
     document.body.classList.add("games-panel-open");
-    this.#root.innerHTML = this.#template();
+    this.#root.insertAdjacentHTML("beforeend", this.#template());
     this.#bind();
   }
 
   close() {
     this.#open = false;
     document.body.classList.remove("games-panel-open");
-    this.#root.replaceChildren();
+    this.#root.querySelector(".games-panel")?.remove();
   }
 
   #bind() {
-    this.#root.querySelectorAll("[data-panel-close]").forEach(el => el.addEventListener("click", () => this.close()));
-    this.#root.querySelectorAll("[data-panel-play]").forEach(el => el.addEventListener("click", () => {
+    this.#root.querySelector(".games-panel")?.querySelectorAll("[data-panel-close]").forEach(el => el.addEventListener("click", () => this.close()));
+    this.#root.querySelector(".games-panel")?.querySelectorAll("[data-panel-play]").forEach(el => el.addEventListener("click", () => {
       const id = el.dataset.panelPlay;
       this.close();
       this.#onPlay?.(id);
