@@ -3,9 +3,15 @@ import { snakeGame } from "./games/snake/index.js";
 import { GamesPanel } from "./modules/games-panel/index.js";
 
 export const DiamondGame = new GameRegistry();
-DiamondGame.register(snakeGame).mount({ stage: () => document.getElementById("game-stage") });
+const gameStage = document.createElement("section");
+gameStage.id = "game-stage";
+gameStage.className = "game-stage";
+gameStage.hidden = true;
+document.body.append(gameStage);
+
+DiamondGame.register(snakeGame).mount({ stage: () => gameStage });
 const gamesPanel = new GamesPanel({
-  root: document.getElementById("games-panel-root"),
+  root: document.body,
   games: DiamondGame.list(),
   onPlay: (gameId) => DiamondGame.open(gameId)
 });
