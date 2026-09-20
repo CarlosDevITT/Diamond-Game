@@ -13,7 +13,7 @@ let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null;
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-10"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-10")
+  import("./core/match-client.js?v=20260920-11"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-10")
  ]);
  auth=authService;match=new MatchClient({events});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
@@ -27,7 +27,7 @@ const startGame=async(id,options={})=>{
  await registry.open(id,stage,()=>{
   events.emit("game:close",{id,...options});
   options.mode==="1v1"&&lobby?lobby.show(registry.list().find(g=>g.id===id)):panel.show();
- });
+ },{...options,onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
 };
 const panel=new GamesPanel({games:registry.list(),onPlay:async(id,options={})=>{
  if(options.mode==="1v1"){
