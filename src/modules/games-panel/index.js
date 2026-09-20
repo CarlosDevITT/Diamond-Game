@@ -1,8 +1,8 @@
 export class GamesPanel {
   #root; #games; #onPlay; #screen = null; #keydown;
 
-  constructor({ root = document.body, games = [], onPlay }) {
-    this.#root = root;
+  constructor({ games = [], onPlay }) {
+    this.#root = document.body;
     this.#games = games;
     this.#onPlay = onPlay;
     this.#keydown = e => { if (e.key === "Escape" && this.#screen) this.close(); };
