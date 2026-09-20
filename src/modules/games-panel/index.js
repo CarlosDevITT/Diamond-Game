@@ -1,9 +1,10 @@
 export class GamesPanel {
-  #games; #onPlay; #node = null;
+  #games; #onPlay; #onProfile; #node = null; #profile = null;
 
-  constructor({ games, onPlay }) {
+  constructor({ games, onPlay, onProfile }) {
     this.#games = games;
     this.#onPlay = onPlay;
+    this.#onProfile = onProfile;
   }
 
   show() {
@@ -13,11 +14,23 @@ export class GamesPanel {
       this.#node.innerHTML = this.#render();
       document.body.append(this.#node);
       this.#node.querySelector("[data-back]").addEventListener("click", () => this.hide());
+      this.#node.querySelector("[data-profile]").addEventListener("click", () => this.#onProfile?.());
       this.#node.querySelectorAll("[data-play]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.play, { mode: "casual" })));
       this.#node.querySelectorAll("[data-versus]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.versus, { mode: "1v1" })));
     }
     this.#node.hidden = false;
     document.body.classList.add("module-open");
+  }
+
+  setProfile(profile) {
+    this.#profile = profile || null;
+    if (!this.#node) return;
+    const button=this.#node.querySelector("[data-profile]");
+    if (!button) return;
+    const name=this.#profile?.username || this.#profile?.name || "Perfil";
+    button.querySelector("[data-profile-name]").textContent=name;
+    button.querySelector("[data-profile-avatar]").textContent=name.trim().charAt(0).toUpperCase() || "D";
+    button.classList.toggle("is-authenticated",!!this.#profile);
   }
 
   hide() {
@@ -28,9 +41,10 @@ export class GamesPanel {
   #render() {
     const banners={snake:"./assets/img/file_000000007070820eb1ddd35dbc1b4ab9.png",tank:"./assets/img/file_00000000e83c820e99a0cfbcc1451aa2.png"};
     return `<div class="games-screen__inner">
-      <header class="module-header">
+      <header class="module-header games-panel__header">
         <button type="button" data-back aria-label="Voltar">←</button>
-        <div><small>DIAMOND GAME</small><strong>Games</strong></div>
+        <div class="games-panel__brand"><small>DIAMOND GAME</small><strong>Games</strong></div>
+        <button class="profile-trigger" type="button" data-profile aria-label="Abrir perfil"><span class="profile-trigger__avatar" data-profile-avatar>D</span><span class="profile-trigger__copy"><small>CONTA</small><strong data-profile-name>Perfil</strong></span><span class="profile-trigger__chevron">›</span></button>
       </header>
       <div class="games-hero"><div><span>DIAMOND ARCADE</span><h1>Escolha seu jogo</h1><p>Jogue casualmente ou desafie outro jogador no 1v1.</p></div><div class="games-hero__stats"><span><b>${this.#games.length}</b> jogos</span><span><b>2</b> modos</span></div></div>
       <div class="games-grid">${this.#games.map(game => `
