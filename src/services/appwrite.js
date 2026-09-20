@@ -5,10 +5,8 @@ export const APPWRITE = Object.freeze({
   projectId: "diamond-game",
   databaseId: "diamond"
 });
-
 export const client = new Client().setEndpoint(APPWRITE.endpoint).setProject(APPWRITE.projectId);
 export const account = new Account(client);
 export const db = new TablesDB(client);
 export { ID, Query, Permission, Role };
-
 export async function ensureSession(){ return account.get(); }
