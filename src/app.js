@@ -1,5 +1,5 @@
 import { GameRegistry } from "./core/game-registry.js";
-import { GamesPanel } from "./modules/games-panel/index.js";
+import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-36";
 import { snakeGame } from "./games/snake/index.js?v=20260920-32";
 import { tankGame } from "./games/tank/index.js?v=20260920-32";
 import { EventBus } from "./core/event-bus.js";
@@ -15,7 +15,7 @@ let match=null,auth=null,authScreen=null,lobby=null,profilePanel=null,pendingGam
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-32"),import("./services/auth.js?v=20260920-32"),import("./modules/auth-screen/index.js?v=20260920-32"),import("./modules/match-lobby/index.js?v=20260920-32")
+  import("./core/match-client.js?v=20260920-32"),import("./services/auth.js?v=20260920-36"),import("./modules/auth-screen/index.js?v=20260920-32"),import("./modules/match-lobby/index.js?v=20260920-32")
  ]);
  auth=authService;match=new MatchClient({events});
  events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
