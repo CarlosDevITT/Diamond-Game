@@ -46,3 +46,6 @@ footer{padding:1.5rem;background:#0a0b12;color:#fff;text-align:center}.home__foo
 @media(max-width:380px){
  .tank-stick{width:96px;height:96px}.tank-stick i{width:42px;height:42px;left:25px;top:25px}.tank-fire{width:62px;height:62px;right:39px;bottom:132px}
 }
+
+/* Tank match scoreboard */
+.tank-header{justify-content:space-between}.tank-header>button{flex:0 0 auto}.tank-header .tank-score,.tank-header .tank-time{display:grid;place-items:center;min-width:72px;text-align:center}.tank-header .tank-score small,.tank-header .tank-time small{font-size:.5rem;letter-spacing:.12em;opacity:.5}.tank-header .tank-score strong,.tank-header .tank-time strong{font-size:1.25rem;line-height:1.1}.tank-header .tank-time strong{color:#52ffd2}@media(max-width:420px){.tank-header{gap:.35rem;padding-inline:8px}.tank-header>button{width:38px;height:38px}.tank-header .tank-score,.tank-header .tank-time{min-width:62px}.tank-header .tank-score strong,.tank-header .tank-time strong{font-size:1.1rem}}
