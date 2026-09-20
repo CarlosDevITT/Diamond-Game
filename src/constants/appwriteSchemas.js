@@ -15,7 +15,7 @@ export const APPWRITE_SCHEMAS=Object.freeze({
  wallets:{
   id:"wallets",rowSecurity:true,
   columns:{
-   user_id:{type:"varchar",size:36,required:true},
+   user_id:{type:"varchar",size:255,required:true},
    available_balance:{type:"integer",required:false,default:0,unit:"cents"},
    locked_balance:{type:"integer",required:false,default:0,unit:"cents"},
    updated_at:{type:"datetime",required:true}
@@ -28,9 +28,9 @@ export const APPWRITE_SCHEMAS=Object.freeze({
   columns:{
    user_id:{type:"varchar",size:36,required:true},
    amount:{type:"integer",required:true,unit:"cents"},
-   type:{type:"enum",required:true,elements:Object.values(LEDGER_TYPE)},
-   reference_id:{type:"varchar",size:128,required:true},
-   status:{type:"enum",required:true,elements:Object.values(LEDGER_STATUS)},
+   type:{type:"varchar",size:50,required:true,allowed:Object.values(LEDGER_TYPE)},
+   reference_id:{type:"varchar",size:255,required:true},
+   status:{type:"varchar",size:50,required:true,allowed:Object.values(LEDGER_STATUS)},
    created_at:{type:"datetime",required:true}
   },
   indexes:{
