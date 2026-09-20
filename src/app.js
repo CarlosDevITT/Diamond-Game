@@ -1,6 +1,6 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { snakeGame } from "./games/snake/index.js";
-import { GamesPanel } from "./modules/games-panel/index.js";
+import { GamesPanel } from "./modules/games-panel/index.js?v=2";
 
 export const DiamondGame = new GameRegistry();
 const gameStage = document.createElement("section");
@@ -11,7 +11,6 @@ document.body.append(gameStage);
 
 DiamondGame.register(snakeGame).mount({ stage: () => gameStage });
 const gamesPanel = new GamesPanel({
-  root: document.body,
   games: DiamondGame.list(),
   onPlay: (gameId) => DiamondGame.open(gameId)
 });
