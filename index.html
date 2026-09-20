@@ -1,112 +1,51 @@
-<!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#5153e6">
+  <title>Diamond Game</title>
+  <link rel="icon" href="./State.ico">
+  <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <nav class="nav container">
+        <a href="./" class="nav__logo">DIAMOND GAME</a>
+        <button class="nav__toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☷</button>
+        <div class="nav__menu" id="nav-menu">
+          <button class="nav__close" id="nav-close" type="button" aria-label="Fechar menu">×</button>
+          <a href="#" class="nav__link">Home</a>
+          <a href="#footer" class="nav__link">Contato</a>
+        </div>
+      </nav>
+    </header>
 
-        <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <main>
+      <section class="home">
+        <div class="home__container container">
+          <div class="home__data">
+            <span class="home__subtitle">DIAMOND GAME</span>
+            <h1 class="home__title">JOGUE.<br>SUPERE.</h1>
+            <p class="home__description">Uma plataforma de minigames feita para jogar no celular ou desktop.</p>
+            <button class="home__button" id="open-games" type="button">Jogar</button>
+          </div>
+          <div class="home__img">
+            <img src="./assets/img/Diamound.png" alt="Mascote Diamond Game" draggable="false">
+            <div class="home__shadow"></div>
+          </div>
+        </div>
+      </section>
+    </main>
 
-        <link
-        href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
-        rel="stylesheet"
-      />
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
-      />
-        <!--=============== BOXICONS ===============-->
-        <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
-
-        <!--=============== CSS ===============-->
-        <link defer rel="stylesheet" href="assets/css/styles.css">
-
-        <title>DIMOND GAME</title>
-    </head>
-    <body>
-        <!--==================== HEADER ====================-->
-        <header class="header">
-            <nav class="nav container">
-                <a href="#" class="nav__logo">
-                   DAIMOND GAME
-                </a>
-
-                <div class="nav__menu" id="nav-menu">
-                    <ul class="nav__list">
-                        <li class="nav__item">
-                            <a href="#" class="nav__link">Home</a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="#" class="nav__link">Sobre</a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="#" class="nav__link">Contato</a>
-                        </li>
-                    </ul>
-
-                    <button class="nav__close" id="nav-close" type="button" aria-label="Fechar menu">
-                        <i class='bx bx-x'></i>
-                    </button>
-                </div>
-
-                <!-- Toggle button -->
-                <button class="nav__toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
-                    <i class='bx bx-grid-alt'></i>
-                </button>
-            </nav>
-        </header>
-
-        <!--==================== MAIN ====================-->
-        <main class="main">
-            <!--==================== HOME ====================-->
-            <section class="home">
-                <div class="home__container container">
-                    <div class="home__data">
-                        <span class="home__subtitle">Error 404</span>
-                        <h1 class="home__title">OLÁ SOU DIMAOND</h1>
-                        <p class="home__description">
-                            Jogue com seus amigos 1 x 1 <br> Aposte e ganhe!.
-                        </p>
-                        <button type="button" class="home__button" id="open-games">Jogar</button>
-                    </div>
-
-                    <div class="home__img">
-                        <img src="assets/img/Diamound.png" alt="">
-                        <div class="home__shadow"></div>
-                    </div>
-                </div>
-
-              
-            </section>
-</main>
-
-     <footer> 
-            <div class="home__footer">
-                <span>(55+) 92 98513-0951</span>
-                <span>|</span>
-                <span>stateSoft@company.com</span>
-            </div>
-
-            <div class="footer__socials">
-                <ul>             
-                    <li>               
-                        <a href="#"><i class="ri-facebook-fill"></i></a>                
-                </li>              
-                    <li>               
-                        <a href="#"><i class="ri-google-fill"></i></a>               
-                    </li>              
-                    <li>               
-                        <a href="https://www.instagram.com/state_softwares?stkn=MTNscjd4eXM3bzN5bw=="><i class="ri-instagram-line"></i></a>              
-                    </li>              
-                    <li>            
-                    <a href="https://www.youtube.com/@carlos_domingos.0"><i class="ri-youtube-line"></i></a>                
-                    </li>             
-                </ul>      
-            </div>
-    </footer>  
-        <!--=============== SCROLLREVEAL ===============-->
-        <script src="assets/js/scrollreveal.min.js"></script>
-
-        <!--=============== MAIN JS ===============-->
-        <script type="module" src="./src/app.js"></script>
-    </body>
+    <footer id="footer">
+      <div class="home__footer"><span>DIAMOND GAME</span><span>•</span><span>States Softwares</span></div>
+      <div class="footer__socials">
+        <a href="https://www.instagram.com/state_softwares?stkn=MTNscjd4eXM3bzN5bw==" aria-label="Instagram">Instagram</a>
+      </div>
+    </footer>
+  </div>
+  <script type="module" src="./src/app.js"></script>
+</body>
 </html>
