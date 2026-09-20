@@ -1,4 +1,4 @@
-import { TankControls } from "./tank-controls.js?v=20260920-32";
+import { TankControls } from "./tank-controls.js?v=20260920-50";
 import { TankEngine } from "./tank-engine.js?v=20260920-48";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260920-32";
 
