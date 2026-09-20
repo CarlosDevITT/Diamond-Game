@@ -1,7 +1,7 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-40";
 import { snakeGame } from "./games/snake/index.js?v=20260920-32";
-import { tankGame } from "./games/tank/index.js?v=20260920-32";
+import { tankGame } from "./games/tank/index.js?v=20260920-46";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
@@ -45,7 +45,7 @@ const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await 
   }catch(e){console.error("Diamond online unavailable",e);window.Swal?Swal.fire({title:"Falha ao abrir 1v1",text:e?.message||String(e),icon:"error",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"}):alert(`Falha ao abrir 1v1: ${e?.message || e}`);}
   return;
  }
- startGame(id,options);
+ startGame(id,{...options,replay:()=>startGame(id,{...options})});
 }});
 
 const openGamesPanel=async()=>{panel.show();try{await loadOnline();const user=await auth.current();const profile=user?await auth.profile(user.$id):null;panel.setProfile(profile||user);}catch{panel.setProfile(null)}};
