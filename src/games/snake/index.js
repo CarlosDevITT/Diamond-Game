@@ -1,4 +1,5 @@
 import { ScoreStore } from "../../core/score-store.js";
+import { createCompetitiveConfig, resolveCompetitiveResult } from "../../core/match-contract.js";
 
 const DIR={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
 const KEY={ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down",ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"};
@@ -6,6 +7,7 @@ const KEY={ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down",ArrowLe
 export const snakeGame={
  id:"snake",name:"Snake",description:"O clássico Snake em uma versão rápida e responsiva.",
  rules:["Setas/WASD no desktop, swipe ou direcional no celular.","Coma os pontos, suba de nível e aumente sua sequência.","Não bata nas bordas nem no próprio corpo."],
+ multiplayer:createCompetitiveConfig({durationMs:90000,countdownMs:3000,scoring:"highest-score",tieBreaker:"survival-time",resolveWinner:resolveCompetitiveResult}),
  create({root,close}){
   root.innerHTML=`<section class="snake-screen">
    <header class="module-header"><button type="button" data-close aria-label="Voltar">←</button><div><small>DIAMOND ARCADE</small><strong>Snake</strong></div><button class="snake-pause" type="button" data-pause aria-label="Pausar">Ⅱ</button></header>
