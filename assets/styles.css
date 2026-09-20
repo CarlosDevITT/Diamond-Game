@@ -174,3 +174,16 @@ html{scroll-behavior:smooth}.nav__menu{align-items:center}.nav__link{position:re
 .game-modes{grid-template-columns:1fr;gap:.7rem}.game-mode{position:relative;min-height:72px!important;height:auto!important;display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:.8rem;padding:.75rem .9rem!important;text-align:left;overflow:hidden;transition:transform .2s cubic-bezier(.22,1,.36,1),border-color .2s ease,box-shadow .2s ease!important}.game-mode__icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;font-size:.8rem}.game-mode__copy{display:grid;gap:.05rem}.game-mode__copy small{font-size:.52rem;letter-spacing:.16em;font-style:normal;opacity:.55}.game-mode__copy strong{font-size:1rem;line-height:1.2}.game-mode__copy em{font-size:.62rem;font-style:normal;font-weight:500;opacity:.52}.game-mode__arrow{font-size:1.1rem;transition:transform .2s ease}.game-mode--casual{background:#fff!important;color:#090a12!important;border:1px solid #fff!important}.game-mode--casual .game-mode__icon{background:#090a12;color:#fff;box-shadow:0 7px 18px rgba(0,0,0,.16)}.game-mode--versus{background:#17192c!important;color:#fff!important;border:1px solid rgba(113,116,255,.35)!important}.game-mode--versus .game-mode__icon{background:#5153e6;color:#fff}.game-mode:active{transform:scale(.985)}
 @media(min-width:520px){.game-modes{grid-template-columns:1fr 1fr}.game-mode{min-height:78px!important}}
 @media(hover:hover){.game-mode:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.2)}.game-mode:hover .game-mode__arrow{transform:translateX(4px)}.game-mode--versus:hover{border-color:rgba(113,116,255,.7)!important}}
+
+
+/* Game mode selector mobile compact v49 */
+@media(max-width:519px){
+ .game-modes{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.6rem}
+ .game-mode{min-height:92px!important;height:92px!important;grid-template-columns:34px 1fr;grid-template-rows:auto auto;padding:.7rem!important;gap:.35rem .55rem;border-radius:18px!important}
+ .game-mode__icon{width:34px;height:34px;border-radius:11px;font-size:.68rem;grid-row:1}
+ .game-mode__copy{align-self:center;min-width:0}
+ .game-mode__copy small{font-size:.43rem;letter-spacing:.12em}
+ .game-mode__copy strong{font-size:.88rem}
+ .game-mode__copy em{display:none}
+ .game-mode__arrow{grid-column:1/-1;align-self:end;font-size:.9rem;line-height:1}
+}
