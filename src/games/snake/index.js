@@ -8,7 +8,7 @@ export const snakeGame={
  id:"snake",name:"Snake",description:"O clássico Snake em uma versão rápida e responsiva.",
  rules:["Setas/WASD no desktop, swipe ou direcional no celular.","Coma os pontos, suba de nível e aumente sua sequência.","Não bata nas bordas nem no próprio corpo."],
  multiplayer:createCompetitiveConfig({durationMs:90000,countdownMs:3000,scoring:"highest-score",tieBreaker:"survival-time",resolveWinner:resolveCompetitiveResult}),
- create({root,close}){
+ create({root,close,options={}}){
   root.innerHTML=`<section class="snake-screen">
    <header class="module-header"><button type="button" data-close aria-label="Voltar">←</button><div><small>DIAMOND ARCADE</small><strong>Snake</strong></div><button class="snake-pause" type="button" data-pause aria-label="Pausar">Ⅱ</button></header>
    <div class="snake-hud"><span>SCORE <b data-score>0</b></span><span>BEST <b data-best>0</b></span><span>LEVEL <b data-level>1</b></span></div>
@@ -19,7 +19,7 @@ export const snakeGame={
   const canvas=root.querySelector("canvas"),ctx=canvas.getContext("2d");
   const scoreEl=root.querySelector("[data-score]"),bestEl=root.querySelector("[data-best]"),levelEl=root.querySelector("[data-level]");
   const overlay=root.querySelector("[data-overlay]"),overlayTitle=overlay.querySelector("strong"),overlayText=overlay.querySelector("span"),startBtn=root.querySelector("[data-start]"),pauseBtn=root.querySelector("[data-pause]");
-  const cells=18,scores=new ScoreStore(); let body=[],food,dir=DIR.right,queued=[],score=0,level=1,best=scores.getBest("snake"),timer=null,touch=null,state="ready",lastSize=320;
+  const cells=18,scores=new ScoreStore(),competitive=options.mode==="1v1"; let body=[],food,dir=DIR.right,queued=[],score=0,level=1,best=scores.getBest("snake"),timer=null,touch=null,state="ready",lastSize=320,startedAt=0,matchTimer=null,resultSent=false;
   bestEl.textContent=best;
 
   const speed=()=>Math.max(58,128-(level-1)*9);
@@ -28,7 +28,8 @@ export const snakeGame={
   const schedule=()=>{clearTimeout(timer);if(state==="playing")timer=setTimeout(tick,speed());};
   const turn=name=>{const d=DIR[name],base=queued.length?queued[queued.length-1]:dir;if(!d||queued.length>=2||(d.x===-base.x&&d.y===-base.y))return;queued.push(d);};
   const showOverlay=(title,text,button="JOGAR")=>{overlayTitle.textContent=title;overlayText.textContent=text;startBtn.textContent=button;overlay.hidden=false;};
-  const play=()=>{if(state==="gameover")reset();state="playing";overlay.hidden=true;pauseBtn.textContent="Ⅱ";schedule();};
+  const finishCompetitive=reason=>{if(!competitive||resultSent)return;resultSent=true;clearTimeout(matchTimer);const survivalMs=Math.min(90000,Math.max(0,Date.now()-startedAt));options.onResult?.({score,survivalMs,reason});};
+  const play=()=>{if(state==="gameover")reset();state="playing";if(!startedAt)startedAt=Date.now();overlay.hidden=true;pauseBtn.textContent="Ⅱ";schedule();};
   const pause=()=>{if(state==="playing"){state="paused";clearTimeout(timer);pauseBtn.textContent="▶";showOverlay("PAUSADO","Continue quando estiver pronto.","CONTINUAR")}else if(state==="paused")play();};
 
   function resize(){lastSize=Math.min(window.innerWidth-32,520);const r=Math.min(devicePixelRatio||1,2);canvas.style.width=lastSize+"px";canvas.style.height=lastSize+"px";canvas.width=Math.round(lastSize*r);canvas.height=Math.round(lastSize*r);ctx.setTransform(r,0,0,r,0,0);draw();}
@@ -44,7 +45,7 @@ export const snakeGame={
    if(state!=="playing")return;if(queued.length)dir=queued.shift();
    const h={x:body[0].x+dir.x,y:body[0].y+dir.y};
    if(h.x<0||h.y<0||h.x>=cells||h.y>=cells||body.some(p=>p.x===h.x&&p.y===h.y)){
-    state="gameover";clearTimeout(timer);best=scores.saveBest("snake",score);bestEl.textContent=best;showOverlay("GAME OVER",`Score ${score} • Recorde ${best}`,"JOGAR NOVAMENTE");return;
+    state="gameover";clearTimeout(timer);best=scores.saveBest("snake",score);bestEl.textContent=best;finishCompetitive("collision");showOverlay("GAME OVER",`Score ${score} • Recorde ${best}`,competitive?"AGUARDANDO RESULTADO":"JOGAR NOVAMENTE");if(competitive)startBtn.disabled=true;return;
    }
    body.unshift(h);
    if(h.x===food.x&&h.y===food.y){score+=10;const nextLevel=1+Math.floor(score/50);if(nextLevel!==level){level=nextLevel;levelEl.textContent=level;}scoreEl.textContent=score;spawn();if(navigator.vibrate)navigator.vibrate(18);}else body.pop();
@@ -55,7 +56,7 @@ export const snakeGame={
   canvas.addEventListener("pointerup",e=>{if(!touch)return;const dx=e.clientX-touch.x,dy=e.clientY-touch.y;if(Math.max(Math.abs(dx),Math.abs(dy))>16){if(state==="ready")play();turn(Math.abs(dx)>Math.abs(dy)?dx>0?"right":"left":dy>0?"down":"up");}touch=null;});
   root.querySelectorAll("[data-dir]").forEach(b=>b.addEventListener("pointerdown",e=>{e.preventDefault();if(state==="ready")play();turn(b.dataset.dir);}));
   startBtn.addEventListener("click",play);pauseBtn.addEventListener("click",pause);root.querySelector("[data-close]").addEventListener("click",close);window.addEventListener("keydown",keydown);window.addEventListener("resize",resize);
-  reset();resize();showOverlay("PRONTO?","Swipe, direcional ou teclado.","JOGAR");
-  return{start(){},destroy(){state="destroyed";clearTimeout(timer);window.removeEventListener("keydown",keydown);window.removeEventListener("resize",resize);}};
+  reset();resize();if(competitive){pauseBtn.hidden=true;startBtn.disabled=true;const target=Date.parse(options.startedAt)||Date.now()+3000;const begin=()=>{const left=target-Date.now();if(left>0){showOverlay("1V1",`Começa em ${Math.max(1,Math.ceil(left/1000))}…`,"SINCRONIZANDO");setTimeout(begin,Math.min(250,left));return;}startedAt=Date.now();play();matchTimer=setTimeout(()=>{if(state==="playing"){state="gameover";clearTimeout(timer);finishCompetitive("time");showOverlay("TEMPO! ",`Score final ${score}`,"AGUARDANDO RESULTADO");startBtn.disabled=true;}},90000);};begin();}else showOverlay("PRONTO?","Swipe, direcional ou teclado.","JOGAR");
+  return{start(){},destroy(){state="destroyed";clearTimeout(timer);clearTimeout(matchTimer);window.removeEventListener("keydown",keydown);window.removeEventListener("resize",resize);}};
  }
 };
