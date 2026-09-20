@@ -1,87 +1,47 @@
 import { GameRegistry } from "./core/game-registry.js";
+import { GamesPanel } from "./modules/games-panel/index.js";
 import { snakeGame } from "./games/snake/index.js";
-import { GamesPanel } from "./modules/games-panel/index.js?v=2";
 
-export const DiamondGame = new GameRegistry();
-const gameStage = document.createElement("section");
-gameStage.id = "game-stage";
-gameStage.className = "game-stage";
-gameStage.hidden = true;
-document.body.append(gameStage);
+const registry = new GameRegistry();
+registry.register(snakeGame);
 
-DiamondGame.register(snakeGame).mount({ stage: () => gameStage });
-const gamesPanel = new GamesPanel({
-  games: DiamondGame.list(),
-  onPlay: (gameId) => DiamondGame.open(gameId)
+const stage = document.createElement("div");
+stage.id = "game-stage";
+stage.className = "game-stage";
+stage.hidden = true;
+document.body.append(stage);
+
+const panel = new GamesPanel({
+  games: registry.list(),
+  onPlay: async id => {
+    panel.hide();
+    await registry.open(id, stage, () => {
+      panel.show();
+    });
+  }
 });
-document.getElementById("open-games")?.addEventListener("click", () => gamesPanel.show());
 
-const navMenu = document.getElementById("nav-menu");
-const navToggle = document.getElementById("nav-toggle");
-const navClose = document.getElementById("nav-close");
+document.getElementById("open-games").addEventListener("click", () => panel.show());
 
-function openMenu() {
-  navMenu?.classList.add("show-menu");
-  navToggle?.setAttribute("aria-expanded", "true");
-}
+const menu = document.getElementById("nav-menu");
+const toggle = document.getElementById("nav-toggle");
+const close = document.getElementById("nav-close");
+const setMenu = open => {
+  menu.classList.toggle("is-open", open);
+  toggle.setAttribute("aria-expanded", String(open));
+};
+toggle.addEventListener("click", () => setMenu(true));
+close.addEventListener("click", () => setMenu(false));
+menu.querySelectorAll(".nav__link").forEach(link => link.addEventListener("click", () => setMenu(false)));
 
-function closeMenu() {
-  navMenu?.classList.remove("show-menu");
-  navToggle?.setAttribute("aria-expanded", "false");
-}
-
-navToggle?.addEventListener("click", openMenu);
-navClose?.addEventListener("click", closeMenu);
-document.querySelectorAll(".nav__link").forEach(link => link.addEventListener("click", closeMenu));
-
-const diamond = document.querySelector(".home__img img");
-if (diamond) {
-  let rotation = 0;
-  let dragging = false;
-  let lastX = 0;
-
-  const beginDrag = (clientX) => {
-    dragging = true;
-    lastX = clientX;
-    diamond.classList.add("is-dragging");
-  };
-
-  const drag = (clientX) => {
-    if (!dragging) return;
-    const deltaX = clientX - lastX;
-    rotation += deltaX * 1.8;
-    lastX = clientX;
-    diamond.style.transform = `translateY(0) rotateY(${rotation}deg)`;
-  };
-
-  const endDrag = () => {
-    dragging = false;
-    diamond.classList.remove("is-dragging");
-  };
-
-  diamond.addEventListener("pointerdown", (event) => {
-    beginDrag(event.clientX);
-    diamond.setPointerCapture?.(event.pointerId);
-  });
-
-  diamond.addEventListener("pointermove", (event) => drag(event.clientX));
-  diamond.addEventListener("pointerup", endDrag);
-  diamond.addEventListener("pointercancel", endDrag);
-
-  diamond.addEventListener("touchstart", (event) => {
-    beginDrag(event.touches[0].clientX);
-  }, { passive: true });
-
-  diamond.addEventListener("touchmove", (event) => {
-    drag(event.touches[0].clientX);
-  }, { passive: true });
-
-  diamond.addEventListener("touchend", endDrag, { passive: true });
-}
-
-if (window.ScrollReveal) {
-  const sr = window.ScrollReveal({ distance: "90px", duration: 1800 });
-  sr.reveal(".home__data", { origin: "top", delay: 200 });
-  sr.reveal(".home__img", { origin: "bottom", delay: 350 });
-  sr.reveal(".home__footer", { origin: "bottom", delay: 500 });
-}
+const mascot = document.querySelector(".home__img img");
+let dragging = false, lastX = 0, rotation = 0;
+mascot.addEventListener("pointerdown", e => {
+  dragging = true; lastX = e.clientX; mascot.setPointerCapture?.(e.pointerId);
+});
+mascot.addEventListener("pointermove", e => {
+  if (!dragging) return;
+  rotation += (e.clientX - lastX) * 1.5; lastX = e.clientX;
+  mascot.style.transform = `rotateY(${rotation}deg)`;
+});
+["pointerup","pointercancel"].forEach(type => mascot.addEventListener(type, () => dragging = false));
