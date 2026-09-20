@@ -87,3 +87,21 @@ if(!reduceMotion){
  window.addEventListener("scroll",()=>{if(!ticking){requestAnimationFrame(updateScrollMotion);ticking=true;}},{passive:true});
  updateScrollMotion();
 }
+
+
+// Horizontal scroll motion v43
+if(!reduceMotion&&"IntersectionObserver" in window){
+ const horizontal=[
+  ...document.querySelectorAll(".experience__steps article"),
+  ...document.querySelectorAll(".about__values article"),
+  document.querySelector(".contact__container>div:first-child"),
+  document.querySelector(".contact__card")
+ ].filter(Boolean);
+ horizontal.forEach((node,index)=>{
+  node.classList.add("reveal-horizontal",index%2===0?"reveal-from-left":"reveal-from-right");
+  const horizontalObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+   if(entry.isIntersecting){entry.target.classList.add("horizontal-visible");horizontalObserver.unobserve(entry.target);}
+  }),{threshold:.12,rootMargin:"0px 0px -5% 0px"});
+  horizontalObserver.observe(node);
+ });
+}
