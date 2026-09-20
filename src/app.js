@@ -106,3 +106,7 @@ if(!reduceMotion&&"IntersectionObserver" in window){
   horizontalObserver.observe(node);
  });
 }
+
+
+// Offline support v51
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(error=>console.warn("Offline support unavailable",error)))}
