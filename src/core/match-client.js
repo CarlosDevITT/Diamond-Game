@@ -18,12 +18,12 @@ export class MatchClient {
     const room=found.rows?.[0];if(!room)throw new Error("Sala não encontrada");
     const players=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[room.$id])]});
     if(players.rows.length>=2&&!players.rows.some(p=>p.user_id===user.$id))throw new Error("Sala cheia");
-    if(!players.rows.some(p=>p.user_id===user.$id))await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"B",ready:true,connected:true},permissions:[Permission.read(Role.users()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
+    if(!players.rows.some(p=>p.user_id===user.$id))await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"B",ready:true,connected:true},permissions:[Permission.read(Role.any()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
     const fresh=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[room.$id])]});
     this.#room=this.#map(room,fresh.rows);this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
   }
   #watch(roomId){this.#unsubscribe?.();this.#unsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.room_players.rows`],async()=>{if(!this.#room||this.#room.id!==roomId)return;const p=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[roomId])]});this.#room={...this.#room,players:p.rows.map(x=>({slot:x.slot,ready:x.ready,userId:x.user_id}))};this.#events.emit("match:update",this.room);});}
   async copyInvite(){if(!this.#room)return false;const url=new URL(location.href);url.searchParams.set("room",this.#room.code);url.searchParams.set("game",this.#room.gameId);try{await navigator.clipboard.writeText(url.toString());return true}catch{return false}}
-  leave(){const room=this.room;this.#unsubscribe?.();this.#unsubscribe=null;this.#room=null;this.#events.emit("match:left",room);}
+  async setReady(ready=true){const user=await this.#auth();if(!this.#room)return;const rows=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[this.#room.id]),Query.equal("user_id",[user.$id]),Query.limit(1)]});const row=rows.rows?.[0];if(row)await db.updateRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:row.$id,data:{ready}});}\n  leave(){const room=this.room;this.#unsubscribe?.();this.#unsubscribe=null;this.#room=null;this.#events.emit("match:left",room);}
   get room(){return this.#room?{...this.#room,players:this.#room.players.map(p=>({...p}))}:null;}
 }
