@@ -1,15 +1,16 @@
 export class MatchLobby {
- #node=null;#match;#onStart;#game=null;
- constructor({match,onStart}){this.#match=match;this.#onStart=onStart;}
+ #node=null;#match;#onStart;#game=null;#room=null;
+ constructor({match,onStart}){this.#match=match;this.#onStart=onStart; refresh(room){if(this.#node&&!this.#node.hidden&&this.#room?.id===room?.id)this.#showRoom(room);}
+}
  show(game){this.#game=game;if(!this.#node){this.#node=document.createElement("section");this.#node.className="match-lobby";document.body.append(this.#node);}this.#renderHome();this.#node.hidden=false;document.body.classList.add("module-open");}
  hide(){if(this.#node)this.#node.hidden=true;document.body.classList.remove("module-open");}
  #renderHome(){this.#node.innerHTML=`<div class="match-lobby__inner"><header class="module-header"><button data-back>←</button><div><small>DIAMOND 1V1</small><strong>${this.#game.name}</strong></div></header><section class="lobby-hero"><span>MULTIPLAYER</span><h1>Desafie um amigo</h1><p>Crie uma sala ou entre usando o código do convite.</p></section><div class="lobby-actions"><button data-create>Criar sala</button><div class="join-box"><input data-code maxlength="6" autocomplete="off" placeholder="CÓDIGO DA SALA"><button data-join>Entrar</button></div><small class="lobby-note">Modo de testes • sem dinheiro real</small></div></div>`;
  this.#node.querySelector("[data-back]").onclick=()=>this.hide();
- this.#node.querySelector("[data-create]").onclick=()=>this.#showRoom(this.#match.create(this.#game.id));
- this.#node.querySelector("[data-join]").onclick=()=>{const code=this.#node.querySelector("[data-code]").value.trim();if(code)this.#showRoom(this.#match.join(code,this.#game.id));};}
- #showRoom(room){const count=room.players.length;this.#node.innerHTML=`<div class="match-lobby__inner"><header class="module-header"><button data-back>←</button><div><small>SALA 1V1</small><strong>${this.#game.name}</strong></div></header><section class="room-card"><span>CÓDIGO DA SALA</span><h1>${room.code}</h1><p>${count===1?"Aguardando oponente…":"Sala pronta para iniciar"}</p><button class="room-copy" data-copy>Copiar convite</button><div class="room-players"><div><b>JOGADOR A</b><small>PRONTO</small></div><div><b>JOGADOR B</b><small>${count===2?"PRONTO":"AGUARDANDO"}</small></div></div><button data-start ${count<2?"disabled":""}>Iniciar partida</button><button class="room-demo" data-demo>Simular Jogador B</button></section></div>`;
+ this.#node.querySelector("[data-create]").onclick=async()=>{try{this.#showRoom(await this.#match.create(this.#game.id));}catch(e){alert(e.message||"Não foi possível criar a sala.");}};
+ this.#node.querySelector("[data-join]").onclick=async()=>{const code=this.#node.querySelector("[data-code]").value.trim();if(code){try{this.#showRoom(await this.#match.join(code,this.#game.id));}catch(e){alert(e.message||"Não foi possível entrar na sala.");}}};}
+ #showRoom(room){this.#room=room;const count=room.players.length;this.#node.innerHTML=`<div class="match-lobby__inner"><header class="module-header"><button data-back>←</button><div><small>SALA 1V1</small><strong>${this.#game.name}</strong></div></header><section class="room-card"><span>CÓDIGO DA SALA</span><h1>${room.code}</h1><p>${count===1?"Aguardando oponente…":"Sala pronta para iniciar"}</p><button class="room-copy" data-copy>Copiar convite</button><div class="room-players"><div><b>JOGADOR A</b><small>PRONTO</small></div><div><b>JOGADOR B</b><small>${count===2?"PRONTO":"AGUARDANDO"}</small></div></div><button data-start ${count<2?"disabled":""}>Iniciar partida</button><button class="room-demo" data-demo>Simular Jogador B</button></section></div>`;
  this.#node.querySelector("[data-back]").onclick=()=>{this.#match.leave();this.#renderHome();};
  this.#node.querySelector("[data-copy]").onclick=async e=>{const ok=await this.#match.copyInvite();e.currentTarget.textContent=ok?"Convite copiado ✓":"Código: "+room.code;};
- this.#node.querySelector("[data-demo]").onclick=()=>this.#showRoom(this.#match.join(room.code,this.#game.id));
+ this.#node.querySelector("[data-demo]")?.remove();
  this.#node.querySelector("[data-start]").onclick=()=>{this.hide();this.#onStart(this.#game.id,{mode:"1v1",roomCode:room.code});};}
 }
