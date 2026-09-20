@@ -13,7 +13,7 @@ let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null;
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-7"),import("./services/auth.js?v=20260920-7"),import("./modules/auth-screen/index.js?v=20260920-7"),import("./modules/match-lobby/index.js?v=20260920-7")
+  import("./core/match-client.js?v=20260920-8"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-8")
  ]);
  auth=authService;match=new MatchClient({events});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
