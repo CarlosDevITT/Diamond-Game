@@ -18,6 +18,7 @@ const loadOnline=async()=>{
   import("./core/match-client.js?v=20260920-20"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-20")
  ]);
  auth=authService;match=new MatchClient({events});
+ events.on("match:opponent-left",async()=>{if(!activeMatchId)return;activeMatchId=null;await registry.close(stage);if(window.Swal)await Swal.fire({title:"Oponente saiu da partida",text:"A partida foi interrompida porque o outro jogador desconectou ou saiu.",icon:"info",confirmButtonText:"Voltar aos jogos",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"});match.leave();panel.show();});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame});
  events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
@@ -30,7 +31,7 @@ const startGame=async(id,options={})=>{
  await registry.open(id,stage,()=>{
   events.emit("game:close",{id,...options});
   options.mode==="1v1"&&lobby?lobby.show(registry.list().find(g=>g.id===id)):panel.show();
- },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
+ },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onLeave:async()=>{if(options.mode==="1v1"){activeMatchId=null;await match?.leaveRoom?.();}},onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
 };
 const panel=new GamesPanel({games:registry.list(),onPlay:async(id,options={})=>{
  if(options.mode==="1v1"){
@@ -39,7 +40,7 @@ const panel=new GamesPanel({games:registry.list(),onPlay:async(id,options={})=>{
    const user=await auth.current();
    if(!user){pendingGame=registry.list().find(g=>g.id===id);panel.hide();authScreen.show();return;}
    panel.hide();lobby.show(registry.list().find(g=>g.id===id));
-  }catch(e){console.error("Diamond online unavailable",e);alert(`Falha ao abrir 1v1: ${e?.message || e}`);}
+  }catch(e){console.error("Diamond online unavailable",e);window.Swal?Swal.fire({title:"Falha ao abrir 1v1",text:e?.message||String(e),icon:"error",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"}):alert(`Falha ao abrir 1v1: ${e?.message || e}`);}
   return;
  }
  startGame(id,options);
