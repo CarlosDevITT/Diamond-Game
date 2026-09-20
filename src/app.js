@@ -1,6 +1,9 @@
 import { GameRegistry } from "./core/game-registry.js";
+import { snakeGame } from "./games/snake/index.js";
 
 export const DiamondGame = new GameRegistry();
+DiamondGame.register(snakeGame).mount({ stage: () => document.getElementById("game-stage") });
+document.querySelector("[data-game=\"snake\"]")?.addEventListener("click", () => DiamondGame.open("snake"));
 
 const navMenu = document.getElementById("nav-menu");
 const navToggle = document.getElementById("nav-toggle");
