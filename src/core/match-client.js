@@ -7,9 +7,9 @@ export class MatchClient {
   #map(room,players=[]){return {id:room.$id,code:room.code,gameId:room.game_id,status:room.status,players:players.map(p=>({slot:p.slot,ready:p.ready,userId:p.user_id})),createdAt:room.$createdAt};}
   async create(gameId){
     const user=await this.#auth(),code=Math.random().toString(36).slice(2,8).toUpperCase();
-    const permissions=[Permission.read(Role.users()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))];
+    const permissions=[Permission.read(Role.any()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))];
     const room=await db.createRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:ID.unique(),data:{code,game_id:gameId,host_user_id:user.$id,status:"waiting",mode:"1v1"},permissions});
-    await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"A",ready:true,connected:true},permissions:[Permission.read(Role.users()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
+    await db.createRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:ID.unique(),data:{room_id:room.$id,user_id:user.$id,slot:"A",ready:true,connected:true},permissions:[Permission.read(Role.any()),Permission.update(Role.user(user.$id)),Permission.delete(Role.user(user.$id))]});
     this.#room=this.#map(room,[{slot:"A",ready:true,user_id:user.$id}]);this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
   }
   async join(code,gameId){
