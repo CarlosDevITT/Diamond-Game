@@ -13,9 +13,9 @@ export class MatchLobby {
   }
   #showRoom(room){
     this.#room=room;const count=room.players.length;
-    this.#node.innerHTML=`<div class="match-lobby__inner"><header class="module-header"><button data-back>←</button><div><small>SALA 1V1</small><strong>${this.#game.name}</strong></div></header><section class="room-card"><span>CÓDIGO DA SALA</span><h1>${room.code}</h1><p>${count===1?"Aguardando oponente…":"Sala pronta para iniciar"}</p><button class="room-copy" data-copy>Copiar convite</button><div class="room-players"><div><b>JOGADOR A</b><small>PRONTO</small></div><div><b>JOGADOR B</b><small>${count===2?"PRONTO":"AGUARDANDO"}</small></div></div><button data-start ${count<2?"disabled":""}>Iniciar partida</button></section></div>`;
+    this.#node.innerHTML=`<div class="match-lobby__inner"><header class="module-header"><button data-back>←</button><div><small>SALA 1V1</small><strong>${this.#game.name}</strong></div></header><section class="room-card"><span>CÓDIGO DA SALA</span><h1>${room.code}</h1><p>${count===1?"Aguardando oponente…":"${room.players.every(p=>p.ready)?"Sala pronta para iniciar":"Aguardando jogadores ficarem prontos"}"}</p><button class="room-copy" data-copy>Copiar convite</button><div class="room-players"><div><b>JOGADOR A</b><small>PRONTO</small></div><div><b>JOGADOR B</b><small>${count===2?"PRONTO":"AGUARDANDO"}</small></div></div><button data-start ${count<2||!room.players.every(p=>p.ready)?"disabled":""}>Iniciar partida</button></section></div>`;
     this.#node.querySelector("[data-back]").onclick=()=>{this.#match.leave();this.#renderHome();};
     this.#node.querySelector("[data-copy]").onclick=async e=>{const ok=await this.#match.copyInvite();e.currentTarget.textContent=ok?"Convite copiado ✓":"Código: "+room.code;};
-    this.#node.querySelector("[data-start]").onclick=()=>{this.hide();this.#onStart(this.#game.id,{mode:"1v1",roomCode:room.code});};
+    this.#node.querySelector("[data-start]").onclick=()=>{if(count<2||!room.players.every(p=>p.ready))return;this.hide();this.#onStart(this.#game.id,{mode:"1v1",roomCode:room.code});};
   }
 }
