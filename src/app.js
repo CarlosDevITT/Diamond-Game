@@ -91,7 +91,7 @@ if(!reduceMotion){
 
 
 // Horizontal scroll motion v43
-if(!reduceMotion&&"IntersectionObserver" in window){
+if(!reduceMotion&&window.innerWidth>767&&"IntersectionObserver" in window){
  const horizontal=[
   ...document.querySelectorAll(".experience__steps article"),
   ...document.querySelectorAll(".about__values article"),
@@ -108,5 +108,6 @@ if(!reduceMotion&&"IntersectionObserver" in window){
 }
 
 
-// Offline support v51
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(error=>console.warn("Offline support unavailable",error)))}
+// Offline support v52
+if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js?v=52");await reg.update()}catch(error){console.warn("Offline support unavailable",error)}})}
+window.addEventListener("offline",()=>{if(!location.pathname.endsWith("/offline.html"))location.replace("./offline.html")});
