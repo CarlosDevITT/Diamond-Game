@@ -1,7 +1,9 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js";
 import { snakeGame } from "./games/snake/index.js";
+import { EventBus } from "./core/event-bus.js";
 
+const events = new EventBus();
 const registry = new GameRegistry();
 registry.register(snakeGame);
 
@@ -15,7 +17,9 @@ const panel = new GamesPanel({
   games: registry.list(),
   onPlay: async id => {
     panel.hide();
+    events.emit("game:open", { id });
     await registry.open(id, stage, () => {
+      events.emit("game:close", { id });
       panel.show();
     });
   }
