@@ -164,3 +164,7 @@ html{scroll-behavior:smooth}.nav__menu{align-items:center}.nav__link{position:re
 .reveal-horizontal{opacity:0;transition:opacity .78s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1),filter .78s ease;filter:blur(4px);will-change:transform,opacity}.reveal-from-left{transform:translate3d(-72px,0,0) rotate(-1deg)}.reveal-from-right{transform:translate3d(72px,0,0) rotate(1deg)}.reveal-horizontal.horizontal-visible{opacity:1;transform:translate3d(0,0,0) rotate(0);filter:blur(0)}
 @media(max-width:767px){.reveal-from-left{transform:translate3d(-42px,0,0)}.reveal-from-right{transform:translate3d(42px,0,0)}}
 @media(prefers-reduced-motion:reduce){.reveal-horizontal,.reveal-horizontal.horizontal-visible{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}}
+
+
+/* Diamond mascot soft motion v44 */
+.home__img{transform:none;animation:diamond-soft-float 5.5s ease-in-out infinite;transition:none}.home__img img{transform:none!important;animation:none!important}@keyframes diamond-soft-float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-7px,0)}}@media(max-width:767px){.home__img{animation-duration:6s}}@media(prefers-reduced-motion:reduce){.home__img{animation:none!important;transform:none!important}}
