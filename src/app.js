@@ -2,7 +2,6 @@ import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js";
 import { snakeGame } from "./games/snake/index.js";
 import { EventBus } from "./core/event-bus.js";
-import { MatchLobby } from "./modules/match-lobby/index.js";
 
 const events=new EventBus(), registry=new GameRegistry();
 registry.register(snakeGame);
@@ -13,8 +12,8 @@ stage.id="game-stage";stage.className="game-stage";stage.hidden=true;document.bo
 let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null;
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
- const [{MatchClient},{auth:authService},{AuthScreen}]=await Promise.all([
-  import("./core/match-client.js"),import("./services/auth.js"),import("./modules/auth-screen/index.js")
+ const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
+  import("./core/match-client.js?v=20260920-7"),import("./services/auth.js?v=20260920-7"),import("./modules/auth-screen/index.js?v=20260920-7"),import("./modules/match-lobby/index.js?v=20260920-7")
  ]);
  auth=authService;match=new MatchClient({events});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
@@ -36,7 +35,7 @@ const panel=new GamesPanel({games:registry.list(),onPlay:async(id,options={})=>{
    const user=await auth.current();
    if(!user){pendingGame=registry.list().find(g=>g.id===id);panel.hide();authScreen.show();return;}
    panel.hide();lobby.show(registry.list().find(g=>g.id===id));
-  }catch(e){console.error("Diamond online unavailable",e); panel.hide(); alert(`Falha ao abrir 1v1: ${e?.message || e}`);}
+  }catch(e){console.error("Diamond online unavailable",e);alert(`Falha ao abrir 1v1: ${e?.message || e}`);}
   return;
  }
  startGame(id,options);
