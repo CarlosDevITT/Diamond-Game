@@ -1,7 +1,7 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-40";
 import { snakeGame } from "./games/snake/index.js?v=20260920-32";
-import { tankGame } from "./games/tank/index.js?v=20260920-46";
+import { tankGame } from "./games/tank/index.js?v=20260920-47";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
@@ -36,6 +36,11 @@ const startGame=async(id,options={})=>{
  },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onLeave:async()=>{if(options.mode==="1v1"){activeMatchId=null;await match?.leaveRoom?.({forfeit:true});}},onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
 };
 const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await loadOnline();if(!profilePanel){const {ProfilePanel}=await import("./modules/profile-panel/index.js?v=20260920-39");profilePanel=new ProfilePanel({auth,onClose:async action=>{panel.show();if(action?.login){const user=await auth.current();if(!user){panel.hide();authScreen.show();}}}});}panel.hide();await profilePanel.show();}catch(e){console.error("Profile unavailable",e);}},onPlay:async(id,options={})=>{
+ if(options.mode==="casual"&&id==="tank"&&!options.difficulty){
+  const choice=window.Swal?await Swal.fire({title:"Jogar contra a máquina",text:"Escolha o nível da IA",input:"radio",inputOptions:{basic:"Básico — treino e aprendizado",hard:"Hard — rápido e agressivo",pro:"Pro — precisão e pressão máxima"},inputValue:"basic",confirmButtonText:"Iniciar partida",showCancelButton:true,cancelButtonText:"Cancelar",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6",inputValidator:value=>!value?"Escolha um nível.":undefined}):{isConfirmed:true,value:"basic"};
+  if(!choice.isConfirmed)return;
+  options={...options,difficulty:choice.value||"basic"};
+ }
  if(options.mode==="1v1"){
   try{
    await loadOnline();
