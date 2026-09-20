@@ -57,7 +57,7 @@ export class GamesPanel {
           </div>
         </article>`).join("")}
       </div>
-      <footer class="games-panel__footer"><div class="games-panel__footer-brand"><span>◆</span><div><strong>DIAMOND GAME</strong><small>PLAY • COMPETE • EVOLVE</small></div></div><div class="games-panel__footer-links"><span>ARCADE</span><span>1V1</span><span>ONLINE</span></div><p>© ${new Date().getFullYear()} Diamond Game. Plataforma em desenvolvimento.</p></footer>
+      <footer class="games-panel__footer"><div class="games-panel__footer-brand"><span>◆</span><div><strong>DIAMOND GAME</strong><small>PLAY • COMPETE • EVOLVE</small></div></div><nav class="games-panel__footer-links" aria-label="Links legais"><a href="./legal.html#termos">Termos de Uso</a><a href="./legal.html#privacidade">Privacidade</a></nav><p>© ${new Date().getFullYear()} Diamond Game • Desenvolvido por States Softwares. Plataforma em desenvolvimento.</p></footer>
     </div>`;
   }
 }
