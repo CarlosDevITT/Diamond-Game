@@ -11,10 +11,4 @@ export const account = new Account(client);
 export const db = new TablesDB(client);
 export { ID, Query, Permission, Role };
 
-export async function ensureSession(){
-  try{return await account.get();}
-  catch{
-    await account.createAnonymousSession();
-    return account.get();
-  }
-}
+export async function ensureSession(){ return account.get(); }
