@@ -1,7 +1,7 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js";
-import { snakeGame } from "./games/snake/index.js";
-import { tankGame } from "./games/tank/index.js";
+import { snakeGame } from "./games/snake/index.js?v=20260920-26";
+import { tankGame } from "./games/tank/index.js?v=20260920-26";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
@@ -15,16 +15,16 @@ let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null,activeMatch
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-20"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-20")
+  import("./core/match-client.js?v=20260920-26"),import("./services/auth.js?v=20260920-26"),import("./modules/auth-screen/index.js?v=20260920-26"),import("./modules/match-lobby/index.js?v=20260920-26")
  ]);
  auth=authService;match=new MatchClient({events});
  events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
  events.on("match:opponent-reconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.close();Swal.fire({title:"Oponente reconectado",text:"A partida pode continuar.",icon:"success",timer:1400,showConfirmButton:false,background:"#11162c",color:"#fff"});});
- events.on("match:opponent-left",async({reason}={})=>{if(!activeMatchId)return;activeMatchId=null;if(window.Swal)Swal.close();await registry.close(stage);if(window.Swal)await Swal.fire({title:"Oponente saiu da partida",text:reason==="disconnect"?"O outro jogador perdeu a conexão. A partida foi interrompida.":"O outro jogador saiu da partida. A partida foi interrompida.",icon:"info",confirmButtonText:"Voltar aos jogos",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"});match.leave();panel.show();});
+ events.on("match:opponent-left",async({reason}={})=>{if(!activeMatchId)return;try{await match?.awardOpponentForfeit?.(reason==="disconnect"?"abandonment":"forfeit")}catch(e){console.warn("Opponent settlement failed",e?.message||e)}activeMatchId=null;if(window.Swal)Swal.close();await registry.close(stage);if(window.Swal)await Swal.fire({title:"Oponente saiu da partida",text:reason==="disconnect"?"O outro jogador perdeu a conexão. A partida foi interrompida.":"O outro jogador saiu da partida. A partida foi interrompida.",icon:"info",confirmButtonText:"Voltar aos jogos",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"});match.leave();panel.show();});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame});
  events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
- events.on("match:state",async row=>{if(row?.status==="countdown"&&activeMatchId!==row.$id){activeMatchId=row.$id;const game=registry.list().find(g=>g.id===row.game_id);if(game)startGame(game.id,{mode:"1v1",roomCode:match.room?.code,matchId:row.$id,seed:row.seed,startedAt:row.started_at});return;}if(row?.status==="finished"&&activeMatchId===row.$id){const user=await auth.current();const mine=user?.$id;const title=!row.winner_user_id?"EMPATE":row.winner_user_id===mine?"VITÓRIA!":"DERROTA";const detail=`${row.score_a} × ${row.score_b} • ${row.result_reason==="survival"?"desempate por sobrevivência":row.result_reason==="score"?"maior pontuação":"empate total"}`;events.emit("game:match-finished",{title,detail,row});showMatchResult(title,detail);}});
+ events.on("match:state",async row=>{if(row?.status==="countdown"&&activeMatchId!==row.$id){activeMatchId=row.$id;const game=registry.list().find(g=>g.id===row.game_id);if(game)startGame(game.id,{mode:"1v1",roomCode:match.room?.code,matchId:row.$id,seed:row.seed,startedAt:row.started_at});return;}if(row?.status==="finished"&&activeMatchId===row.$id){const user=await auth.current();const mine=user?.$id;const title=!row.winner_user_id?"EMPATE":row.winner_user_id===mine?"VITÓRIA!":"DERROTA";const detail=`${row.score_a} × ${row.score_b} • ${row.result_reason==="survival"?"desempate por sobrevivência":row.result_reason==="score"?"maior pontuação":row.result_reason==="forfeit"?"desistência":row.result_reason==="abandonment"?"abandono por desconexão":"empate total"}`;events.emit("game:match-finished",{title,detail,row});showMatchResult(title,detail);}});
 };
 const showMatchResult=(title,detail)=>{let node=document.getElementById("match-result");if(!node){node=document.createElement("section");node.id="match-result";node.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(5,7,18,.94);display:grid;place-items:center;padding:24px";document.body.append(node);}node.innerHTML=`<div style="width:min(420px,100%);padding:32px;border-radius:24px;background:#11162c;text-align:center;color:white"><small>DIAMOND 1V1</small><h1 style="font-size:42px;margin:12px 0">${title}</h1><p>${detail}</p><button data-result-close style="margin-top:22px;padding:14px 24px;border:0;border-radius:14px;font-weight:800">VOLTAR AO LOBBY</button></div>`;node.hidden=false;node.querySelector("[data-result-close]").onclick=async()=>{node.hidden=true;activeMatchId=null;await registry.close(stage);lobby?.show(registry.list().find(g=>g.id===match.room?.gameId)||registry.list()[0]);};};
 const startGame=async(id,options={})=>{
@@ -33,7 +33,7 @@ const startGame=async(id,options={})=>{
  await registry.open(id,stage,()=>{
   events.emit("game:close",{id,...options});
   options.mode==="1v1"&&lobby?lobby.show(registry.list().find(g=>g.id===id)):panel.show();
- },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onLeave:async()=>{if(options.mode==="1v1"){activeMatchId=null;await match?.leaveRoom?.();}},onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
+ },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onLeave:async()=>{if(options.mode==="1v1"){activeMatchId=null;await match?.leaveRoom?.({forfeit:true});}},onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
 };
 const panel=new GamesPanel({games:registry.list(),onPlay:async(id,options={})=>{
  if(options.mode==="1v1"){
@@ -60,4 +60,4 @@ mascot?.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;mascot.
 mascot?.addEventListener("pointermove",e=>{if(!dragging)return;rotation+=(e.clientX-lastX)*1.5;lastX=e.clientX;mascot.style.transform=`rotateY(${rotation}deg)`;});
 ["pointerup","pointercancel"].forEach(type=>mascot?.addEventListener(type,()=>dragging=false));
 
-window.addEventListener("pagehide",()=>{if(activeMatchId)match?.leaveRoom?.().catch(()=>{});});
+window.addEventListener("pagehide",()=>{if(activeMatchId)match?.leaveRoom?.({forfeit:true}).catch(()=>{});});
