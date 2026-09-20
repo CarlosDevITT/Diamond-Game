@@ -46,8 +46,8 @@ async function ensureTable(id,def){
  let table=await getTable(id);
  if(table){log("SUCCESS",`Coleção '${id}' já existe`)}
  else{
-  await db.createTable({databaseId,tableId:id,name:def.name,permissions:[Role.users().toString()],rowSecurity:true});
-  log("CREATED",`Coleção '${id}' criada com leitura autenticada e sem escrita de cliente`);await waitReady(id);
+  await db.createTable({databaseId,tableId:id,name:def.name,permissions:[],rowSecurity:true});
+  log("CREATED",`Coleção '${id}' criada sem permissões de coleção; leitura é concedida por linha ao próprio usuário`);await waitReady(id);
  }
 }
 async function ensureColumns(id,def){
@@ -72,9 +72,8 @@ async function ensureIndexes(id,def){
 }
 async function verifyNoClientWrite(id){
  const table=await getTable(id),permissions=table?.$permissions||[];
- const forbidden=permissions.filter(p=>/^create\(|^update\(|^delete\(|^write\(/i.test(p));
- if(forbidden.length)throw new Error(`Permissões de escrita de cliente detectadas em '${id}': ${forbidden.join(", ")}`);
- log("SECURITY",`'${id}': escrita de cliente bloqueada; Server API Key permanece responsável pelas mutações`);
+ if(permissions.length)throw new Error(`Permissões no nível da coleção detectadas em '${id}': ${permissions.join(", ")}. Financeiro exige row-level read e zero permissões de coleção.`);
+ log("SECURITY",`'${id}': zero permissões de coleção; leitura por linha e escrita somente via Server API Key`);
 }
 async function main(){
  log("INFO",`Provisionando financeiro no database '${databaseId}'`);
