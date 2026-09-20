@@ -54,5 +54,6 @@ export class MatchClient {
  async copyInvite(){if(!this.#room)return false;const url=new URL(location.href);url.searchParams.set("room",this.#room.code);url.searchParams.set("game",this.#room.gameId);try{await navigator.clipboard.writeText(url.toString());return true}catch{return false}}
  async setReady(ready=true){const user=await this.#auth();if(!this.#room)return;const rows=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("room_id",[this.#room.id]),Query.equal("user_id",[user.$id]),Query.limit(1)]});const row=rows.rows?.[0];if(row)await db.updateRow({databaseId:APPWRITE.databaseId,tableId:"room_players",rowId:row.$id,data:{ready}});}
  leave(){const room=this.room;this.#unsubscribe?.();this.#matchUnsubscribe?.();this.#unsubscribe=null;this.#matchUnsubscribe=null;this.#room=null;this.#events.emit("match:left",room);}
+ realtimeAdapter(){return{send:payload=>this.#events.emit("match:game-send",payload),on:(name,fn)=>{if(name!=="message")return;return this.#events.on("match:game-message",fn)},off:()=>{}}}
  get room(){return this.#room?{...this.#room,players:this.#room.players.map(p=>({...p}))}:null;}
 }
