@@ -33,7 +33,7 @@ export class GamesPanel {
       <div class="games-hero"><span>ARCADE</span><h1>Escolha seu jogo</h1><p>Leia as regras e entre na partida.</p></div>
       <div class="games-grid">${this.#games.map(game => `
         <article class="game-card">
-          <div class="game-card__visual"><span>DISPONÍVEL</span><b>◈</b></div>
+          <div class="game-card__visual"><span>${game.status === "available" ? "DISPONÍVEL" : "EM BREVE"}</span><b>◈</b></div>
           <div class="game-card__body">
             <h2>${game.name}</h2><p>${game.description}</p>
             <div class="rules"><strong>Como jogar</strong><ul>${game.rules.map(rule => `<li>${rule}</li>`).join("")}</ul></div>
