@@ -187,3 +187,36 @@ html{scroll-behavior:smooth}.nav__menu{align-items:center}.nav__link{position:re
  .game-mode__copy em{display:none}
  .game-mode__arrow{grid-column:1/-1;align-self:end;font-size:.9rem;line-height:1}
 }
+
+
+/* Mobile arcade actions + Tank controls v50 */
+@media(max-width:519px){
+ .game-card__body{padding:1rem}
+ .game-modes{gap:.5rem;margin-top:.75rem}
+ .game-mode{min-height:64px!important;height:64px!important;grid-template-columns:30px minmax(0,1fr) 14px;grid-template-rows:1fr;padding:.45rem .55rem!important;gap:.45rem;border-radius:15px!important}
+ .game-mode__icon{grid-row:auto;width:30px;height:30px;border-radius:9px;font-size:.58rem}
+ .game-mode__copy{gap:0}
+ .game-mode__copy small{font-size:.39rem;line-height:1.05}
+ .game-mode__copy strong{font-size:.78rem;line-height:1.05}
+ .game-mode__copy em{display:none}
+ .game-mode__arrow{grid-column:auto;align-self:center;font-size:.78rem}
+}
+@media(max-width:767px) and (pointer:coarse){
+ .tank-screen{grid-template-rows:58px 1fr}
+ .tank-arena{grid-template-rows:minmax(0,68%) minmax(190px,32%)}
+ .tank-arena canvas{grid-row:1;object-fit:fill}
+ .tank-controls-layer{grid-row:2;grid-template-columns:1fr 1fr;min-height:190px;background:linear-gradient(180deg,#090c19,#0d1122)}
+ .tank-countdown{grid-row:1;inset:0 0 32% 0}
+ .tank-control-zone{overflow:visible;padding-top:20px}
+ .tank-control-zone>span{top:7px;font-size:.5rem;letter-spacing:.13em}
+ .tank-stick{width:min(25vw,102px);height:min(25vw,102px)}
+ .tank-stick i{width:42px;height:42px;margin:-21px 0 0 -21px}
+ .tank-fire{width:54px;height:54px;right:10px;bottom:8px;font-size:.68rem}
+}
+@media(max-width:390px) and (pointer:coarse){
+ .tank-arena{grid-template-rows:minmax(0,70%) minmax(174px,30%)}
+ .tank-controls-layer{min-height:174px}
+ .tank-stick{width:88px;height:88px}
+ .tank-stick i{width:38px;height:38px;margin:-19px 0 0 -19px}
+ .tank-fire{width:50px;height:50px}
+}
