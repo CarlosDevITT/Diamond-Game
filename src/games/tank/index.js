@@ -1,5 +1,5 @@
 import { TankControls } from "./tank-controls.js?v=20260920-32";
-import { TankEngine } from "./tank-engine.js?v=20260920-32";
+import { TankEngine } from "./tank-engine.js?v=20260920-47";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260920-32";
 
 export const TankGameManifest={
