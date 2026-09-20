@@ -53,7 +53,14 @@ export class GamesPanel {
           <div class="game-card__body">
             <div class="game-card__heading"><div><small>${game.id === "tank" ? "MULTIPLAYER" : "ARCADE"}</small><h2>${game.name}</h2></div><span class="game-card__mode">${game.id === "tank" ? "90s" : "CLÁSSICO"}</span></div><p>${game.description}</p>
             <details class="rules"><summary>Como jogar <span>+</span></summary><ul>${game.rules.map(rule => `<li>${rule}</li>`).join("")}</ul></details>
-            <div class="game-modes"><button type="button" data-play="${game.id}"><small>JOGAR</small><strong>Casual</strong></button><button type="button" data-versus="${game.id}"><small>DESAFIAR</small><strong>1v1</strong></button></div>
+            <div class="game-modes">
+              <button class="game-mode game-mode--casual" type="button" data-play="${game.id}">
+                <span class="game-mode__icon">▶</span><span class="game-mode__copy"><small>JOGAR</small><strong>Casual</strong><em>Entre direto • sem sala</em></span><span class="game-mode__arrow">→</span>
+              </button>
+              <button class="game-mode game-mode--versus" type="button" data-versus="${game.id}">
+                <span class="game-mode__icon">◆</span><span class="game-mode__copy"><small>DESAFIAR</small><strong>1v1</strong><em>Contra outro jogador</em></span><span class="game-mode__arrow">→</span>
+              </button>
+            </div>
           </div>
         </article>`).join("")}
       </div>
