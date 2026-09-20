@@ -158,3 +158,9 @@ html{scroll-behavior:smooth}.nav__menu{align-items:center}.nav__link{position:re
 @media(hover:hover){.experience__steps article:hover{transform:translateY(-5px);border-color:rgba(81,83,230,.25);box-shadow:0 18px 45px rgba(20,20,35,.08)}.home__button:hover,.platform__button:hover{transform:translateY(-2px);box-shadow:0 15px 36px rgba(17,18,23,.22)}.contact__card:hover{transform:translateY(-5px);box-shadow:0 30px 70px rgba(0,0,0,.18)}.contact__card a:hover{transform:translateX(5px)}.nav__link:hover{transform:translateY(-2px)}}
 @media(max-width:767px){.scroll-reveal{transform:translate3d(0,24px,0);filter:blur(3px)}.scroll-reveal.is-visible{transform:none;filter:none}.home__img{transition:transform .1s linear}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.scroll-reveal,.scroll-reveal.is-visible,.home__img,.about__mark{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}}
+
+
+/* Horizontal reveal v43 */
+.reveal-horizontal{opacity:0;transition:opacity .78s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1),filter .78s ease;filter:blur(4px);will-change:transform,opacity}.reveal-from-left{transform:translate3d(-72px,0,0) rotate(-1deg)}.reveal-from-right{transform:translate3d(72px,0,0) rotate(1deg)}.reveal-horizontal.horizontal-visible{opacity:1;transform:translate3d(0,0,0) rotate(0);filter:blur(0)}
+@media(max-width:767px){.reveal-from-left{transform:translate3d(-42px,0,0)}.reveal-from-right{transform:translate3d(42px,0,0)}}
+@media(prefers-reduced-motion:reduce){.reveal-horizontal,.reveal-horizontal.horizontal-visible{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}}
