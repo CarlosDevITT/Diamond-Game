@@ -3,7 +3,23 @@ import { snakeGame } from "./games/snake/index.js";
 
 export const DiamondGame = new GameRegistry();
 DiamondGame.register(snakeGame).mount({ stage: () => document.getElementById("game-stage") });
-document.querySelector("[data-game=\"snake\"]")?.addEventListener("click", () => DiamondGame.open("snake"));
+const gamesPanel = document.getElementById("games-panel");
+const openGamesButton = document.getElementById("open-games");
+const setGamesPanel = (open) => {
+  if (!gamesPanel) return;
+  gamesPanel.hidden = !open;
+  gamesPanel.setAttribute("aria-hidden", String(!open));
+  document.body.classList.toggle("games-panel-open", open);
+};
+openGamesButton?.addEventListener("click", () => setGamesPanel(true));
+gamesPanel?.querySelectorAll("[data-close-games]").forEach(button => button.addEventListener("click", () => setGamesPanel(false)));
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && gamesPanel && !gamesPanel.hidden) setGamesPanel(false);
+});
+document.querySelector("[data-game=\"snake\"]")?.addEventListener("click", () => {
+  setGamesPanel(false);
+  DiamondGame.open("snake");
+});
 
 const navMenu = document.getElementById("nav-menu");
 const navToggle = document.getElementById("nav-toggle");
