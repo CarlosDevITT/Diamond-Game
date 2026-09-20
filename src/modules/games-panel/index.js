@@ -42,8 +42,8 @@ export class GamesPanel {
     const banners={snake:"./assets/img/file_000000007070820eb1ddd35dbc1b4ab9.png",tank:"./assets/img/file_00000000e83c820e99a0cfbcc1451aa2.png"};
     return `<div class="games-screen__inner">
       <header class="module-header games-panel__header">
-        <button type="button" data-back aria-label="Voltar">←</button>
-        <div class="games-panel__brand"><small>DIAMOND GAME</small><strong>Games</strong></div>
+        <button class="games-panel__back" type="button" data-back aria-label="Voltar">←</button>
+        <div class="games-panel__brand"><span class="games-panel__mark">◆</span><div><small>DIAMOND GAME</small><strong>Arcade</strong></div></div>
         <button class="profile-trigger" type="button" data-profile aria-label="Abrir perfil"><span class="profile-trigger__avatar" data-profile-avatar>D</span><span class="profile-trigger__copy"><small>CONTA</small><strong data-profile-name>Perfil</strong></span><span class="profile-trigger__chevron">›</span></button>
       </header>
       <div class="games-hero"><div><span>DIAMOND ARCADE</span><h1>Escolha seu jogo</h1><p>Jogue casualmente ou desafie outro jogador no 1v1.</p></div><div class="games-hero__stats"><span><b>${this.#games.length}</b> jogos</span><span><b>2</b> modos</span></div></div>
@@ -57,6 +57,7 @@ export class GamesPanel {
           </div>
         </article>`).join("")}
       </div>
+      <footer class="games-panel__footer"><div class="games-panel__footer-brand"><span>◆</span><div><strong>DIAMOND GAME</strong><small>PLAY • COMPETE • EVOLVE</small></div></div><div class="games-panel__footer-links"><span>ARCADE</span><span>1V1</span><span>ONLINE</span></div><p>© ${new Date().getFullYear()} Diamond Game. Plataforma em desenvolvimento.</p></footer>
     </div>`;
   }
 }
