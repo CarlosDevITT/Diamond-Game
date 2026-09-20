@@ -12,10 +12,12 @@ export class MatchLobby {
     this.#node.querySelector("[data-join]").onclick=async()=>{const code=this.#node.querySelector("[data-code]").value.trim();if(!code)return;try{this.#showRoom(await this.#match.join(code,this.#game.id));}catch(e){alert(e.message||"Não foi possível entrar na sala.");}};
   }
   #showRoom(room){
-    this.#room=room;const count=room.players.length;
-    this.#node.innerHTML=`<div class="match-lobby__inner"><header class="module-header"><button data-back>←</button><div><small>SALA 1V1</small><strong>${this.#game.name}</strong></div></header><section class="room-card"><span>CÓDIGO DA SALA</span><h1>${room.code}</h1><p>${count===1?"Aguardando oponente…":"${room.players.every(p=>p.ready)?"Sala pronta para iniciar":"Aguardando jogadores ficarem prontos"}"}</p><button class="room-copy" data-copy>Copiar convite</button><div class="room-players"><div><b>JOGADOR A</b><small>PRONTO</small></div><div><b>JOGADOR B</b><small>${count===2?"PRONTO":"AGUARDANDO"}</small></div></div><button data-start ${count<2||!room.players.every(p=>p.ready)?"disabled":""}>Iniciar partida</button></section></div>`;
+    this.#room=room;
+    const count=room.players.length, allReady=count===2&&room.players.every(p=>p.ready);
+    const a=room.players.find(p=>p.slot==="A"), b=room.players.find(p=>p.slot==="B");
+    this.#node.innerHTML=`<div class="match-lobby__inner"><header class="module-header"><button data-back>←</button><div><small>SALA 1V1</small><strong>${this.#game.name}</strong></div></header><section class="room-card"><span>CÓDIGO DA SALA</span><h1>${room.code}</h1><p>${count<2?"Aguardando oponente…":allReady?"Sala pronta para iniciar":"Aguardando jogadores ficarem prontos"}</p><button class="room-copy" data-copy>Copiar convite</button><div class="room-players"><div><b>JOGADOR A</b><small>${a?.ready?"PRONTO":"AGUARDANDO"}</small></div><div><b>JOGADOR B</b><small>${b?.ready?"PRONTO":"AGUARDANDO"}</small></div></div><button data-start ${allReady?"":"disabled"}>Iniciar partida</button></section></div>`;
     this.#node.querySelector("[data-back]").onclick=()=>{this.#match.leave();this.#renderHome();};
     this.#node.querySelector("[data-copy]").onclick=async e=>{const ok=await this.#match.copyInvite();e.currentTarget.textContent=ok?"Convite copiado ✓":"Código: "+room.code;};
-    this.#node.querySelector("[data-start]").onclick=()=>{if(count<2||!room.players.every(p=>p.ready))return;this.hide();this.#onStart(this.#game.id,{mode:"1v1",roomCode:room.code});};
+    this.#node.querySelector("[data-start]").onclick=()=>{if(!allReady)return;this.hide();this.#onStart(this.#game.id,{mode:"1v1",roomCode:room.code});};
   }
 }
