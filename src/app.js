@@ -13,12 +13,13 @@ let match=null,auth=null,authScreen=null,lobby=null,pendingGame=null;
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-8"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-8")
+  import("./core/match-client.js?v=20260920-10"),import("./services/auth.js?v=20260920-8"),import("./modules/auth-screen/index.js?v=20260920-8"),import("./modules/match-lobby/index.js?v=20260920-10")
  ]);
  auth=authService;match=new MatchClient({events});
  authScreen=new AuthScreen({auth,onReady:user=>{events.emit("auth:ready",{user});if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame});
- events.on("match:update",room=>lobby?.refresh(room));
+ events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
+ events.on("match:state",row=>{if(row?.status==="countdown"){const game=registry.list().find(g=>g.id===row.game_id);if(game)startGame(game.id,{mode:"1v1",roomCode:match.room?.code,matchId:row.$id,seed:row.seed,startedAt:row.started_at});}});
 };
 const startGame=async(id,options={})=>{
  panel.hide();lobby?.hide();
