@@ -6,31 +6,38 @@
   <meta name="theme-color" content="#5153e6">
   <title>Diamond Game</title>
   <link rel="icon" href="./State.ico">
-  <link rel="stylesheet" href="./assets/styles.css?v=20260920-40">
+  <link rel="stylesheet" href="./assets/styles.css?v=20260920-41">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <div id="app">
     <header class="header">
       <nav class="nav container">
-        <a href="./" class="nav__logo">DIAMOND GAME</a>
+        <a href="#inicio" class="nav__logo">DIAMOND GAME</a>
         <button class="nav__toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☷</button>
         <div class="nav__menu" id="nav-menu">
           <button class="nav__close" id="nav-close" type="button" aria-label="Fechar menu">×</button>
-          <a href="#" class="nav__link">Home</a>
-          <a href="#como-funciona" class="nav__link">Como funciona</a>\n          <a href="#footer" class="nav__link">Contato</a>\n          <a href="./legal.html" class="nav__link">Termos e Privacidade</a>
+          <a href="#inicio" class="nav__link">Home</a>
+          <a href="#como-funciona" class="nav__link">Como funciona</a>
+          <a href="#sobre" class="nav__link">Sobre</a>
+          <a href="#contato" class="nav__link">Contato</a>
+          <a href="./legal.html" class="nav__link">Termos e Privacidade</a>
         </div>
       </nav>
     </header>
 
     <main>
-      <section class="home">
+      <section class="home" id="inicio">
         <div class="home__container container">
           <div class="home__data">
             <span class="home__subtitle">DIAMOND GAME</span>
             <h1 class="home__title">JOGUE.<br>SUPERE.</h1>
-            <p class="home__description">Uma plataforma de minigames feita para jogar no celular ou desktop.</p>
-            <button class="home__button" id="open-games" type="button">Jogar</button>
+            <p class="home__description">Entre, desafie seus limites e acompanhe sua evolução em uma experiência competitiva feita para celular e desktop.</p>
+            <div class="home__actions">
+              <button class="home__button" id="open-games" type="button">Começar a jogar <span>→</span></button>
+              <a href="#como-funciona" class="home__secondary">Como funciona</a>
+            </div>
+            <div class="home__trust"><span>⚡ Partidas rápidas</span><span>◈ Perfil e histórico</span><span>◎ Mobile first</span></div>
           </div>
           <div class="home__img">
             <img src="./assets/img/Diamound.png" alt="Mascote Diamond Game" draggable="false">
@@ -38,15 +45,51 @@
           </div>
         </div>
       </section>
+
+      <section class="experience" id="como-funciona">
+        <div class="experience__container container">
+          <div class="section-heading">
+            <span>COMO FUNCIONA</span>
+            <h2>Do acesso à partida<br>em poucos passos.</h2>
+            <p>O Diamond Game foi desenhado para reduzir atrito: você entra, escolhe como quer jogar e acompanha sua evolução em um só lugar.</p>
+          </div>
+          <div class="experience__steps">
+            <article><span>01</span><div><small>SEU PERFIL</small><h3>Entre na plataforma</h3><p>Acesse sua conta para manter identidade, partidas e progresso organizados.</p></div></article>
+            <article><span>02</span><div><small>COMPITA</small><h3>Escolha como jogar</h3><p>Entre em uma experiência solo ou desafie outro jogador em partidas 1v1.</p></div></article>
+            <article><span>03</span><div><small>EVOLUA</small><h3>Acompanhe os resultados</h3><p>Revise seu histórico, resultados e desempenho diretamente no perfil.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" id="sobre">
+        <div class="about__container container">
+          <div class="about__mark">◇</div>
+          <div class="about__content">
+            <span>SOBRE O DIAMOND</span>
+            <h2>Habilidade, desafio e diversão.</h2>
+            <p>Diamond Game é uma plataforma de jogos casuais e competitivos criada pela States Softwares. A proposta é oferecer partidas rápidas, interface simples e uma experiência consistente no celular e no desktop.</p>
+            <div class="about__values"><article><strong>1v1</strong><small>Competição entre jogadores</small></article><article><strong>100%</strong><small>Experiência digital</small></article><article><strong>PWA</strong><small>Feito para qualquer tela</small></article></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact" id="contato">
+        <div class="contact__container container">
+          <div><span>CONTATO</span><h2>Fale com a<br>Diamond Game.</h2><p>Dúvidas sobre a plataforma, suporte ou informações? Entre em contato com a equipe responsável pelo projeto.</p></div>
+          <div class="contact__card">
+            <small>DESENVOLVIDO POR</small><strong>States Softwares</strong>
+            <p>Produtos digitais, sistemas e experiências web.</p>
+            <a href="https://www.instagram.com/state_softwares?stkn=MTNscjd4eXM3bzN5bw==" target="_blank" rel="noopener noreferrer">Instagram <span>↗</span></a>
+            <a href="./legal.html">Termos e Privacidade <span>→</span></a>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer id="footer">
-      <div class="home__footer"><span>DIAMOND GAME</span><span>•</span><span>States Softwares</span></div>
-      <div class="footer__socials">
-        <a href="https://www.instagram.com/state_softwares?stkn=MTNscjd4eXM3bzN5bw==" aria-label="Instagram">Instagram</a>
-      </div>
+      <div class="footer__inner container"><div class="home__footer"><span>DIAMOND GAME</span><span>•</span><span>States Softwares</span></div><span class="footer__copy">© 2026 Diamond Game</span></div>
     </footer>
   </div>
-  <script type="module" src="./src/app.js?v=20260920-40"></script>
+  <script type="module" src="./src/app.js?v=20260920-41"></script>
 </body>
 </html>
