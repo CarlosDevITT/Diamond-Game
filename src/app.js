@@ -57,10 +57,7 @@ const setMenu=open=>{menu?.classList.toggle("is-open",open);toggle?.setAttribute
 toggle?.addEventListener("click",()=>setMenu(true));close?.addEventListener("click",()=>setMenu(false));
 menu?.querySelectorAll(".nav__link").forEach(link=>link.addEventListener("click",()=>setMenu(false)));
 
-const mascot=document.querySelector(".home__img img");let dragging=false,lastX=0,rotation=0;
-mascot?.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;mascot.setPointerCapture?.(e.pointerId)});
-mascot?.addEventListener("pointermove",e=>{if(!dragging)return;rotation+=(e.clientX-lastX)*1.5;lastX=e.clientX;mascot.style.transform=`rotateY(${rotation}deg)`;});
-["pointerup","pointercancel"].forEach(type=>mascot?.addEventListener(type,()=>dragging=false));
+
 
 window.addEventListener("pagehide",()=>{if(activeMatchId)match?.leaveRoom?.({forfeit:true}).catch(()=>{});});
 
@@ -79,8 +76,7 @@ if(!reduceMotion&&"IntersectionObserver" in window){
 if(!reduceMotion){
  let ticking=false;
  const updateScrollMotion=()=>{
-  const y=window.scrollY,hero=document.querySelector(".home__img"),mark=document.querySelector(".about__mark");
-  if(hero&&y<window.innerHeight*1.2)hero.style.setProperty("--scroll-y",`${Math.min(y*.08,34)}px`);
+  const mark=document.querySelector(".about__mark");
   if(mark){const rect=mark.getBoundingClientRect(),offset=(window.innerHeight/2-(rect.top+rect.height/2))*.035;mark.style.setProperty("--mark-y",`${Math.max(-20,Math.min(20,offset))}px`);}
   ticking=false;
  };
