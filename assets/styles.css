@@ -119,3 +119,10 @@ footer{padding:1.5rem;background:#0a0b12;color:#fff;text-align:center}.home__foo
 @media(max-width:480px){.profile-trigger__copy{display:none!important}.profile-trigger__chevron{display:none}.profile-trigger{padding:.25rem!important;border:0!important;background:transparent!important}.profile-identity{align-items:flex-start}.profile-online{position:absolute;right:1.6rem}.profile-stats{gap:.45rem}.profile-stats article{padding:.8rem .35rem}.profile-stats strong{font-size:1.2rem}}
 
 .profile-progress{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1rem}.profile-progress>div{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 1rem;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:#0b0d17}.profile-progress span{font-size:.54rem;letter-spacing:.1em;color:#777b93}.profile-progress strong{font-size:.9rem;color:#52ffd2}.profile-logout:disabled{opacity:.45;cursor:wait}@media(max-width:380px){.profile-progress{grid-template-columns:1fr}.profile-identity{padding:1rem}.profile-avatar{width:58px;height:58px;border-radius:18px}.profile-identity h1{font-size:1.3rem}}
+
+
+/* Games panel desktop banner fit v37 */
+@media(min-width:768px){
+ .game-card__visual--banner{height:auto;aspect-ratio:16/9;background:#080914}
+ .game-card__visual--banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;background:#080914}
+}
