@@ -8,6 +8,7 @@ import { MatchLobby } from "./modules/match-lobby/index.js";
 const events = new EventBus();
 const registry = new GameRegistry();
 const match = new MatchClient({ events });
+events.on("match:update", room => lobby?.refresh(room));
 registry.register(snakeGame);
 
 const stage = document.createElement("div");
