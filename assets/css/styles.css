@@ -337,3 +337,22 @@ img {
   0% { --diamond-float: 0px; }
   100% { --diamond-float: 15px; }
 }
+
+
+@media (max-width: 767px) {
+  .home__img {
+    perspective: 900px;
+    overflow: visible;
+  }
+
+  .home__img img {
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform .08s linear;
+  }
+
+  .home__img img.is-dragging {
+    transition: none;
+  }
+}
