@@ -66,9 +66,7 @@
                         <p class="home__description">
                             Jogue com seus amigos 1 x 1 <br> Aposte e ganhe!.
                         </p>
-                        <a href="#games" class="home__button">
-                            Jogar
-                        </a>
+                        <button type="button" class="home__button" id="open-games">Jogar</button>
                     </div>
 
                     <div class="home__img">
@@ -79,17 +77,36 @@
 
               
             </section>
-        <section class="games" id="games">
-  <div class="container">
-    <div class="games__head">
-      <span class="games__eyebrow">ARCADE</span>
-      <h2>Escolha seu jogo</h2>
+        <section class="games-panel" id="games-panel" hidden aria-hidden="true">
+  <div class="games-panel__backdrop" data-close-games></div>
+  <div class="games-panel__sheet" role="dialog" aria-modal="true" aria-labelledby="games-title">
+    <header class="games-panel__header">
+      <div><span>DIAMOND GAME</span><h2 id="games-title">Central de Games</h2></div>
+      <button class="games-panel__close" type="button" data-close-games aria-label="Fechar painel">×</button>
+    </header>
+    <div class="games-panel__content">
+      <section class="games-panel__intro">
+        <span class="games-panel__eyebrow">ARCADE</span>
+        <h3>Escolha um game</h3>
+        <p>Jogos rápidos, responsivos e feitos para desktop e celular.</p>
+      </section>
+      <article class="game-entry">
+        <div class="game-entry__top">
+          <span class="game-entry__icon"><i class='bx bx-joystick'></i></span>
+          <div><span class="game-entry__status">DISPONÍVEL</span><h3>Snake</h3><p>Clássico arcade com níveis e recorde local.</p></div>
+        </div>
+        <div class="game-rules">
+          <strong>Como jogar</strong>
+          <ul>
+            <li>Controle a cobra pelas setas, WASD ou gesto de deslizar.</li>
+            <li>Capture os pontos para aumentar sua pontuação e tamanho.</li>
+            <li>A cada 50 pontos o nível sobe e a velocidade aumenta.</li>
+            <li>Não encoste nas bordas nem no próprio corpo.</li>
+          </ul>
+        </div>
+        <button class="game-entry__play" type="button" data-game="snake"><i class='bx bx-play'></i> Jogar Snake</button>
+      </article>
     </div>
-    <button class="game-card" type="button" data-game="snake">
-      <span class="game-card__icon"><i class='bx bx-joystick'></i></span>
-      <span><strong>Snake</strong><small>Clássico reinventado</small></span>
-      <i class='bx bx-chevron-right'></i>
-    </button>
   </div>
 </section>
 <section id="game-stage" class="game-stage" hidden></section>
