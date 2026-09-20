@@ -356,3 +356,19 @@ img {
     transition: none;
   }
 }
+
+
+/* Mobile Diamond drag rotation override */
+@media (max-width: 767px) {
+  .home__img img {
+    animation: none !important;
+    transform: translateY(0) rotateY(0deg);
+    transform-origin: center center;
+    transform-style: preserve-3d;
+    touch-action: pan-y;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    will-change: transform;
+  }
+}
