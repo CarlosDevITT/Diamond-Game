@@ -36,7 +36,7 @@ const panel=new GamesPanel({games:registry.list(),onPlay:async(id,options={})=>{
    const user=await auth.current();
    if(!user){panel.hide();authScreen.show();return;}
    panel.hide();lobby.show(registry.list().find(g=>g.id===id));
-  }catch(e){console.error("Diamond online unavailable",e);alert("O modo 1v1 está temporariamente indisponível. O modo Casual continua funcionando.");}
+  }catch(e){console.error("Diamond online unavailable",e); panel.hide(); alert(`Falha ao abrir 1v1: ${e?.message || e}`);}
   return;
  }
  startGame(id,options);
