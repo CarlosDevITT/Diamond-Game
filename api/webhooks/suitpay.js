@@ -4,6 +4,7 @@
  * Wire this handler to the project's server/serverless runtime before enabling finance.
  */
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { processDeposit } from "../../src/services/ledgerService.js";
 
 const ACCEPTED_STATUS=new Set(["PAID_OUT","APPROVED"]);
 
@@ -32,12 +33,15 @@ export default async function handler(req,res){
  const referenceId=payload?.id||payload?.transactionId||payload?.reference_id;
  if(!referenceId)return res.status(400).json({error:"Missing transaction reference"});
 
- // TODO server-only Appwrite transaction:
- // 1. Query ledger_transactions by unique reference_id.
- // 2. If it exists, return 200 (idempotent replay).
- // 3. Validate provider amount/user metadata against the pending operation.
- // 4. Create immutable ledger entry.
- // 5. Atomically update wallets.available_balance / locked_balance.
- // Do not enable financial credits until this transaction boundary is implemented.
- return res.status(501).json({received:true,error:"Ledger settlement not enabled yet"});
+ const userId=payload?.userId||payload?.user_id||payload?.metadata?.userId;
+ const amountCents=Number(payload?.amountCents??payload?.amount_cents);
+ if(!userId||!Number.isSafeInteger(amountCents)||amountCents<=0)return res.status(400).json({error:"Invalid settlement payload"});
+
+ try{
+  const result=await processDeposit({userId,amountCents,referenceId:String(referenceId)});
+  return res.status(200).json({received:true,processed:!result.duplicate,duplicate:!!result.duplicate});
+ }catch(error){
+  console.error("SuitPay deposit settlement failed",error);
+  return res.status(500).json({received:true,error:"Settlement failed"});
+ }
 }
