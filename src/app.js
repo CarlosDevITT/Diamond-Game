@@ -1,38 +1,20 @@
 import { GameRegistry } from "./core/game-registry.js";
 
-const registry = new GameRegistry();
+export const DiamondGame = new GameRegistry();
 
-function renderHome() {
-  const app = document.querySelector("#app");
-  const games = registry.list();
+const navMenu = document.getElementById("nav-menu");
+const navToggle = document.getElementById("nav-toggle");
+const navClose = document.getElementById("nav-close");
 
-  app.innerHTML = `
-    <section class="shell">
-      <div class="hero">
-        <span class="badge">DIAMOND GAME • MODULAR ENGINE</span>
-        <div class="eyebrow">Web Gaming Platform</div>
-        <h1>Diamond Game</h1>
-        <p>Uma base nova para minijogos independentes em JavaScript Modules. Cada jogo entra como módulo, sem acoplar a plataforma inteira.</p>
-        <div class="library">
-          ${games.length ? games.map(game => `<button data-game="${game.id}">${game.name}</button>`).join("") : `
-            <div class="empty">
-              <strong>Biblioteca limpa.</strong>
-              <span>Os jogos antigos foram retirados. O próximo game entra pela nova API modular.</span>
-            </div>`}
-        </div>
-      </div>
-    </section>
-    <section id="game-stage" class="game-stage" hidden></section>
-  `;
-
-  app.querySelectorAll("[data-game]").forEach(button => {
-    button.addEventListener("click", () => registry.open(button.dataset.game));
-  });
-}
-
-registry.mount({
-  stage: () => document.querySelector("#game-stage"),
-  onClose: renderHome
+navToggle?.addEventListener("click", () => navMenu?.classList.add("show-menu"));
+navClose?.addEventListener("click", () => navMenu?.classList.remove("show-menu"));
+document.querySelectorAll(".nav__link").forEach(link => {
+  link.addEventListener("click", () => navMenu?.classList.remove("show-menu"));
 });
 
-renderHome();
+if (window.ScrollReveal) {
+  const sr = window.ScrollReveal({ distance: "90px", duration: 1800 });
+  sr.reveal(".home__data", { origin: "top", delay: 200 });
+  sr.reveal(".home__img", { origin: "bottom", delay: 350 });
+  sr.reveal(".home__footer", { origin: "bottom", delay: 500 });
+}
