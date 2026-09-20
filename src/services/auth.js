@@ -8,6 +8,10 @@ export class AuthService {
  }
  async signIn({email,password}){await account.createEmailPasswordSession({email,password});const user=await account.get();await this.ensureProfile(user,user.name||email.split("@")[0]);return user}
  async signOut(){await account.deleteSession({sessionId:"current"})}
+ async profile(userId){
+  if(!userId)return null;
+  try{const found=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"profiles",queries:[Query.equal("user_id",[userId]),Query.limit(1)]});return found.rows?.[0]||null}catch{return null}
+ }
  async ensureProfile(user,name){
   const found=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"profiles",queries:[Query.equal("user_id",[user.$id]),Query.limit(1)]});
   if(found.rows?.length)return found.rows[0];
