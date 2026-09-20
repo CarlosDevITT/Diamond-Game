@@ -32,7 +32,25 @@ if (diamond) {
 
   diamond.addEventListener("pointermove", rotateDiamond);
   diamond.addEventListener("pointerleave", () => diamond.style.setProperty("--diamond-rotate", "0deg"));
-  diamond.addEventListener("touchmove", rotateDiamond, { passive: true });
+  let touchStartX = 0;
+  let touchRotation = 0;
+
+  diamond.addEventListener("touchstart", (event) => {
+    touchStartX = event.touches[0].clientX;
+    diamond.classList.add("is-dragging");
+  }, { passive: true });
+
+  diamond.addEventListener("touchmove", (event) => {
+    const currentX = event.touches[0].clientX;
+    const deltaX = currentX - touchStartX;
+    touchRotation += deltaX * 1.25;
+    touchStartX = currentX;
+    diamond.style.setProperty("--diamond-rotate", `${touchRotation}deg`);
+  }, { passive: true });
+
+  diamond.addEventListener("touchend", () => {
+    diamond.classList.remove("is-dragging");
+  }, { passive: true });
 }
 
 if (window.ScrollReveal) {
