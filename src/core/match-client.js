@@ -32,7 +32,7 @@ export class MatchClient {
    }catch(e){throw new Error("Não foi possível registrar o Jogador B: "+(e?.message||e));}
    players=await this.#players(room.$id);
   }
-  this.#room=this.#map(room,players);this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
+  const freshRoom=await db.getRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:room.$id});this.#room=this.#map(freshRoom,players);this.#watch(room.$id);this.#events.emit("match:update",this.room);return this.room;
  }
  async startMatch(){
   const user=await this.#auth();if(!this.#room)throw new Error("Sala indisponível.");if(user.$id!==this.#room.hostUserId)throw new Error("Somente o Jogador A inicia a partida.");
@@ -47,7 +47,7 @@ export class MatchClient {
  #watchMatch(matchId){this.#matchUnsubscribe?.();this.#matchUnsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.matches.rows.${matchId}`],response=>{const row=response?.payload||response;this.#events.emit("match:state",row);});}
  #watch(roomId){
   this.#unsubscribe?.();
-  const refresh=async()=>{if(!this.#room||this.#room.id!==roomId)return;const players=await this.#players(roomId);this.#room={...this.#room,players:players.map(x=>({slot:x.slot,ready:x.ready,userId:x.user_id}))};this.#events.emit("match:update",this.room);};
+  const refresh=async()=>{if(!this.#room||this.#room.id!==roomId)return;try{const [room,players]=await Promise.all([db.getRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:roomId}),this.#players(roomId)]);this.#room=this.#map(room,players);this.#events.emit("match:update",this.room);if(room.status==="countdown"||room.status==="playing"){const match=await this.watchCurrentMatch();if(match)this.#events.emit("match:state",match);}}catch(e){console.warn("Lobby refresh failed",e?.message||e)}};
   this.#unsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.room_players.rows`],refresh);
   setTimeout(refresh,250);clearInterval(this.#roomPoll);this.#roomPoll=setInterval(refresh,1200);
  }
