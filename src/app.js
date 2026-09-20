@@ -1,5 +1,5 @@
 import { GameRegistry } from "./core/game-registry.js";
-import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-36";
+import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-39";
 import { snakeGame } from "./games/snake/index.js?v=20260920-32";
 import { tankGame } from "./games/tank/index.js?v=20260920-32";
 import { EventBus } from "./core/event-bus.js";
@@ -15,7 +15,7 @@ let match=null,auth=null,authScreen=null,lobby=null,profilePanel=null,pendingGam
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-32"),import("./services/auth.js?v=20260920-36"),import("./modules/auth-screen/index.js?v=20260920-32"),import("./modules/match-lobby/index.js?v=20260920-37")
+  import("./core/match-client.js?v=20260920-32"),import("./services/auth.js?v=20260920-36"),import("./modules/auth-screen/index.js?v=20260920-32"),import("./modules/match-lobby/index.js?v=20260920-39")
  ]);
  auth=authService;match=new MatchClient({events});
  events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
@@ -35,7 +35,7 @@ const startGame=async(id,options={})=>{
   options.mode==="1v1"&&lobby?lobby.show(registry.list().find(g=>g.id===id)):panel.show();
  },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onLeave:async()=>{if(options.mode==="1v1"){activeMatchId=null;await match?.leaveRoom?.({forfeit:true});}},onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
 };
-const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await loadOnline();if(!profilePanel){const {ProfilePanel}=await import("./modules/profile-panel/index.js?v=20260920-36");profilePanel=new ProfilePanel({auth,onClose:async action=>{panel.show();if(action?.login){const user=await auth.current();if(!user){panel.hide();authScreen.show();}}}});}panel.hide();await profilePanel.show();}catch(e){console.error("Profile unavailable",e);}},onPlay:async(id,options={})=>{
+const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await loadOnline();if(!profilePanel){const {ProfilePanel}=await import("./modules/profile-panel/index.js?v=20260920-39");profilePanel=new ProfilePanel({auth,onClose:async action=>{panel.show();if(action?.login){const user=await auth.current();if(!user){panel.hide();authScreen.show();}}}});}panel.hide();await profilePanel.show();}catch(e){console.error("Profile unavailable",e);}},onPlay:async(id,options={})=>{
  if(options.mode==="1v1"){
   try{
    await loadOnline();
