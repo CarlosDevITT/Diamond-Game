@@ -29,7 +29,7 @@ export class GameRegistry {
 
     await this.close();
 
-    const stage = this.#stage?.();
+    const stage = typeof this.#stage === "function" ? this.#stage() : this.#stage;
     if (!stage) throw new Error("Game stage não montado.");
 
     stage.hidden = false;
@@ -47,7 +47,7 @@ export class GameRegistry {
     if (typeof this.#active?.destroy === "function") await this.#active.destroy();
     this.#active = null;
 
-    const stage = this.#stage?.();
+    const stage = typeof this.#stage === "function" ? this.#stage() : this.#stage;
     if (stage) {
       stage.replaceChildren();
       stage.hidden = true;
