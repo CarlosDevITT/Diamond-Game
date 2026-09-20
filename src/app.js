@@ -1,5 +1,5 @@
 import { GameRegistry } from "./core/game-registry.js";
-import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-39";
+import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-40";
 import { snakeGame } from "./games/snake/index.js?v=20260920-32";
 import { tankGame } from "./games/tank/index.js?v=20260920-32";
 import { EventBus } from "./core/event-bus.js";
@@ -48,7 +48,9 @@ const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await 
  startGame(id,options);
 }});
 
-document.getElementById("open-games")?.addEventListener("click",async()=>{panel.show();try{await loadOnline();const user=await auth.current();const profile=user?await auth.profile(user.$id):null;panel.setProfile(profile||user);}catch{panel.setProfile(null)}});
+const openGamesPanel=async()=>{panel.show();try{await loadOnline();const user=await auth.current();const profile=user?await auth.profile(user.$id):null;panel.setProfile(profile||user);}catch{panel.setProfile(null)}};
+document.getElementById("open-games")?.addEventListener("click",openGamesPanel);
+document.querySelectorAll("[data-open-games]").forEach(button=>button.addEventListener("click",openGamesPanel));
 
 const menu=document.getElementById("nav-menu"),toggle=document.getElementById("nav-toggle"),close=document.getElementById("nav-close");
 const setMenu=open=>{menu?.classList.toggle("is-open",open);toggle?.setAttribute("aria-expanded",String(open));};
