@@ -1,6 +1,6 @@
-import { TankControls } from "./tank-controls.js";
-import { TankEngine } from "./tank-engine.js";
-import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js";
+import { TankControls } from "./tank-controls.js?v=20260920-26";
+import { TankEngine } from "./tank-engine.js?v=20260920-26";
+import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260920-26";
 
 export const TankGameManifest={
  id:"tank",name:"Tank Battle 1v1",description:"Confronto direto de tanques em tempo real. Destrua o oponente ou cause mais danos antes do tempo acabar!",version:"1.0.0",mode:"multiplayer_1v1",
