@@ -13,7 +13,8 @@ export class GamesPanel {
       this.#node.innerHTML = this.#render();
       document.body.append(this.#node);
       this.#node.querySelector("[data-back]").addEventListener("click", () => this.hide());
-      this.#node.querySelectorAll("[data-play]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.play)));
+      this.#node.querySelectorAll("[data-play]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.play, { mode: "casual" })));
+      this.#node.querySelectorAll("[data-versus]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.versus, { mode: "1v1" })));
     }
     this.#node.hidden = false;
     document.body.classList.add("module-open");
@@ -37,7 +38,7 @@ export class GamesPanel {
           <div class="game-card__body">
             <h2>${game.name}</h2><p>${game.description}</p>
             <div class="rules"><strong>Como jogar</strong><ul>${game.rules.map(rule => `<li>${rule}</li>`).join("")}</ul></div>
-            <button type="button" data-play="${game.id}">Jogar ${game.name}</button>
+            <div class="game-modes"><button type="button" data-play="${game.id}">Casual</button><button type="button" data-versus="${game.id}">1v1</button></div>
           </div>
         </article>`).join("")}
       </div>
