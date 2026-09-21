@@ -4,17 +4,19 @@
   "short_name":"Diamond",
   "description":"Plataforma de jogos casuais e competitivos 1v1.",
   "lang":"pt-BR",
-  "start_url":"./",
+  "start_url":"./?source=pwa",
   "scope":"./",
   "display":"standalone",
-  "display_override":["window-controls-overlay","standalone","minimal-ui"],
+  "display_override":["standalone","minimal-ui"],
   "orientation":"any",
   "background_color":"#080a14",
   "theme_color":"#5153e6",
   "categories":["games","entertainment"],
   "icons":[
-    {"src":"./assets/img/Diamound.png","sizes":"any","type":"image/png","purpose":"any"},
-    {"src":"./assets/img/Diamound.png","sizes":"any","type":"image/png","purpose":"maskable"}
+    {"src":"./assets/img/Diamound.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"./assets/img/Diamound.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
   ],
-  "shortcuts":[{"name":"Jogar","short_name":"Jogar","description":"Abrir o Diamond Game","url":"./#inicio","icons":[{"src":"./assets/img/Diamound.png","sizes":"any","type":"image/png"}]}]
+  "shortcuts":[
+    {"name":"Jogar","short_name":"Jogar","description":"Abrir o Arcade","url":"./?source=pwa#inicio","icons":[{"src":"./assets/img/Diamound.png","sizes":"512x512","type":"image/png"}]}
+  ]
 }
