@@ -1,7 +1,7 @@
 import { account } from "./appwrite.js";
 import { io } from "https://cdn.jsdelivr.net/npm/socket.io-client@4.8.1/+esm";
 
-const configuredUrl=()=>globalThis.DIAMOND_GAME_SERVER_URL||localStorage.getItem("diamond:game-server-url")||(location.hostname==="localhost"?"http://localhost:3000":"");
+const configuredUrl=()=>globalThis.DIAMOND_GAME_SERVER_URL||localStorage.getItem("diamond:game-server-url")||(location.hostname==="localhost"?"http://localhost:3000":"https://diamond-game-server-v2-production.up.railway.app");
 
 export class GameServerClient{
  #socket=null;#handlers=new Map();#seq=0;
