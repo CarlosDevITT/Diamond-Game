@@ -10,5 +10,14 @@ export class AuthScreen{
  this.#node.querySelector(".auth-switch").onclick=()=>this.#render(signup?"login":"signup");
  this.#node.querySelector("form").onsubmit=async e=>{e.preventDefault();const b=e.currentTarget.querySelector("button"),err=this.#node.querySelector(".auth-error"),data=Object.fromEntries(new FormData(e.currentTarget));b.disabled=true;err.textContent="";try{const user=signup?await this.#auth.signUp(data):await this.#auth.signIn(data);this.hide();this.#onReady(user)}catch(x){err.textContent=this.#message(x)}finally{b.disabled=false}};
  }
- #message(error){const msg=String(error?.message||"");if(/network|fetch/i.test(msg))return "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.";if(/already|exists/i.test(msg))return "Este e-mail já possui uma conta.";if(/credentials|password|email/i.test(msg))return "E-mail ou senha inválidos.";return msg||"Não foi possível autenticar.";}
+ #message(error){
+  const msg=String(error?.message||"").trim();
+  const type=String(error?.type||"").trim();
+  const code=error?.code??error?.response?.code??"";
+  console.error("[Diamond Auth]",{message:msg,type,code,error});
+  if(/already|exists/i.test(msg)||/user_already_exists/i.test(type))return "Este e-mail já possui uma conta.";
+  if(/credentials|invalid.*password|user_invalid_credentials/i.test(msg+" "+type))return "E-mail ou senha inválidos.";
+  const detail=[code&&`HTTP ${code}`,type,msg].filter(Boolean).join(" • ");
+  return detail?`Falha na autenticação: ${detail}`:"Falha na autenticação: erro desconhecido do Appwrite.";
+ }
 }
