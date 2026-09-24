@@ -1,7 +1,7 @@
 import { Client, Account, TablesDB, ID, Query, Permission, Role } from "https://cdn.jsdelivr.net/npm/appwrite@21.4.0/+esm";
 
 export const APPWRITE=Object.freeze({
- endpoint:"https://nyc.cloud.appwrite.io/v1",
+ endpoint:"https://cloud.appwrite.io/v1",
  projectId:"diamond-game",
  databaseId:"diamond"
 });
