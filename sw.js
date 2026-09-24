@@ -1,6 +1,6 @@
-const CACHE="diamond-pwa-v55";
+const CACHE="diamond-pwa-v56";
 const OFFLINE="./offline.html";
-const SHELL=["./","./index.html","./offline.html","./404.html","./legal.html","./manifest.webmanifest","./assets/styles.css?v=20260920-54","./src/app.js?v=20260920-54","./assets/img/Diamound.png"];
+const SHELL=["./","./index.html","./offline.html","./404.html","./legal.html","./manifest.webmanifest","./assets/styles.css?v=20260920-54","./src/app.js?v=20260924-56","./assets/img/Diamound.png"];
 self.addEventListener("install",event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.allSettled(SHELL.map(url=>cache.add(url)));await self.skipWaiting()})())});
 self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)));await self.clients.claim()})())});
 self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;const req=event.request,url=new URL(req.url);if(req.mode==="navigate"){event.respondWith((async()=>{try{const res=await fetch(req);const cache=await caches.open(CACHE);if(res.ok)cache.put(req,res.clone());return res}catch{return await caches.match(req)||await caches.match(OFFLINE)||Response.error()}})());return;}if(url.origin!==self.location.origin)return;event.respondWith((async()=>{const cached=await caches.match(req);try{const res=await fetch(req);if(res.ok){const cache=await caches.open(CACHE);cache.put(req,res.clone())}return res}catch{return cached||Response.error()}})())});
