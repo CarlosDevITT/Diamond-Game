@@ -48,12 +48,13 @@ export class GamesPanel {
         <div class="games-panel__brand"><span class="games-panel__mark">◆</span><div><small>DIAMOND GAME</small><strong>Arcade</strong></div></div>
         <button class="profile-trigger" type="button" data-profile aria-label="Abrir perfil"><span class="profile-trigger__avatar" data-profile-avatar>D</span><span class="profile-trigger__copy"><small>CONTA</small><strong data-profile-name>Perfil</strong></span><span class="profile-trigger__chevron">›</span></button>
       </header>
-      <div class="games-hero"><div><span>DIAMOND ARCADE</span><h1>Escolha seu jogo</h1><p>Jogue casualmente ou desafie outro jogador no 1v1.</p></div><div class="games-hero__stats"><span><b>${this.#games.length}</b> jogos</span><span><b>2</b> modos</span></div></div>
+      <div class="games-hero"><div><span>CENTRAL DIAMOND</span><h1>Sua próxima<br>partida começa aqui.</h1><p>Experiências rápidas, progressão durante a partida e confrontos competitivos em uma central feita para jogar.</p></div><div class="games-hero__stats"><span><b>${this.#games.length}</b> experiências</span><span><b>ONLINE</b> 1v1 ativo</span></div></div>
+      <div class="arcade-status"><span><i></i> SERVIDORES DISPONÍVEIS</span><span>CASUAL • COMPETITIVO • PROGRESSÃO</span></div>
       <div class="games-grid">${this.#games.map(game => `
-        <article class="game-card" data-game="${game.id}">
+        <article class="game-card game-card--${game.id}" data-game="${game.id}">
           <div class="game-card__visual ${banners[game.id] ? "game-card__visual--banner" : ""}">${banners[game.id] ? `<img src="${banners[game.id]}" alt="Banner ${game.name}" loading="eager" draggable="false">` : `<b>◈</b>`}<span>${game.status === "available" ? "DISPONÍVEL" : "EM BREVE"}</span></div>
           <div class="game-card__body">
-            <div class="game-card__heading"><div><small>${game.id === "tank" ? "MULTIPLAYER" : "ARCADE"}</small><h2>${game.name}</h2></div><span class="game-card__mode">${game.id === "tank" ? "2–10 MIN" : "CLÁSSICO"}</span></div><p>${game.description}</p>
+            <div class="game-card__heading"><div><small>${game.id === "tank" ? "ARENA TÁTICA" : "NEON ARCADE"}</small><h2>${game.name}</h2></div><span class="game-card__mode">${game.id === "tank" ? "2–10 MIN" : "FLUID MODE"}</span></div><p>${game.description}</p>
             <details class="rules"><summary>Como jogar <span>+</span></summary><ul>${game.rules.map(rule => `<li>${rule}</li>`).join("")}</ul></details>
             <div class="game-modes">
               <button class="game-mode game-mode--casual" type="button" data-play="${game.id}">
