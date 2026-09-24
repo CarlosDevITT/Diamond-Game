@@ -12,14 +12,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Diamond">
-  <link rel="stylesheet" href="./assets/styles.css?v=20260924-62">
+  <link rel="stylesheet" href="./assets/styles.css?v=20260924-63">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <div id="app">
     <header class="header">
+      <div class="scroll-progress" aria-hidden="true"><span></span></div>
       <nav class="nav container">
-        <a href="#inicio" class="nav__logo">DIAMOND GAME</a>
+        <a href="#inicio" class="nav__logo"><span>◆</span> DIAMOND GAME</a>
         <button class="nav__toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☷</button>
         <div class="nav__menu" id="nav-menu">
           <button class="nav__close" id="nav-close" type="button" aria-label="Fechar menu">×</button>
@@ -41,7 +42,9 @@
             <p class="home__description">Entre, desafie seus limites e acompanhe sua evolução em uma experiência competitiva feita para celular e desktop.</p>
             <div class="home__actions">
               <button class="home__button" id="open-games" type="button">Começar a jogar <span>→</span></button>
+              <a class="home__secondary" href="#como-funciona">Conhecer a plataforma <span>↓</span></a>
             </div>
+            <div class="home__trust" aria-label="Destaques da plataforma"><span>◆ 2 jogos</span><span>⚡ Casual e 1v1</span><span>↗ Instale como app</span></div>
           </div>
           <div class="home__img">
             <img src="./assets/img/Diamound.png" alt="Mascote Diamond Game" draggable="false">
@@ -94,6 +97,6 @@
       <div class="footer__inner container"><div class="home__footer"><span>DIAMOND GAME</span><span>•</span><span>States Softwares</span></div><span class="footer__copy">© 2026 Diamond Game</span></div>
     </footer>
   </div>
-  <script type="module" src="./src/app.js?v=20260924-62"></script>
+  <script type="module" src="./src/app.js?v=20260924-63"></script>
 </body>
 </html>

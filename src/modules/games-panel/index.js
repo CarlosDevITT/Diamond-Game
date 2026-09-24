@@ -15,10 +15,12 @@ export class GamesPanel {
       document.body.append(this.#node);
       this.#node.querySelector("[data-back]").addEventListener("click", () => this.hide());
       this.#node.querySelector("[data-profile]").addEventListener("click", () => this.#onProfile?.());
-      this.#node.querySelectorAll("[data-play]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.play, { mode: "casual" })));
-      this.#node.querySelectorAll("[data-versus]").forEach(btn => btn.addEventListener("click", () => this.#onPlay(btn.dataset.versus, { mode: "1v1" })));
+      const run=async(btn,action)=>{if(btn.disabled)return;btn.disabled=true;btn.classList.add("is-loading");try{await action();}finally{btn.disabled=false;btn.classList.remove("is-loading")}};
+      this.#node.querySelectorAll("[data-play]").forEach(btn => btn.addEventListener("click", () => run(btn,()=>this.#onPlay(btn.dataset.play, { mode: "casual" }))));
+      this.#node.querySelectorAll("[data-versus]").forEach(btn => btn.addEventListener("click", () => run(btn,()=>this.#onPlay(btn.dataset.versus, { mode: "1v1" }))));
     }
     this.#node.hidden = false;
+    this.#node.scrollTop = 0;
     document.body.classList.add("module-open");
   }
 
