@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-import { TankControls } from "./tank-controls.js?v=20260924-69";
-import { TankEngine } from "./tank-engine.js?v=20260924-69";
-import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-69";
-=======
 import { TankControls } from "./tank-controls.js?v=20260924-66";
 import { TankEngine } from "./tank-engine.js?v=20260924-81";
 import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-82";
->>>>>>> 5426667ff116b5403c13c9029ddea8d09bca9420
 import { GameServerClient } from "../../services/game-server.js?v=20260924-62";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260924-62";
 
@@ -23,11 +17,7 @@ export const tankGame={
   const controls=new TankControls(canvas,layer);let engine,network=null,timer=null,ended=false,startedAt=null;
   if(casual)engine=new TankEngine({canvas,controls,realtimeClient:null,eventBus:options.eventBus,matchContext:ctx});
   else{network=new GameServerClient({roomId:options.roomId||ctx.roomId,playerId:ctx.playerId,desiredDurationMs:options.durationMs});const configPromise=new Promise((resolve,reject)=>{const off=network.on("game_config",cfg=>{off();resolve(cfg)});setTimeout(()=>{off();reject(new Error("GAME_CONFIG_TIMEOUT"))},8000)});await network.connect();const serverConfig=await configPromise;engine=new AuthoritativeTankEngine({canvas,controls,network,playerId:ctx.playerId,config:serverConfig});ctx.serverConfig=serverConfig;}
-<<<<<<< HEAD
-  const updateHud=()=>{const localIsA=ctx.slot!=="B";scoreA.textContent=localIsA?engine.local.kills:engine.remote.kills;scoreB.textContent=localIsA?engine.remote.kills:engine.local.kills;coins.textContent=engine.local.coins||0;if(casual){const botLevels=Object.values(engine.remote.upgrades||{}).reduce((sum,value)=>sum+(Number(value)||0),0);opponentLabel.textContent=`MÁQUINA • ${difficultyLabel} • LV ${botLevels}`;}if(startedAt){const total=casual?durationMs:(ctx.serverConfig?.durationSeconds||90)*1000,left=Math.max(0,Math.ceil((total-(Date.now()-startedAt))/1000));clock.textContent=`${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;}};
-=======
   const updateHud=()=>{const localIsA=ctx.slot!=="B";scoreA.textContent=localIsA?engine.local.kills:engine.remote.kills;scoreB.textContent=localIsA?engine.remote.kills:engine.local.kills;coins.textContent=engine.local.coins||0;const combat=engine.getCombatState?.();if(ammo&&combat){ammo.querySelector("strong").textContent=combat.reloading?`RECARREGANDO ${(combat.reloadMs/1000).toFixed(1)}s`:`${combat.ammo}/${combat.maxAmmo}`;ammo.classList.toggle("is-reloading",combat.reloading);}if(startedAt){const total=casual?durationMs:(ctx.serverConfig?.durationSeconds||90)*1000,left=Math.max(0,Math.ceil((total-(Date.now()-startedAt))/1000));clock.textContent=`${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;}};
->>>>>>> 5426667ff116b5403c13c9029ddea8d09bca9420
   const renderShop=()=>{skillList.innerHTML=engine.getShopState().map(s=>`<button type="button" class="tank-skill" data-skill="${s.id}" ${s.level>=s.max?"disabled":""}><span><b>${s.name}</b><small>${s.description}</small></span><span><em>NÍVEL ${s.level}/${s.max}</em><strong>${s.level>=s.max?"MÁXIMO":`◆ ${s.cost}`}</strong></span></button>`).join("");skillList.querySelectorAll("[data-skill]").forEach(button=>button.onclick=()=>{const result=engine.buySkill(button.dataset.skill);if(!result.ok){button.classList.add("is-denied");setTimeout(()=>button.classList.remove("is-denied"),350);}updateHud();if(!result.pending)renderShop();});};
   root.querySelector("[data-shop]").onclick=()=>{renderShop();shop.hidden=!shop.hidden;};root.querySelector("[data-shop-close]").onclick=()=>shop.hidden=true;const screen=root.querySelector(".tank-screen"),fullBtn=root.querySelector("[data-fullscreen]");const syncFullscreen=()=>{const active=document.fullscreenElement===screen;fullBtn.textContent=active?"⛶":"⛶";fullBtn.title=active?"Sair da tela cheia":"Tela cheia";fullBtn.setAttribute("aria-label",fullBtn.title);screen.classList.toggle("is-fullscreen",active);};fullBtn.onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await screen.requestFullscreen();}catch{}syncFullscreen();};document.addEventListener("fullscreenchange",syncFullscreen);
   const showResult=async payload=>{if(ended)return;ended=true;clearInterval(timer);engine.stop?.();const mine=ctx.playerId,title=!payload.winnerPlayerId?"EMPATE":payload.winnerPlayerId===mine?"VITÓRIA!":"DERROTA";if(window.Swal)await Swal.fire({title,text:`${engine.local.kills} × ${engine.remote.kills} • resultado validado pelo servidor`,icon:title==="VITÓRIA!"?"success":"info",confirmButtonText:"Voltar ao lobby",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"});close();};
