@@ -1,4 +1,4 @@
-const CACHE="diamond-pwa-v54";
+const CACHE="diamond-pwa-v55";
 const OFFLINE="./offline.html";
 const SHELL=["./","./index.html","./offline.html","./404.html","./legal.html","./manifest.webmanifest","./assets/styles.css?v=20260920-54","./src/app.js?v=20260920-54","./assets/img/Diamound.png"];
 self.addEventListener("install",event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.allSettled(SHELL.map(url=>cache.add(url)));await self.skipWaiting()})())});
