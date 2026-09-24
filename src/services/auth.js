@@ -1,4 +1,4 @@
-import { account, db, APPWRITE, ID, Query, Permission, Role } from "./appwrite.js";
+import { account, db, APPWRITE, ID, Query, Permission, Role } from "./appwrite.js?v=20260924-58";
 export class AuthService {
  async current(){try{return await account.get()}catch{return null}}
  async signUp({name,email,password}){
