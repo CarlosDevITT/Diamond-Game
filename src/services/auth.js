@@ -6,7 +6,18 @@ export class AuthService {
   await account.createEmailPasswordSession({email,password});
   await this.ensureProfile(user,name); return account.get();
  }
- async signIn({email,password}){await account.createEmailPasswordSession({email,password});const user=await account.get();await this.ensureProfile(user,user.name||email.split("@")[0]);return user}
+ async signIn({email,password}){
+  let user;
+  try{
+   await account.createEmailPasswordSession({email,password});
+   user=await account.get();
+  }catch(error){
+   if(error?.type!=="user_session_already_exists")throw error;
+   user=await account.get();
+  }
+  await this.ensureProfile(user,user.name||email.split("@")[0]);
+  return user;
+ }
  async signOut(){await account.deleteSession({sessionId:"current"})}
  async profile(userId){
   if(!userId)return null;
