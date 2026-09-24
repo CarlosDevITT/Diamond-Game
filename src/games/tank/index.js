@@ -1,6 +1,6 @@
 import { TankControls } from "./tank-controls.js?v=20260924-66";
 import { TankEngine } from "./tank-engine.js?v=20260924-71";
-import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-71";
+import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-72";
 import { GameServerClient } from "../../services/game-server.js?v=20260924-62";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260924-62";
 
@@ -8,7 +8,7 @@ export const TankGameManifest={id:"tank",name:"Tank Battle 1v1",description:"Con
 
 export const tankGame={
  id:"tank",name:"Tank Battle 1v1",description:"Confronto direto de tanques em tempo real. O servidor é a autoridade da partida.",
- rules:["Explore a arena gigante, colete suprimentos e ganhe créditos por abate.","Evolua oito habilidades em até cinco níveis durante a batalha.","Use o minimapa, ricochetes e melhorias criativas para dominar a arena."],
+ rules:["Explore a arena gigante, colete suprimentos e ganhe créditos por abate.","Evolua onze habilidades em até cinco níveis durante a batalha.","Use o minimapa, ricochetes e melhorias criativas para dominar a arena."],
  multiplayer:{enabled:true,durationMs:120000,countdownMs:3000,scoring:"kills",resolveWinner:resolveTankWinner},
  async create({root,close,options={}}){
   root.innerHTML=`<section class="tank-screen"><header class="module-header tank-header"><button type="button" data-close>←</button><button type="button" class="tank-fullscreen" data-fullscreen aria-label="Tela cheia" title="Tela cheia">⛶</button><div class="tank-score tank-score--a"><small>JOGADOR 1</small><strong data-score-a>0</strong></div><button class="tank-wallet" type="button" data-shop><small>OFICINA</small><strong>◆ <span data-coins>0</span></strong></button><div class="tank-time"><small>TEMPO</small><strong data-clock>02:00</strong></div><div class="tank-score tank-score--b"><small data-opponent-label>JOGADOR 2</small><strong data-score-b>0</strong></div></header><div class="tank-arena"><canvas></canvas><div class="tank-controls-layer"></div><div class="tank-commands"><span><kbd>Q</kbd> BOMBA</span><span><kbd>E</kbd> PULSO</span><span><kbd>SHIFT</kbd> IMPULSO</span><span><kbd>ESPAÇO</kbd> ATIRAR</span></div><div class="tank-countdown">CONECTANDO…</div><aside class="tank-shop" data-shop-panel hidden><header><div><small>OFICINA MK II</small><strong>Árvore de habilidades</strong></div><button type="button" data-shop-close aria-label="Fechar oficina">×</button></header><p>◆ amarelo concede créditos; + verde recupera vida. Ativos: Bomba Nova <b>[Q]</b>, Pulso <b>[E]</b> e Turbo <b>[Shift]</b>.</p><div data-skill-list></div></aside></div></section>`;
