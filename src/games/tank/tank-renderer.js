@@ -2,7 +2,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 export function drawTankSprite(c,t,color,{scale=1}={}){
  const bw=50*scale,bh=36*scale,innerW=40*scale,innerH=28*scale,coreW=32*scale,coreH=20*scale,barrel=34*scale,line=7*scale,turret=13*scale;
- c.save();c.translate(t.x,t.y);c.rotate(t.bodyAngle);c.shadowBlur=16*scale;c.shadowColor=color;c.fillStyle="#080b17";c.fillRect(-bw/2,-bh/2,bw,bh);c.fillStyle=color;c.fillRect(-innerW/2,-innerH/2,innerW,innerH);c.fillStyle="#080b17";c.fillRect(-coreW/2,-coreH/2,coreW,coreH);c.restore();
+ c.save();c.translate(t.x,t.y);c.rotate(t.bodyAngle);c.shadowBlur=16*scale;c.shadowColor=color;c.fillStyle="#080b17";c.fillRect(-bw/2,-bh/2,bw,bh);c.fillStyle=color;c.fillRect(-innerW/2,-innerH/2,innerW,innerH);c.fillStyle="#080b17";c.fillRect(-coreW/2,-coreH/2,coreW,coreH);c.shadowBlur=10*scale;c.shadowColor="#fff";c.fillStyle="#fff";c.beginPath();c.moveTo(27*scale,0);c.lineTo(16*scale,-9*scale);c.lineTo(16*scale,9*scale);c.closePath();c.fill();c.shadowBlur=0;c.fillStyle=color;c.beginPath();c.arc(17*scale,0,3.5*scale,0,Math.PI*2);c.fill();c.restore();
  c.save();c.translate(t.x,t.y);c.rotate(t.turretAngle);c.strokeStyle="#fff";c.lineCap="round";c.lineWidth=line;c.beginPath();c.moveTo(0,0);c.lineTo(barrel,0);c.stroke();c.fillStyle=color;c.beginPath();c.arc(0,0,turret,0,Math.PI*2);c.fill();c.restore();
  const maxHp=t.maxHp||100,barW=50*scale,barH=6*scale,barY=t.y-31*scale;c.fillStyle="#050712";c.fillRect(t.x-barW/2,barY,barW,barH);c.fillStyle=t.hp/maxHp>.5?"#52ffd2":t.hp/maxHp>.25?"#ffcb52":"#ff5c75";c.fillRect(t.x-barW/2,barY,barW*clamp(t.hp/maxHp,0,1),barH);
 }
