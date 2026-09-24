@@ -1,7 +1,7 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-40";
 import { snakeGame } from "./games/snake/index.js?v=20260920-32";
-import { tankGame } from "./games/tank/index.js?v=20260920-48";
+import { tankGame } from "./games/tank/index.js?v=20260924-2";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
