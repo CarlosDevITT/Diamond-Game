@@ -20,7 +20,6 @@ const loadOnline=async()=>{
  auth=authService;match=new MatchClient({events});
  events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
  events.on("match:opponent-reconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.close();Swal.fire({title:"Oponente reconectado",text:"A partida pode continuar.",icon:"success",timer:1400,showConfirmButton:false,background:"#11162c",color:"#fff"});});
- events.on("match:opponent-left",async({reason}={})=>{if(!activeMatchId)return;activeMatchId=null;try{await match?.awardOpponentForfeit?.(reason==="disconnect"?"abandonment":"forfeit")}catch(e){console.warn("Opponent settlement failed",e?.message||e)}if(window.Swal)Swal.close();await registry.close(stage);if(window.Swal)await Swal.fire({title:"Oponente saiu da partida",text:reason==="disconnect"?"O outro jogador perdeu a conexão. A partida foi interrompida.":"O outro jogador saiu da partida. A partida foi interrompida.",icon:"info",confirmButtonText:"Voltar aos jogos",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6"});match.leave();panel.show();});
  authScreen=new AuthScreen({auth,onReady:async user=>{events.emit("auth:ready",{user});const profile=await auth.profile(user.$id);panel.setProfile(profile||user);if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}else panel.show();},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame,onExit:()=>panel.show()});
  events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
@@ -33,7 +32,7 @@ const startGame=async(id,options={})=>{
  await registry.open(id,stage,()=>{
   events.emit("game:close",{id,...options});
   options.mode==="1v1"&&lobby?lobby.show(registry.list().find(g=>g.id===id)):panel.show();
- },{...options,eventBus:events,realtimeClient:match?.realtimeAdapter?.(options.matchId),matchContext:{matchId:options.matchId,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot,onLeave:async()=>{if(options.mode==="1v1"){activeMatchId=null;await match?.leaveRoom?.({forfeit:true});}},onResult:async result=>{if(options.mode!=="1v1"||!options.matchId)return;try{await match.submitResult({matchId:options.matchId,...result});}catch(e){console.error("Falha ao enviar resultado 1v1",e);}}});
+ },{...options,eventBus:events,roomId:match?.room?.id,matchContext:{matchId:options.matchId,roomId:match?.room?.id,seed:options.seed,startedAt:options.startedAt,playerId:match?.userId,slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot},slot:match?.room?.players?.find(p=>p.userId===match?.userId)?.slot});
 };
 const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await loadOnline();if(!profilePanel){const {ProfilePanel}=await import("./modules/profile-panel/index.js?v=20260920-39");profilePanel=new ProfilePanel({auth,onClose:async action=>{panel.show();if(action?.login){const user=await auth.current();if(!user){panel.hide();authScreen.show();}}}});}panel.hide();await profilePanel.show();}catch(e){console.error("Profile unavailable",e);}},onPlay:async(id,options={})=>{
  if(options.mode==="casual"&&id==="tank"&&!options.difficulty){
@@ -64,7 +63,7 @@ menu?.querySelectorAll(".nav__link").forEach(link=>link.addEventListener("click"
 
 
 
-window.addEventListener("pagehide",()=>{if(activeMatchId)match?.leaveRoom?.({forfeit:true}).catch(()=>{});});
+window.addEventListener("pagehide",()=>{});
 
 window.addEventListener("diamond:auth-changed",async()=>{try{if(!auth)return panel.setProfile(null);const user=await auth.current();const profile=user?await auth.profile(user.$id):null;panel.setProfile(profile||user);}catch{panel.setProfile(null)}});
 
