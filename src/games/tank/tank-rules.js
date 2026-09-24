@@ -1,6 +1,6 @@
-export const TANK_RULES=Object.freeze({durationMs:90000,countdownMs:3000,damage:25,respawnMs:2000});
-export function buildTankMatchPayload(localPlayer,matchStartTime){
- const survivalTimeMs=Math.min(Math.max(0,Date.now()-matchStartTime),TANK_RULES.durationMs);
+export const TANK_RULES=Object.freeze({durationMs:120000,durationOptions:[120000,300000,600000],countdownMs:3000,damage:25,respawnMs:2000});
+export function buildTankMatchPayload(localPlayer,matchStartTime,durationMs=TANK_RULES.durationMs){
+ const survivalTimeMs=Math.min(Math.max(0,Date.now()-matchStartTime),durationMs);
  return{game_id:"tank",score:localPlayer.kills,survival_time_ms:survivalTimeMs,metrics:{damage_dealt:localPlayer.totalDamage,shots_fired:localPlayer.totalShots,accuracy:Math.round((localPlayer.hits/(localPlayer.totalShots||1))*100)}};
 }
 export function resolveTankWinner(a={},b={}){

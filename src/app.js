@@ -1,7 +1,7 @@
 import { GameRegistry } from "./core/game-registry.js";
-import { GamesPanel } from "./modules/games-panel/index.js?v=20260920-40";
-import { snakeGame } from "./games/snake/index.js?v=20260924-61";
-import { tankGame } from "./games/tank/index.js?v=20260924-61";
+import { GamesPanel } from "./modules/games-panel/index.js?v=20260924-62";
+import { snakeGame } from "./games/snake/index.js?v=20260924-62";
+import { tankGame } from "./games/tank/index.js?v=20260924-62";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
@@ -15,7 +15,7 @@ let match=null,auth=null,authScreen=null,lobby=null,profilePanel=null,pendingGam
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-48"),import("./services/auth.js?v=20260924-60"),import("./modules/auth-screen/index.js?v=20260924-57"),import("./modules/match-lobby/index.js?v=20260920-39")
+  import("./core/match-client.js?v=20260920-48"),import("./services/auth.js?v=20260924-60"),import("./modules/auth-screen/index.js?v=20260924-57"),import("./modules/match-lobby/index.js?v=20260924-62")
  ]);
  auth=authService;match=new MatchClient({events});
  events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
@@ -36,9 +36,9 @@ const startGame=async(id,options={})=>{
 };
 const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await loadOnline();if(!profilePanel){const {ProfilePanel}=await import("./modules/profile-panel/index.js?v=20260920-39");profilePanel=new ProfilePanel({auth,onClose:async action=>{panel.show();if(action?.login){const user=await auth.current();if(!user){panel.hide();authScreen.show();}}}});}panel.hide();await profilePanel.show();}catch(e){console.error("Profile unavailable",e);}},onPlay:async(id,options={})=>{
  if(options.mode==="casual"&&id==="tank"&&!options.difficulty){
-  const choice=window.Swal?await Swal.fire({title:"Jogar contra a máquina",html:`<p class="ai-picker__subtitle">Escolha o nível da IA</p><div class="ai-picker"><button type="button" class="ai-level is-selected" data-ai="basic"><span class="ai-level__icon">●</span><span><strong>Básico</strong><small>Treino e aprendizado</small></span></button><button type="button" class="ai-level" data-ai="hard"><span class="ai-level__icon">◆</span><span><strong>Hard</strong><small>Rápido e agressivo</small></span></button><button type="button" class="ai-level" data-ai="pro"><span class="ai-level__icon">▲</span><span><strong>Pro</strong><small>Precisão e pressão máxima</small></span></button></div>`,showCancelButton:true,confirmButtonText:"Iniciar partida",cancelButtonText:"Cancelar",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6",customClass:{popup:"diamond-ai-modal",actions:"diamond-ai-actions",confirmButton:"diamond-ai-confirm",cancelButton:"diamond-ai-cancel"},didOpen:popup=>{popup.dataset.difficulty="basic";popup.querySelectorAll("[data-ai]").forEach(button=>button.addEventListener("click",()=>{popup.querySelectorAll("[data-ai]").forEach(item=>item.classList.remove("is-selected"));button.classList.add("is-selected");popup.dataset.difficulty=button.dataset.ai;}));},preConfirm:()=>Swal.getPopup()?.dataset.difficulty||"basic"}):{isConfirmed:true,value:"basic"};
+  const choice=window.Swal?await Swal.fire({title:"Configurar batalha",html:`<p class="ai-picker__subtitle">Dificuldade da máquina</p><div class="ai-picker"><button type="button" class="ai-level is-selected" data-ai="basic"><span class="ai-level__icon">●</span><span><strong>Básico</strong><small>Treino e aprendizado</small></span></button><button type="button" class="ai-level" data-ai="hard"><span class="ai-level__icon">◆</span><span><strong>Hard</strong><small>Rápido e agressivo</small></span></button><button type="button" class="ai-level" data-ai="pro"><span class="ai-level__icon">▲</span><span><strong>Pro</strong><small>Precisão máxima</small></span></button></div><p class="ai-picker__subtitle ai-picker__subtitle--time">Duração da partida</p><div class="duration-picker"><button type="button" class="is-selected" data-duration="120000">2 MIN</button><button type="button" data-duration="300000">5 MIN</button><button type="button" data-duration="600000">10 MIN</button></div>`,showCancelButton:true,confirmButtonText:"Iniciar partida",cancelButtonText:"Cancelar",background:"#11162c",color:"#fff",confirmButtonColor:"#5153e6",customClass:{popup:"diamond-ai-modal",actions:"diamond-ai-actions",confirmButton:"diamond-ai-confirm",cancelButton:"diamond-ai-cancel"},didOpen:popup=>{popup.dataset.difficulty="basic";popup.dataset.duration="120000";popup.querySelectorAll("[data-ai]").forEach(button=>button.addEventListener("click",()=>{popup.querySelectorAll("[data-ai]").forEach(item=>item.classList.remove("is-selected"));button.classList.add("is-selected");popup.dataset.difficulty=button.dataset.ai;}));popup.querySelectorAll("[data-duration]").forEach(button=>button.addEventListener("click",()=>{popup.querySelectorAll("[data-duration]").forEach(item=>item.classList.remove("is-selected"));button.classList.add("is-selected");popup.dataset.duration=button.dataset.duration;}));},preConfirm:()=>({difficulty:Swal.getPopup()?.dataset.difficulty||"basic",durationMs:Number(Swal.getPopup()?.dataset.duration)||120000})}):{isConfirmed:true,value:{difficulty:"basic",durationMs:120000}};
   if(!choice.isConfirmed)return;
-  options={...options,difficulty:choice.value||"basic"};
+  options={...options,difficulty:choice.value?.difficulty||"basic",durationMs:choice.value?.durationMs||120000};
  }
  if(options.mode==="1v1"){
   try{

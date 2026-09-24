@@ -6,7 +6,7 @@ const replayEvents=new Set(["game_config","match_state","match_countdown","match
 
 export class GameServerClient{
  #socket=null;#handlers=new Map();#dispatchers=new Map();#cache=new Map();#seq=0;
- constructor({roomId,playerId}){this.roomId=roomId;this.playerId=playerId;}
+ constructor({roomId,playerId,desiredDurationMs}){this.roomId=roomId;this.playerId=playerId;this.desiredDurationMs=desiredDurationMs;}
  #bind(event){
   if(!this.#socket||this.#dispatchers.has(event))return;
   const dispatch=(payload)=>{
@@ -18,13 +18,14 @@ export class GameServerClient{
  async connect(){
   const url=configuredUrl();if(!url)throw new Error("GAME_SERVER_URL_NOT_CONFIGURED");
   const token=await account.createJWT();const jwt=token.jwt;
-  this.#socket=io(url,{transports:["websocket","polling"],tryAllTransports:true,auth:{roomId:this.roomId,jwt},reconnection:true,reconnectionAttempts:8,reconnectionDelay:500,reconnectionDelayMax:2500,timeout:8000,autoConnect:false});
+  this.#socket=io(url,{transports:["websocket","polling"],tryAllTransports:true,auth:{roomId:this.roomId,jwt,desiredDurationSeconds:this.desiredDurationMs?this.desiredDurationMs/1000:undefined},reconnection:true,reconnectionAttempts:8,reconnectionDelay:500,reconnectionDelayMax:2500,timeout:8000,autoConnect:false});
   for(const event of replayEvents)this.#bind(event);
   for(const event of this.#handlers.keys())this.#bind(event);
   const ready=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error("GAME_SERVER_TIMEOUT")),9000);this.#socket.once("connect",()=>{clearTimeout(timer);resolve();});this.#socket.once("connect_error",e=>{clearTimeout(timer);reject(e);});});
   this.#socket.connect();await ready;return this;
  }
  sendInput(input){if(!this.#socket?.connected)return;this.#socket.emit("player_input",{sequence:++this.#seq,...input});}
+ sendAction(action,payload={}){if(!this.#socket?.connected)return false;this.#socket.emit("player_action",{sequence:++this.#seq,action,...payload});return true;}
  on(event,fn){
   if(!this.#handlers.has(event))this.#handlers.set(event,new Set());
   this.#handlers.get(event).add(fn);this.#bind(event);

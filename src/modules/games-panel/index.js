@@ -51,7 +51,7 @@ export class GamesPanel {
         <article class="game-card" data-game="${game.id}">
           <div class="game-card__visual ${banners[game.id] ? "game-card__visual--banner" : ""}">${banners[game.id] ? `<img src="${banners[game.id]}" alt="Banner ${game.name}" loading="eager" draggable="false">` : `<b>◈</b>`}<span>${game.status === "available" ? "DISPONÍVEL" : "EM BREVE"}</span></div>
           <div class="game-card__body">
-            <div class="game-card__heading"><div><small>${game.id === "tank" ? "MULTIPLAYER" : "ARCADE"}</small><h2>${game.name}</h2></div><span class="game-card__mode">${game.id === "tank" ? "90s" : "CLÁSSICO"}</span></div><p>${game.description}</p>
+            <div class="game-card__heading"><div><small>${game.id === "tank" ? "MULTIPLAYER" : "ARCADE"}</small><h2>${game.name}</h2></div><span class="game-card__mode">${game.id === "tank" ? "2–10 MIN" : "CLÁSSICO"}</span></div><p>${game.description}</p>
             <details class="rules"><summary>Como jogar <span>+</span></summary><ul>${game.rules.map(rule => `<li>${rule}</li>`).join("")}</ul></details>
             <div class="game-modes">
               <button class="game-mode game-mode--casual" type="button" data-play="${game.id}">

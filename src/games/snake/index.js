@@ -44,11 +44,12 @@ export const snakeGame={
   }
   function tick(){
    if(state!=="playing")return;if(queued.length)dir=queued.shift();
-   const h={x:body[0].x+dir.x,y:body[0].y+dir.y};
+   // Wrap at the edges: leaving one side enters through the opposite wall.
+   const h={x:(body[0].x+dir.x+cells)%cells,y:(body[0].y+dir.y+cells)%cells};
    const eating=food&&h.x===food.x&&h.y===food.y;
    // The tail moves away on a normal step, so its current cell is safe to enter.
    const collisionBody=eating?body:body.slice(0,-1);
-   if(h.x<0||h.y<0||h.x>=cells||h.y>=cells||collisionBody.some(p=>p.x===h.x&&p.y===h.y)){
+   if(collisionBody.some(p=>p.x===h.x&&p.y===h.y)){
     state="gameover";clearTimeout(timer);best=scores.saveBest("snake",score);bestEl.textContent=best;finishCompetitive("collision");showOverlay("GAME OVER",`Score ${score} • Recorde ${best}`,competitive?"AGUARDANDO RESULTADO":"JOGAR NOVAMENTE");if(competitive)startBtn.disabled=true;return;
    }
    body.unshift(h);
