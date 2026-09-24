@@ -19,11 +19,11 @@ export const snakeGame={
   const canvas=root.querySelector("canvas"),ctx=canvas.getContext("2d");
   const scoreEl=root.querySelector("[data-score]"),bestEl=root.querySelector("[data-best]"),levelEl=root.querySelector("[data-level]");
   const overlay=root.querySelector("[data-overlay]"),overlayTitle=overlay.querySelector("strong"),overlayText=overlay.querySelector("span"),startBtn=root.querySelector("[data-start]"),pauseBtn=root.querySelector("[data-pause]");
-  const cells=18,scores=new ScoreStore(),competitive=options.mode==="1v1"; let body=[],food,dir=DIR.right,queued=[],score=0,level=1,best=scores.getBest("snake"),timer=null,touch=null,state="ready",lastSize=320,startedAt=0,matchTimer=null,resultSent=false;
+  const cells=18,scores=new ScoreStore(),competitive=options.mode==="1v1"; let body=[],food,dir=DIR.right,queued=[],score=0,level=1,best=scores.getBest("snake"),timer=null,touch=null,state="ready",lastSize=320,startedAt=0,matchTimer=null,resultSent=false,flash=0;
   bestEl.textContent=best;
 
   const speed=()=>Math.max(58,128-(level-1)*9);
-  const spawn=()=>{do food={x:Math.floor(Math.random()*cells),y:Math.floor(Math.random()*cells)};while(body.some(p=>p.x===food.x&&p.y===food.y));};
+  const spawn=()=>{const free=[];for(let y=0;y<cells;y++)for(let x=0;x<cells;x++)if(!body.some(p=>p.x===x&&p.y===y))free.push({x,y});food=free.length?free[Math.floor(Math.random()*free.length)]:null;return !!food;};
   const reset=()=>{clearTimeout(timer);body=[{x:9,y:9},{x:8,y:9},{x:7,y:9}];dir=DIR.right;queued=[];score=0;level=1;scoreEl.textContent=0;levelEl.textContent=1;spawn();draw();};
   const schedule=()=>{clearTimeout(timer);if(state==="playing")timer=setTimeout(tick,speed());};
   const turn=name=>{const d=DIR[name],base=queued.length?queued[queued.length-1]:dir;if(!d||queued.length>=2||(d.x===-base.x&&d.y===-base.y))return;queued.push(d);};
@@ -35,28 +35,33 @@ export const snakeGame={
   function resize(){lastSize=Math.min(window.innerWidth-32,520);const r=Math.min(devicePixelRatio||1,2);canvas.style.width=lastSize+"px";canvas.style.height=lastSize+"px";canvas.width=Math.round(lastSize*r);canvas.height=Math.round(lastSize*r);ctx.setTransform(r,0,0,r,0,0);draw();}
   function round(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
   function draw(){
-   if(!body.length||!food)return;const s=lastSize,c=s/cells;ctx.clearRect(0,0,s,s);
+   if(!body.length)return;const s=lastSize,c=s/cells;ctx.clearRect(0,0,s,s);
    const bg=ctx.createLinearGradient(0,0,s,s);bg.addColorStop(0,"#080b17");bg.addColorStop(1,"#121735");ctx.fillStyle=bg;ctx.fillRect(0,0,s,s);
    ctx.strokeStyle="rgba(255,255,255,.035)";for(let i=1;i<cells;i++){ctx.beginPath();ctx.moveTo(i*c,0);ctx.lineTo(i*c,s);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*c);ctx.lineTo(s,i*c);ctx.stroke();}
-   ctx.shadowBlur=18;ctx.shadowColor="#ff49c7";ctx.fillStyle="#ff49c7";ctx.beginPath();ctx.arc((food.x+.5)*c,(food.y+.5)*c,c*.27,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+   if(food){const pulse=1+Math.sin(performance.now()/130)*.1;ctx.shadowBlur=20;ctx.shadowColor="#ff49c7";ctx.fillStyle="#ff49c7";ctx.beginPath();ctx.arc((food.x+.5)*c,(food.y+.5)*c,c*.27*pulse,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;}
    body.forEach((p,i)=>{ctx.fillStyle=i===0?"#fff":"#52ffd2";ctx.shadowBlur=i===0?15:6;ctx.shadowColor="#52ffd2";round(p.x*c+2,p.y*c+2,c-4,c-4,c*.25)});ctx.shadowBlur=0;
+   if(flash>0){ctx.fillStyle=`rgba(82,255,210,${flash*.16})`;ctx.fillRect(0,0,s,s);flash=Math.max(0,flash-.25);requestAnimationFrame(draw);}
   }
   function tick(){
    if(state!=="playing")return;if(queued.length)dir=queued.shift();
    const h={x:body[0].x+dir.x,y:body[0].y+dir.y};
-   if(h.x<0||h.y<0||h.x>=cells||h.y>=cells||body.some(p=>p.x===h.x&&p.y===h.y)){
+   const eating=food&&h.x===food.x&&h.y===food.y;
+   // The tail moves away on a normal step, so its current cell is safe to enter.
+   const collisionBody=eating?body:body.slice(0,-1);
+   if(h.x<0||h.y<0||h.x>=cells||h.y>=cells||collisionBody.some(p=>p.x===h.x&&p.y===h.y)){
     state="gameover";clearTimeout(timer);best=scores.saveBest("snake",score);bestEl.textContent=best;finishCompetitive("collision");showOverlay("GAME OVER",`Score ${score} • Recorde ${best}`,competitive?"AGUARDANDO RESULTADO":"JOGAR NOVAMENTE");if(competitive)startBtn.disabled=true;return;
    }
    body.unshift(h);
-   if(h.x===food.x&&h.y===food.y){score+=10;const nextLevel=1+Math.floor(score/50);if(nextLevel!==level){level=nextLevel;levelEl.textContent=level;}scoreEl.textContent=score;spawn();if(navigator.vibrate)navigator.vibrate(18);}else body.pop();
+   if(eating){score+=10;flash=1;const nextLevel=1+Math.floor(score/50);if(nextLevel!==level){level=nextLevel;levelEl.textContent=level;}scoreEl.textContent=score;if(!spawn()){state="gameover";best=scores.saveBest("snake",score);bestEl.textContent=best;showOverlay("TABULEIRO COMPLETO!",`Pontuação perfeita: ${score}`,"JOGAR NOVAMENTE");return;}if(navigator.vibrate)navigator.vibrate(18);}else body.pop();
    draw();schedule();
   }
   const keydown=e=>{if(KEY[e.key]){e.preventDefault();if(state==="ready")play();turn(KEY[e.key]);}else if(e.key===" "){e.preventDefault();state==="ready"||state==="gameover"?play():pause();}};
+  const visibility=()=>{if(document.hidden&&state==="playing"&&!competitive)pause();};
   canvas.addEventListener("pointerdown",e=>{touch={x:e.clientX,y:e.clientY};});
   canvas.addEventListener("pointerup",e=>{if(!touch)return;const dx=e.clientX-touch.x,dy=e.clientY-touch.y;if(Math.max(Math.abs(dx),Math.abs(dy))>16){if(state==="ready")play();turn(Math.abs(dx)>Math.abs(dy)?dx>0?"right":"left":dy>0?"down":"up");}touch=null;});
   root.querySelectorAll("[data-dir]").forEach(b=>b.addEventListener("pointerdown",e=>{e.preventDefault();if(state==="ready")play();turn(b.dataset.dir);}));
-  startBtn.addEventListener("click",play);pauseBtn.addEventListener("click",pause);root.querySelector("[data-close]").addEventListener("click",close);window.addEventListener("keydown",keydown);window.addEventListener("resize",resize);
+  startBtn.addEventListener("click",play);pauseBtn.addEventListener("click",pause);root.querySelector("[data-close]").addEventListener("click",close);window.addEventListener("keydown",keydown);window.addEventListener("resize",resize);document.addEventListener("visibilitychange",visibility);
   reset();resize();if(competitive){pauseBtn.hidden=true;startBtn.disabled=true;const target=Date.parse(options.startedAt)||Date.now()+3000;const begin=()=>{const left=target-Date.now();if(left>0){showOverlay("1V1",`Começa em ${Math.max(1,Math.ceil(left/1000))}…`,"SINCRONIZANDO");setTimeout(begin,Math.min(250,left));return;}startedAt=Date.now();play();matchTimer=setTimeout(()=>{if(state==="playing"){state="gameover";clearTimeout(timer);finishCompetitive("time");showOverlay("TEMPO! ",`Score final ${score}`,"AGUARDANDO RESULTADO");startBtn.disabled=true;}},90000);};begin();}else showOverlay("PRONTO?","Swipe, direcional ou teclado.","JOGAR");
-  return{start(){},destroy(){state="destroyed";clearTimeout(timer);clearTimeout(matchTimer);window.removeEventListener("keydown",keydown);window.removeEventListener("resize",resize);}};
+  return{start(){},destroy(){state="destroyed";clearTimeout(timer);clearTimeout(matchTimer);window.removeEventListener("keydown",keydown);window.removeEventListener("resize",resize);document.removeEventListener("visibilitychange",visibility);}};
  }
 };

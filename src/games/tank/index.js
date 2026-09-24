@@ -1,5 +1,5 @@
-import { TankControls } from "./tank-controls.js?v=20260924-1";
-import { TankEngine } from "./tank-engine.js?v=20260920-48";
+import { TankControls } from "./tank-controls.js?v=20260924-61";
+import { TankEngine } from "./tank-engine.js?v=20260924-61";
 import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-2";
 import { GameServerClient } from "../../services/game-server.js?v=20260924-2";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260920-32";
