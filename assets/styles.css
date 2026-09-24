@@ -322,3 +322,25 @@ html,body{max-width:100%;overflow-x:hidden}
  .tank-header>button[data-close]{width:34px!important;height:34px!important}
  .tank-shop{inset:4px!important}
 }
+
+/* Tank mobile landscape-first gameplay v79 */
+@media(max-width:767px) and (orientation:portrait){
+ .tank-screen{height:100dvh!important;min-height:0!important}
+ .tank-header{flex:0 0 auto}
+ .tank-arena{flex:1!important;height:auto!important;min-height:0!important}
+ .tank-arena canvas{height:100%!important}
+ .tank-controls-layer{inset:0!important}
+ .tank-stick{transform:scale(.72);transform-origin:bottom center}
+ .tank-fire{transform:scale(.82);transform-origin:bottom right}
+ .tank-ability{transform:scale(.78);transform-origin:bottom right}
+}
+@media(max-width:767px) and (orientation:landscape){
+ .tank-screen{height:100dvh!important;min-height:0!important;padding:0 max(3px,env(safe-area-inset-right)) 0 max(3px,env(safe-area-inset-left))}
+ .tank-header{position:absolute!important;z-index:14!important;top:6px;left:50%;transform:translateX(-50%);width:min(94%,720px);min-height:44px!important;padding:3px!important;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:rgba(5,7,17,.86);backdrop-filter:blur(10px);grid-template-columns:34px repeat(5,minmax(48px,1fr))}
+ .tank-header>button[data-close]{width:34px!important;height:34px!important}
+ .tank-header .tank-score,.tank-header .tank-time,.tank-header .tank-ammo,.tank-header .tank-wallet{height:34px!important}
+ .tank-header small{font-size:.34rem!important}.tank-header strong{font-size:.58rem!important}
+ .tank-arena{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+ .tank-arena canvas{width:100%!important;height:100%!important}
+ .tank-shop{top:54px!important;bottom:6px!important}
+}
