@@ -281,3 +281,66 @@ html,body{max-width:100%;overflow-x:hidden}
 .tank-commands{position:absolute;z-index:4;left:16px;bottom:14px;display:flex;gap:.4rem;pointer-events:none}.tank-commands span{display:flex;align-items:center;gap:.3rem;padding:.35rem .48rem;border:1px solid rgba(255,255,255,.09);border-radius:8px;background:rgba(5,7,18,.76);backdrop-filter:blur(8px);color:#9da2b7;font-size:.46rem;font-weight:800;letter-spacing:.06em}.tank-commands kbd{padding:.16rem .3rem;border:1px solid rgba(255,255,255,.16);border-radius:5px;background:#22263a;color:#fff;font:700 .5rem var(--font)}.tank-ability{pointer-events:auto;position:absolute;bottom:13px;width:58px;height:42px;border:1px solid rgba(255,168,82,.45);border-radius:14px;color:#fff;font-size:.52rem;font-weight:900;box-shadow:0 8px 24px rgba(255,110,82,.2)}.tank-ability--bomb{right:82px;background:linear-gradient(135deg,#ff9e52,#e85d75)}.tank-ability--shock{right:146px;background:linear-gradient(135deg,#587cff,#8d5cff);border-color:rgba(124,184,255,.45)}
 @media(pointer:fine){.tank-ability{display:none}}
 @media(max-width:767px) and (pointer:coarse){.tank-commands{display:none}.tank-ability{display:block}.tank-ability--shock{right:144px}.tank-ability--bomb{right:80px}}
+
+/* Tank hunter AI + desktop fullscreen v70 */
+.tank-fullscreen{display:none!important}
+@media(min-width:900px) and (pointer:fine){.tank-fullscreen{display:grid!important;place-items:center;width:42px!important;height:42px!important;min-width:42px;border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important;background:#171b2e!important;color:#fff!important;font-size:1.25rem!important;cursor:pointer}.tank-fullscreen:hover{border-color:#7375ff!important;background:#202544!important}.tank-screen:fullscreen{width:100vw;height:100vh;padding:0;background:#070812;display:flex;flex-direction:column}.tank-screen:fullscreen .tank-header{flex:0 0 auto}.tank-screen:fullscreen .tank-arena{flex:1;width:100%;max-width:none!important;min-height:0;border-radius:0}.tank-screen:fullscreen .tank-arena canvas{width:100%!important;height:100%!important;aspect-ratio:auto!important;display:block}.tank-screen:fullscreen .tank-shop{top:16px;right:16px}}
+
+/* Tank adaptive combat HUD v75 */
+.tank-ammo{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:86px;padding:6px 10px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(9,12,28,.72)}.tank-ammo small{font-size:.58rem;letter-spacing:.1em;opacity:.65}.tank-ammo strong{font-size:.82rem;white-space:nowrap}.tank-ammo.is-reloading strong{animation:tankReloadPulse .55s ease-in-out infinite alternate}@keyframes tankReloadPulse{to{opacity:.42}}@media(max-width:700px){.tank-ammo{min-width:62px;padding:4px 6px}.tank-ammo strong{font-size:.68rem}.tank-ammo small{font-size:.48rem}}
+
+/* Tank mobile responsive hardening v78 */
+@media(max-width:767px){
+ .tank-screen{width:100%;min-height:100dvh;display:flex;flex-direction:column;overflow:hidden;padding:max(4px,env(safe-area-inset-top)) 0 max(4px,env(safe-area-inset-bottom))}
+ .tank-header{height:auto!important;min-height:58px;padding:5px 6px;gap:4px;display:grid!important;grid-template-columns:38px minmax(48px,1fr) minmax(58px,1.15fr) minmax(50px,.9fr) minmax(58px,1.15fr) minmax(48px,1fr);align-items:center}
+ .tank-header>button[data-close]{width:38px!important;height:38px!important;border-radius:11px!important;font-size:1.05rem!important}
+ .tank-header .tank-fullscreen{display:none!important}
+ .tank-header .tank-score,.tank-header .tank-time,.tank-header .tank-ammo,.tank-header .tank-wallet{min-width:0!important;width:100%!important;height:42px!important;padding:3px 4px!important;border-radius:9px!important;overflow:hidden}
+ .tank-header small{font-size:.4rem!important;letter-spacing:.04em!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .tank-header strong{font-size:.66rem!important;line-height:1!important;white-space:nowrap}
+ .tank-wallet::after{display:none}
+ .tank-arena{position:relative;flex:1;width:100%!important;max-width:none!important;min-height:0!important;margin:0!important;border-radius:0!important;overflow:hidden;touch-action:none}
+ .tank-arena canvas{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:auto!important;border-radius:0!important;touch-action:none}
+ .tank-controls-layer{position:absolute!important;inset:0!important;z-index:5!important;pointer-events:none}
+ .tank-stick,.tank-fire,.tank-ability{pointer-events:auto!important}
+ .tank-shop{position:absolute!important;z-index:20!important;inset:6px!important;width:auto!important;max-height:calc(100% - 12px)!important;padding:.75rem!important;border-radius:16px!important;overscroll-behavior:contain}
+ .tank-shop [data-skill-list]{grid-template-columns:1fr 1fr!important;gap:.3rem!important}
+ .tank-skill{min-width:0!important;min-height:58px!important;padding:.42rem!important}
+ .tank-skill b{font-size:.64rem!important}.tank-skill small{font-size:.47rem!important}.tank-skill em{font-size:.43rem!important}.tank-skill strong{font-size:.56rem!important}
+ .tank-commands{display:none!important}
+}
+@media(max-width:430px){
+ .tank-header{grid-template-columns:36px minmax(42px,.9fr) minmax(54px,1.1fr) minmax(46px,.9fr) minmax(54px,1.15fr) minmax(42px,.9fr);padding-inline:3px;gap:3px}
+ .tank-header>button[data-close]{width:36px!important;height:36px!important}
+ .tank-header .tank-score,.tank-header .tank-time,.tank-header .tank-ammo,.tank-header .tank-wallet{height:39px!important;padding:2px 3px!important}
+ .tank-header small{font-size:.36rem!important}.tank-header strong{font-size:.59rem!important}
+ .tank-shop [data-skill-list]{grid-template-columns:1fr!important}
+ .tank-shop>p{font-size:.6rem!important;margin:.5rem 0!important}
+}
+@media(max-height:650px) and (max-width:767px){
+ .tank-header{min-height:50px}.tank-header .tank-score,.tank-header .tank-time,.tank-header .tank-ammo,.tank-header .tank-wallet{height:36px!important}
+ .tank-header>button[data-close]{width:34px!important;height:34px!important}
+ .tank-shop{inset:4px!important}
+}
+
+/* Tank mobile landscape-first gameplay v79 */
+@media(max-width:767px) and (orientation:portrait){
+ .tank-screen{height:100dvh!important;min-height:0!important}
+ .tank-header{flex:0 0 auto}
+ .tank-arena{flex:1!important;height:auto!important;min-height:0!important}
+ .tank-arena canvas{height:100%!important}
+ .tank-controls-layer{inset:0!important}
+ .tank-stick{transform:scale(.72);transform-origin:bottom center}
+ .tank-fire{transform:scale(.82);transform-origin:bottom right}
+ .tank-ability{transform:scale(.78);transform-origin:bottom right}
+}
+@media(max-width:767px) and (orientation:landscape){
+ .tank-screen{height:100dvh!important;min-height:0!important;padding:0 max(3px,env(safe-area-inset-right)) 0 max(3px,env(safe-area-inset-left))}
+ .tank-header{position:absolute!important;z-index:14!important;top:6px;left:50%;transform:translateX(-50%);width:min(94%,720px);min-height:44px!important;padding:3px!important;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:rgba(5,7,17,.86);backdrop-filter:blur(10px);grid-template-columns:34px repeat(5,minmax(48px,1fr))}
+ .tank-header>button[data-close]{width:34px!important;height:34px!important}
+ .tank-header .tank-score,.tank-header .tank-time,.tank-header .tank-ammo,.tank-header .tank-wallet{height:34px!important}
+ .tank-header small{font-size:.34rem!important}.tank-header strong{font-size:.58rem!important}
+ .tank-arena{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+ .tank-arena canvas{width:100%!important;height:100%!important}
+ .tank-shop{top:54px!important;bottom:6px!important}
+}
