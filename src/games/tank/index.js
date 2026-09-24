@@ -1,7 +1,7 @@
 import { TankControls } from "./tank-controls.js?v=20260924-1";
 import { TankEngine } from "./tank-engine.js?v=20260920-48";
-import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-1";
-import { GameServerClient } from "../../services/game-server.js?v=20260924-1";
+import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-2";
+import { GameServerClient } from "../../services/game-server.js?v=20260924-2";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260920-32";
 
 export const TankGameManifest={id:"tank",name:"Tank Battle 1v1",description:"Confronto direto de tanques em tempo real.",version:"2.0.0",mode:"multiplayer_1v1",rules:{duration_seconds:90,countdown_seconds:3,win_criteria:["kills"],authority:"server"}};
