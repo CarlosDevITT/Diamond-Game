@@ -1,6 +1,6 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js?v=20260924-62";
-import { GAME_CATALOG } from "./core/game-catalog.js?v=20260925-96";
+import { GAME_CATALOG } from "./core/game-catalog.js?v=20260925-97";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
@@ -13,7 +13,7 @@ let match=null,auth=null,authScreen=null,lobby=null,profilePanel=null,pendingGam
 const loadOnline=async()=>{
  if(auth&&match&&authScreen&&lobby)return;
  const [{MatchClient},{auth:authService},{AuthScreen},{MatchLobby}]=await Promise.all([
-  import("./core/match-client.js?v=20260920-48"),import("./services/auth.js?v=20260924-60"),import("./modules/auth-screen/index.js?v=20260924-57"),import("./modules/match-lobby/index.js?v=20260924-62")
+  import("./core/match-client.js?v=20260920-48"),import("./services/auth.js?v=20260924-60"),import("./modules/auth-screen/index.js?v=20260924-57"),import("./modules/match-lobby/index.js?v=20260925-97")
  ]);
  auth=authService;match=new MatchClient({events});
  events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
@@ -115,5 +115,5 @@ if(!reduceMotion&&window.innerWidth>767&&"IntersectionObserver" in window){
 
 
 // Offline support v52
-if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js?v=96");await reg.update()}catch(error){console.warn("Offline support unavailable",error)}})}
+if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js?v=97");await reg.update()}catch(error){console.warn("Offline support unavailable",error)}})}
 window.addEventListener("offline",()=>{if(!location.pathname.endsWith("/offline.html"))location.replace("./offline.html")});
