@@ -12,7 +12,7 @@ test("Tank entry keeps casual and authoritative engines separated",async()=>{
 test("viewport owns canvas resize and camera follow",async()=>{
  const source=await readFile("src/games/tank/presentation/tank-viewport.js","utf8");
  assert.match(source,/ResizeObserver/);
- assert.match(source,/follow\(target,dt\)/);
+ assert.match(source,/follow\(\)/);
  assert.doesNotMatch(source,/fullscreenElement|requestFullscreen|skill|#bots/);
 });
 
