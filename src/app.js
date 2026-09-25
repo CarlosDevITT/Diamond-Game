@@ -1,12 +1,10 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js?v=20260924-62";
-import { snakeGame } from "./games/snake/index.js?v=20260924-65";
-import { tankGame } from "./games/tank/index.js?v=20260925-92";
+import { GAME_CATALOG } from "./core/game-catalog.js?v=20260925-93";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
-registry.register(snakeGame);
-registry.register(tankGame);
+GAME_CATALOG.forEach(game=>registry.registerLazy(game));
 
 const stage=document.createElement("div");
 stage.id="game-stage";stage.className="game-stage";stage.hidden=true;document.body.append(stage);
