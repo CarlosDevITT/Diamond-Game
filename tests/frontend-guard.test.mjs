@@ -9,10 +9,17 @@ test("Tank entry keeps casual and authoritative engines separated",async()=>{
  assert.match(source,/AuthoritativeTankEngine/);
 });
 
+test("viewport owns canvas resize and camera follow",async()=>{
+ const source=await readFile("src/games/tank/presentation/tank-viewport.js","utf8");
+ assert.match(source,/ResizeObserver/);
+ assert.match(source,/follow\(target,dt\)/);
+ assert.doesNotMatch(source,/fullscreenElement|requestFullscreen|skill|#bots/);
+});
+
 test("desktop fullscreen is presentation-only",async()=>{
- const source=await readFile("src/games/tank/index.js","utf8");
+ const source=await readFile("src/games/tank/presentation/fullscreen-controller.js","utf8");
  assert.match(source,/requestFullscreen/);
- assert.doesNotMatch(source,/classList\.toggle\(["']is-fullscreen/);
+ assert.doesNotMatch(source,/TankEngine|camera|viewport|skill|canvas/);
 });
 
 test("casual progression supports multiple bots",async()=>{
