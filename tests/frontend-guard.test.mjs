@@ -95,3 +95,15 @@ test("mobile fullscreen requests landscape without touching gameplay",async()=>{
  assert.match(css,/touch-action:none/);
  assert.doesNotMatch(fullscreen,/TankEngine|camera|viewport|skill|projectile|bot/);
 });
+
+
+test("online Tank keeps selected duration and a single authoritative result flow",async()=>{
+ const app=await readFile("src/app.js","utf8");
+ const tank=await readFile("src/games/tank/index.js","utf8");
+ const server=await readFile("src/services/game-server.js","utf8");
+ assert.match(server,/desiredDurationSeconds:this\.desiredDurationMs\?this\.desiredDurationMs\/1000/);
+ assert.match(app,/activeDurationMs/);
+ assert.match(app,/game:server-finished/);
+ assert.match(tank,/game:server-finished/);
+ assert.match(tank,/desiredDurationMs:options\.durationMs/);
+});
