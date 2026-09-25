@@ -73,3 +73,13 @@ test("PWA service worker registration follows current release",async()=>{
  assert.ok(registration&&cache);
  assert.equal(registration[1],cache[1]);
 });
+
+
+test("Tank logical world does not change with canvas or fullscreen size",async()=>{
+ const viewport=await readFile("src/games/tank/presentation/tank-viewport.js","utf8");
+ const engine=await readFile("src/games/tank/tank-engine.js","utf8");
+ assert.match(viewport,/this\.view\.width=worldWidth;this\.view\.height=worldHeight/);
+ assert.doesNotMatch(viewport,/this\.view\.width=Math\.min|this\.view\.height=Math\.min/);
+ assert.match(engine,/this\.#viewW=this\.#viewport\.view\.width;this\.#viewH=this\.#viewport\.view\.height/);
+ assert.doesNotMatch(engine,/viewport\.start\(\(\{width,height\}\)/);
+});
