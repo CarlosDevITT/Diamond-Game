@@ -18,6 +18,7 @@ const loadOnline=async()=>{
  auth=authService;match=new MatchClient({events});
  events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
  events.on("match:opponent-reconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.close();Swal.fire({title:"Oponente reconectado",text:"A partida pode continuar.",icon:"success",timer:1400,showConfirmButton:false,background:"#11162c",color:"#fff"});});
+ events.on("game:server-finished",({title,detail,payload,gameId})=>{if(!activeMatchId||resultShownFor===activeMatchId)return;resultShownFor=activeMatchId;activeGameId=gameId||activeGameId;events.emit("game:match-finished",{title,detail,payload});showMatchResult(title,detail);});
  authScreen=new AuthScreen({auth,onReady:async user=>{events.emit("auth:ready",{user});const profile=await auth.profile(user.$id);panel.setProfile(profile||user);if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}else panel.show();},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame,onExit:()=>panel.show()});
  events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
