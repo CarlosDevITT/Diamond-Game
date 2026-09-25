@@ -1,5 +1,5 @@
 import { TankControls } from "./tank-controls.js?v=20260924-66";
-import { TankEngine } from "./tank-engine.js?v=20260925-90";
+import { TankEngine } from "./tank-engine.js?v=20260925-91";
 import { FullscreenController } from "./presentation/fullscreen-controller.js?v=20260925-89";
 import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-82";
 import { GameServerClient } from "../../services/game-server.js?v=20260924-62";
