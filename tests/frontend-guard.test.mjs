@@ -51,3 +51,15 @@ test("casual AI and navigation stay isolated from presentation",async()=>{
  assert.match(navigation,/class BotNavigation/);
  assert.doesNotMatch(ai+navigation,/requestFullscreen|fullscreenElement|document\.|window\.|canvas|ResizeObserver/);
 });
+
+
+test("game platform loads game modules lazily",async()=>{
+ const app=await readFile("src/app.js","utf8");
+ const registry=await readFile("src/core/game-registry.js","utf8");
+ const catalog=await readFile("src/core/game-catalog.js","utf8");
+ assert.match(app,/registerLazy/);
+ assert.doesNotMatch(app,/import \{ snakeGame \}|import \{ tankGame \}/);
+ assert.match(registry,/async resolve\(id\)/);
+ assert.match(catalog,/load:\(\)=>import\("\.\.\/games\/snake\/index\.js/);
+ assert.match(catalog,/load:\(\)=>import\("\.\.\/games\/tank\/index\.js/);
+});
