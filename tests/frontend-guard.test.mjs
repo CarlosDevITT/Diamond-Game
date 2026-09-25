@@ -28,11 +28,11 @@ test("casual progression supports multiple bots",async()=>{
  assert.match(source,/clamp\([^\n]*,1,4\)/);
 });
 
-test("active skills stay inside the game engine",async()=>{
- const source=await readFile("src/games/tank/tank-engine.js","utf8");
- const start=source.indexOf("#special(type)");
- const end=source.indexOf("#detonate(",start);
- assert.ok(start>=0&&end>start);
- const block=source.slice(start,end);
- assert.doesNotMatch(block,/requestFullscreen|exitFullscreen|fullscreenElement|document\.|window\./);
+test("active skills are isolated from engine presentation",async()=>{
+ const engine=await readFile("src/games/tank/tank-engine.js","utf8");
+ const skills=await readFile("src/games/tank/skills/skill-system.js","utf8");
+ assert.match(engine,/this\.#skills\.activate\(type,this\.#skillContext\(\)\)/);
+ assert.match(engine,/this\.#skills\.detonate\(p,level,this\.#skillContext\(\)\)/);
+ assert.doesNotMatch(skills,/requestFullscreen|exitFullscreen|fullscreenElement|document\.|window\.|ResizeObserver/);
+ assert.match(skills,/type==="bomb"/);assert.match(skills,/type==="shock"/);assert.match(skills,/type==="dash"/);
 });
