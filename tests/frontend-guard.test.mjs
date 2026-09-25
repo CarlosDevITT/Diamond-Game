@@ -63,3 +63,13 @@ test("game platform loads game modules lazily",async()=>{
  assert.match(catalog,/load:\(\)=>import\("\.\.\/games\/snake\/index\.js/);
  assert.match(catalog,/load:\(\)=>import\("\.\.\/games\/tank\/index\.js/);
 });
+
+
+test("PWA service worker registration follows current release",async()=>{
+ const app=await readFile("src/app.js","utf8");
+ const sw=await readFile("sw.js","utf8");
+ const registration=app.match(/register\("\.\/sw\.js\?v=(\d+)"\)/);
+ const cache=sw.match(/diamond-pwa-v(\d+)/);
+ assert.ok(registration&&cache);
+ assert.equal(registration[1],cache[1]);
+});
