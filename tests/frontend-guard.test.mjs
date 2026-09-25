@@ -39,3 +39,15 @@ test("active skills are isolated from engine presentation",async()=>{
  assert.doesNotMatch(skills,/requestFullscreen|exitFullscreen|fullscreenElement|document\.|window\.|ResizeObserver/);
  assert.match(skills,/type==="bomb"/);assert.match(skills,/type==="shock"/);assert.match(skills,/type==="dash"/);
 });
+
+
+test("casual AI and navigation stay isolated from presentation",async()=>{
+ const engine=await readFile("src/games/tank/tank-engine.js","utf8");
+ const ai=await readFile("src/games/tank/casual/bot-ai.js","utf8");
+ const navigation=await readFile("src/games/tank/casual/navigation.js","utf8");
+ assert.match(engine,/this\.#botAI\.update/);
+ assert.match(ai,/navigation\.lineClear/);
+ assert.match(ai,/navigation\.path/);
+ assert.match(navigation,/class BotNavigation/);
+ assert.doesNotMatch(ai+navigation,/requestFullscreen|fullscreenElement|document\.|window\.|canvas|ResizeObserver/);
+});
