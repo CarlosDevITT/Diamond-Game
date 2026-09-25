@@ -1,4 +1,4 @@
-import { TankControls } from "./tank-controls.js?v=20260924-66";
+import { TankControls } from "./tank-controls.js?v=20260925-98";
 import { TankEngine } from "./tank-engine.js?v=20260925-95";
 import { FullscreenController } from "./presentation/fullscreen-controller.js?v=20260925-96";
 import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-82";
@@ -25,7 +25,7 @@ export const tankGame={
   if(casual){const startAt=Date.now()+1200;clock.textContent=`${String(durationMs/60000).padStart(2,"0")}:00`;const begin=()=>{const left=startAt-Date.now();if(left>0){countdown.textContent=Math.max(1,Math.ceil(left/1000));setTimeout(begin,Math.min(250,left));return;}countdown.hidden=true;controls.start();engine.start();startedAt=Date.now();timer=setInterval(async()=>{updateHud();if(Date.now()-startedAt>=durationMs){ended=true;clearInterval(timer);engine.stop();const payload=buildTankMatchPayload(engine.local,startedAt,durationMs),won=engine.local.kills>engine.remote.kills;if(window.Swal){const r=await Swal.fire({title:won?"VITÓRIA!":engine.local.kills===engine.remote.kills?"EMPATE":"FIM DE TREINO",text:`${engine.local.kills} × ${engine.remote.kills} • ◆ ${engine.local.coins} • ${payload.metrics.damage_dealt} de dano`,icon:won?"success":"info",showCancelButton:true,confirmButtonText:"Jogar novamente",cancelButtonText:"Voltar aos jogos",background:"#11162c",color:"#fff"});close();if(r.isConfirmed)setTimeout(()=>options.replay?.(),0);}else close();}},250);};begin();}
   else{
    const onCountdown=p=>{countdown.hidden=false;countdown.textContent=p.seconds;};
-   const onStart=p=>{countdown.hidden=true;startedAt=p.startedAt||Date.now();controls.start();engine.start();timer=setInterval(updateHud,100);};
+   const onStart=p=>{countdown.hidden=true;startedAt=p.startedAt||Date.now();if(Number(p.durationSeconds))ctx.serverConfig={...(ctx.serverConfig||{}),durationSeconds:Number(p.durationSeconds)};controls.start();engine.start();updateHud();timer=setInterval(updateHud,100);};
    network.on("match_countdown",onCountdown);network.on("match_start",onStart);engine.onFinished=showResult;
    engine.onOpponentDisconnected=()=>{if(window.Swal)Swal.fire({title:"Oponente desconectado",text:"Aguardando reconexão…",icon:"warning",showConfirmButton:false,timer:15000,timerProgressBar:true,background:"#11162c",color:"#fff"});};
    engine.onOpponentReconnected=()=>window.Swal?.close();
