@@ -344,3 +344,11 @@ html,body{max-width:100%;overflow-x:hidden}
  .tank-arena canvas{width:100%!important;height:100%!important}
  .tank-shop{top:54px!important;bottom:6px!important}
 }
+
+
+/* Tank fullscreen stability v86 */
+@media(min-width:900px) and (pointer:fine){
+ .tank-screen:fullscreen{overflow:hidden!important}
+ .tank-screen:fullscreen .tank-arena{display:grid!important;place-items:center!important;overflow:hidden!important;background:#050711!important}
+ .tank-screen:fullscreen .tank-arena canvas{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;max-width:100%!important;max-height:100%!important;aspect-ratio:9/5!important;touch-action:none!important}
+}
