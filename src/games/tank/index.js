@@ -1,6 +1,6 @@
 import { TankControls } from "./tank-controls.js?v=20260924-66";
 import { TankEngine } from "./tank-engine.js?v=20260925-95";
-import { FullscreenController } from "./presentation/fullscreen-controller.js?v=20260925-89";
+import { FullscreenController } from "./presentation/fullscreen-controller.js?v=20260925-96";
 import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-82";
 import { GameServerClient } from "../../services/game-server.js?v=20260924-62";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260924-62";
@@ -31,7 +31,7 @@ export const tankGame={
    engine.onOpponentReconnected=()=>window.Swal?.close();
   }
   root.querySelector("[data-close]").onclick=async()=>{if(!casual){const r=window.Swal?await Swal.fire({title:"Sair da partida?",text:"A desconexão inicia o período de reconexão; se você não voltar, o servidor aplica a derrota por abandono.",icon:"warning",showCancelButton:true,confirmButtonText:"Sair",cancelButtonText:"Continuar",background:"#11162c",color:"#fff"}):{isConfirmed:confirm("Deseja sair?")};if(!r.isConfirmed)return;}close();};
-  return{start(){},destroy(){ended=true;clearInterval(timer);fullscreen.destroy();if(document.fullscreenElement===screen)document.exitFullscreen().catch(()=>{});controls.destroy();engine?.destroy?.();network?.close?.();}};
+  return{start(){},destroy(){ended=true;clearInterval(timer);fullscreen.exit();fullscreen.destroy();controls.destroy();engine?.destroy?.();network?.close?.();}};
  }
 };
 export function init(containerElement,eventBus,realtimeClient,matchContext={}){return tankGame.create({root:containerElement,close:()=>{},options:{eventBus,matchContext,...matchContext}})}
