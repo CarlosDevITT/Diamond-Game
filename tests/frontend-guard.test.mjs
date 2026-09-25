@@ -23,9 +23,12 @@ test("desktop fullscreen is presentation-only",async()=>{
 });
 
 test("casual progression supports multiple bots",async()=>{
- const source=await readFile("src/games/tank/tank-engine.js","utf8");
- assert.match(source,/while\(this\.#bots\.length<wanted\)/);
- assert.match(source,/clamp\([^\n]*,1,4\)/);
+ const engine=await readFile("src/games/tank/tank-engine.js","utf8");
+ const progression=await readFile("src/games/tank/casual/bot-progression.js","utf8");
+ assert.match(engine,/this\.#botProgression\.sync/);
+ assert.match(progression,/while\(ctx\.bots\.length<wanted\)/);
+ assert.match(progression,/,1,4\)/);
+ assert.doesNotMatch(progression,/requestFullscreen|document\.|window\.|canvas|ResizeObserver/);
 });
 
 test("active skills are isolated from engine presentation",async()=>{
