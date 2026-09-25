@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 
 test("Tank entry keeps casual and authoritative engines separated",async()=>{
  const source=await readFile("src/games/tank/index.js","utf8");
- assert.match(source,/matchContext\.casual\s*\?/);
+ assert.match(source,/const casual=options\.mode!=="1v1"/);
  assert.match(source,/TankEngine/);
  assert.match(source,/AuthoritativeTankEngine/);
 });
