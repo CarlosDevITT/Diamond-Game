@@ -16,7 +16,7 @@ test("viewport owns canvas resize and camera follow",async()=>{
  assert.doesNotMatch(source,/fullscreenElement|requestFullscreen|skill|#bots/);
 });
 
-test("desktop fullscreen is presentation-only",async()=>{
+test("fullscreen is presentation-only",async()=>{
  const source=await readFile("src/games/tank/presentation/fullscreen-controller.js","utf8");
  assert.match(source,/requestFullscreen/);
  assert.doesNotMatch(source,/TankEngine|camera|viewport|skill|canvas/);
@@ -82,4 +82,16 @@ test("Tank logical world does not change with canvas or fullscreen size",async()
  assert.doesNotMatch(viewport,/this\.view\.width=Math\.min|this\.view\.height=Math\.min/);
  assert.match(engine,/this\.#viewW=this\.#viewport\.view\.width;this\.#viewH=this\.#viewport\.view\.height/);
  assert.doesNotMatch(engine,/viewport\.start\(\(\{width,height\}\)/);
+});
+
+
+test("mobile fullscreen requests landscape without touching gameplay",async()=>{
+ const fullscreen=await readFile("src/games/tank/presentation/fullscreen-controller.js","utf8");
+ const css=await readFile("assets/styles.css","utf8");
+ assert.match(fullscreen,/screen\.orientation\?\.lock/);
+ assert.match(fullscreen,/lock\("landscape"\)/);
+ assert.match(fullscreen,/is-mobile-fullscreen/);
+ assert.match(css,/Tank mobile immersive fullscreen v96/);
+ assert.match(css,/touch-action:none/);
+ assert.doesNotMatch(fullscreen,/TankEngine|camera|viewport|skill|projectile|bot/);
 });
