@@ -351,3 +351,26 @@ html,body{max-width:100%;overflow-x:hidden}
  .tank-arena canvas{width:100%!important;height:100%!important}
  .tank-shop{top:54px!important;bottom:6px!important}
 }
+
+
+/* Tank mobile immersive fullscreen v96 */
+@media(max-width:899px),(pointer:coarse){
+ .tank-fullscreen{display:grid!important;place-items:center;width:36px!important;height:36px!important;min-width:36px;border:1px solid rgba(255,255,255,.12)!important;border-radius:10px!important;background:#171b2e!important;color:#fff!important;font-size:1.05rem!important;touch-action:manipulation}
+ .tank-screen:fullscreen,.tank-screen.is-mobile-fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:0!important;margin:0!important;padding:max(2px,env(safe-area-inset-top)) max(3px,env(safe-area-inset-right)) max(2px,env(safe-area-inset-bottom)) max(3px,env(safe-area-inset-left))!important;overflow:hidden!important;background:#070812!important}
+ .tank-screen:fullscreen .tank-arena,.tank-screen.is-mobile-fullscreen .tank-arena{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;border-radius:0!important}
+ .tank-screen:fullscreen .tank-arena canvas,.tank-screen.is-mobile-fullscreen .tank-arena canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important}
+ .tank-screen:fullscreen .tank-header,.tank-screen.is-mobile-fullscreen .tank-header{position:absolute!important;z-index:30!important;top:max(4px,env(safe-area-inset-top))!important;left:50%!important;transform:translateX(-50%)!important;width:min(96%,760px)!important;min-height:40px!important;padding:2px!important;grid-template-columns:32px 32px repeat(5,minmax(42px,1fr))!important;background:rgba(5,7,17,.82)!important;backdrop-filter:blur(8px)}
+ .tank-screen:fullscreen .tank-controls-layer,.tank-screen.is-mobile-fullscreen .tank-controls-layer{position:absolute!important;z-index:20!important;inset:0!important;pointer-events:none!important}
+ .tank-screen:fullscreen .tank-control-zone,.tank-screen.is-mobile-fullscreen .tank-control-zone{pointer-events:none!important}
+ .tank-screen:fullscreen .tank-stick,.tank-screen:fullscreen .tank-fire,.tank-screen:fullscreen .tank-ability,.tank-screen.is-mobile-fullscreen .tank-stick,.tank-screen.is-mobile-fullscreen .tank-fire,.tank-screen.is-mobile-fullscreen .tank-ability{pointer-events:auto!important;touch-action:none!important}
+ .tank-screen:fullscreen .tank-control-zone--move,.tank-screen.is-mobile-fullscreen .tank-control-zone--move{left:max(10px,env(safe-area-inset-left))!important;bottom:max(8px,env(safe-area-inset-bottom))!important}
+ .tank-screen:fullscreen .tank-control-zone--aim,.tank-screen.is-mobile-fullscreen .tank-control-zone--aim{right:max(10px,env(safe-area-inset-right))!important;bottom:max(8px,env(safe-area-inset-bottom))!important}
+ .tank-screen:fullscreen .tank-stick,.tank-screen.is-mobile-fullscreen .tank-stick{transform:scale(.78)!important;transform-origin:bottom center!important}
+ .tank-screen:fullscreen .tank-fire,.tank-screen.is-mobile-fullscreen .tank-fire{transform:scale(.86)!important;transform-origin:bottom right!important}
+ .tank-screen:fullscreen .tank-ability,.tank-screen.is-mobile-fullscreen .tank-ability{transform:scale(.82)!important;transform-origin:bottom right!important}
+ .tank-screen:fullscreen .tank-commands,.tank-screen.is-mobile-fullscreen .tank-commands{display:none!important}
+ .tank-screen:fullscreen .tank-shop,.tank-screen.is-mobile-fullscreen .tank-shop{z-index:40!important;top:48px!important;bottom:max(4px,env(safe-area-inset-bottom))!important;max-height:none!important}
+}
+@media(max-width:899px) and (orientation:portrait){
+ .tank-fullscreen{display:grid!important}
+}
