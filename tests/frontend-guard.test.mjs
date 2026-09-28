@@ -205,3 +205,14 @@ test('Tank viewport keeps renderer view synchronized after resize and skills',as
  assert.match(engine,/this\.#viewW=viewWidth;this\.#viewH=viewHeight/);
  assert.doesNotMatch(await readFile("src/games/tank/skills/skill-system.js","utf8"),/camera|viewport|scale\(/);
 });
+
+test('Tank renderer cannot create non-uniform skill zoom',async()=>{
+ const renderer=await readFile("src/games/tank/tank-renderer.js","utf8");
+ const engine=await readFile("src/games/tank/tank-engine.js","utf8");
+ const skills=await readFile("src/games/tank/skills/skill-system.js","utf8");
+ assert.match(renderer,/scale=Math\.min\(cw\/vw,ch\/vh\)/);
+ assert.match(renderer,/ctx\.scale\(scale,scale\)/);
+ assert.doesNotMatch(renderer,/ctx\.scale\(sx,sy\)/);
+ assert.match(engine,/this\.#viewW=this\.#viewport\.view\.width;this\.#viewH=this\.#viewport\.view\.height;drawTankArena/);
+ assert.doesNotMatch(skills,/camera|viewport|requestFullscreen|style\.transform|ctx\.scale/);
+});
