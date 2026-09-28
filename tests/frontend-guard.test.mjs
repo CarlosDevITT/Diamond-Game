@@ -185,3 +185,15 @@ test('Tank movement keys remain in normal keyboard flow',async()=>{
  assert.match(controls,/k\.has\("d"\).*k\.has\("D"\).*ArrowRight/);
  assert.match(controls,/k\.has\("s"\).*k\.has\("S"\).*ArrowDown/);
 });
+
+test('Tank custom mobile controls keep portrait and landscape layouts independent',async()=>{
+ const controls=await readFile("src/games/tank/tank-controls.js","utf8");
+ const css=await readFile("assets/styles.css","utf8");
+ assert.match(controls,/diamond:tank-controls:v2/);
+ assert.match(controls,/orientationKey/);
+ assert.match(controls,/portrait/);
+ assert.match(controls,/landscape/);
+ assert.match(css,/Tank orientation-safe mobile controls v105/);
+ assert.match(css,/@media \(orientation:portrait\) and \(pointer:coarse\)/);
+ assert.match(css,/@media \(orientation:landscape\) and \(pointer:coarse\)/);
+});
