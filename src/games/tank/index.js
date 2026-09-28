@@ -1,6 +1,6 @@
-import { TankControls } from "./tank-controls.js?v=20260928-103";
+import { TankControls } from "./tank-controls.js?v=20260928-104";
 import { TankEngine } from "./tank-engine.js?v=20260925-95";
-import { FullscreenController } from "./presentation/fullscreen-controller.js?v=20260925-96";
+import { FullscreenController } from "./presentation/fullscreen-controller.js?v=20260928-104";
 import { AuthoritativeTankEngine } from "./tank-authoritative-engine.js?v=20260924-82";
 import { GameServerClient } from "../../services/game-server.js?v=20260924-62";
 import { buildTankMatchPayload,resolveTankWinner } from "./tank-rules.js?v=20260924-62";
