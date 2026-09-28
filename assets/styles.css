@@ -415,3 +415,21 @@ html,body{max-width:100%;overflow-x:hidden}
  .tank-controls-config{top:auto;bottom:max(8px,env(safe-area-inset-bottom));left:50%;right:auto;transform:translateX(-50%)}
 }
 @media(pointer:fine){.tank-controls-config,.tank-controls-editor{display:none!important}}
+
+/* Tank orientation-safe mobile controls v105 */
+@media (orientation:portrait) and (pointer:coarse){
+ .tank-control-zone{transform:none!important}
+ .tank-control-zone--move{left:8px!important;right:auto!important;bottom:12px!important;width:150px!important;height:150px!important}
+ .tank-control-zone--aim{right:8px!important;left:auto!important;bottom:12px!important;width:190px!important;height:170px!important}
+ .tank-stick{width:96px!important;height:96px!important}
+ .tank-control-zone--move .tank-stick{position:absolute!important;left:0!important;bottom:0!important}
+ .tank-control-zone--aim .tank-stick{position:absolute!important;right:0!important;left:auto!important;bottom:0!important}
+ .tank-fire{right:4px!important;bottom:2px!important;width:58px!important;height:58px!important}
+ .tank-ability{bottom:66px!important;width:50px!important;height:38px!important}
+ .tank-ability--bomb{right:4px!important}.tank-ability--shock{right:58px!important}.tank-ability--dash{right:112px!important}
+ .tank-controls-config{top:auto!important;bottom:8px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important}
+}
+@media (orientation:landscape) and (pointer:coarse){
+ .tank-screen:fullscreen,.tank-screen.is-mobile-fullscreen{inset:0!important;padding:0!important}
+ .tank-screen:fullscreen .tank-arena,.tank-screen.is-mobile-fullscreen .tank-arena{inset:0!important}
+}
