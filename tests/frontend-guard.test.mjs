@@ -197,3 +197,11 @@ test('Tank custom mobile controls keep portrait and landscape layouts independen
  assert.match(css,/@media \(orientation:portrait\) and \(pointer:coarse\)/);
  assert.match(css,/@media \(orientation:landscape\) and \(pointer:coarse\)/);
 });
+
+test('Tank viewport keeps renderer view synchronized after resize and skills',async()=>{
+ const viewport=await readFile("src/games/tank/presentation/tank-viewport.js","utf8");
+ const engine=await readFile("src/games/tank/tank-engine.js","utf8");
+ assert.match(viewport,/viewWidth:this\.view\.width,viewHeight:this\.view\.height/);
+ assert.match(engine,/this\.#viewW=viewWidth;this\.#viewH=viewHeight/);
+ assert.doesNotMatch(await readFile("src/games/tank/skills/skill-system.js","utf8"),/camera|viewport|scale\(/);
+});
