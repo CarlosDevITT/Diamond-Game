@@ -107,3 +107,24 @@ test("online Tank keeps selected duration and a single authoritative result flow
  assert.match(tank,/game:server-finished/);
  assert.match(tank,/desiredDurationMs:options\.durationMs/);
 });
+
+
+test("1v1 host startup cannot race the Appwrite countdown subscription",async()=>{
+ const app=await readFile("src/app.js","utf8");
+ assert.match(app,/const isHost=match\?\.room\?\.hostUserId===match\?\.userId;if\(isHost\)return/);
+ assert.match(app,/if\(options\.matchId\)activeMatchId=options\.matchId/);
+});
+
+test("Tank skill buttons suppress browser zoom gestures",async()=>{
+ const controls=await readFile("src/games/tank/tank-controls.js","utf8");
+ assert.match(controls,/this\.#canvas\.style\.touchAction="none"/);
+ assert.match(controls,/button\.style\.touchAction="none"/);
+ assert.match(controls,/setPointerCapture/);
+ assert.match(controls,/dblclick/);
+});
+
+test("online Tank result renders authoritative server score",async()=>{
+ const tank=await readFile("src/games/tank/index.js","utf8");
+ assert.match(tank,/Array\.isArray\(payload\.score\)/);
+ assert.match(tank,/resultado validado pelo servidor/);
+});
