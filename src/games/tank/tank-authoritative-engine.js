@@ -1,5 +1,5 @@
 import { createTankUpgrades,tankSkillState } from "./tank-shared.js?v=20260924-67";
-import { drawTankArena } from "./tank-renderer.js?v=20260924-68";
+import { drawTankArena } from "./tank-renderer.js?v=20260928-106";
 const lerp=(a,b,t)=>a+(b-a)*t;const lerpAngle=(a,b,t)=>a+Math.atan2(Math.sin(b-a),Math.cos(b-a))*t;
 export class AuthoritativeTankEngine{
  #canvas;#ctx;#controls;#net;#playerId;#raf=0;#inputTimer=0;#running=false;#last=0;#clean=[];#world={width:1800,height:1000,obstacles:[]};#config=null;#projectiles=[];#pickups=[];#targets=new Map();#viewW=1800;#viewH=1000;#camera={x:0,y:0};
