@@ -166,3 +166,12 @@ test('active 1v1 can be rediscovered after PWA reload without local gameplay sta
  assert.match(app,/resumed:true/);
  assert.doesNotMatch(client,/localStorage|sessionStorage/);
 });
+
+test('Tank Q and E skills are isolated from browser keyboard behavior',async()=>{
+ const controls=await readFile("src/games/tank/tank-controls.js","utf8");
+ assert.match(controls,/KeyQ/);
+ assert.match(controls,/KeyE/);
+ assert.match(controls,/stopImmediatePropagation/);
+ assert.match(controls,/capture:true,passive:false/);
+ assert.match(controls,/e\.ctrlKey\|\|e\.altKey\|\|e\.metaKey/);
+});
