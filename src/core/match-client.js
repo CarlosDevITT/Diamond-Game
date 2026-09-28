@@ -41,6 +41,26 @@ export class MatchClient {
   let row=existing.rows?.[0];if(!row){const a=players.find(p=>p.slot==="A"),b=players.find(p=>p.slot==="B"),seed=crypto.randomUUID();row=await db.createRow({databaseId:APPWRITE.databaseId,tableId:"matches",rowId:ID.unique(),data:{room_id:this.#room.id,game_id:this.#room.gameId,player_a:a.user_id,player_b:b.user_id,status:"countdown",seed,started_at:new Date(Date.now()+3000).toISOString()},permissions:[Permission.read(Role.users())]});await db.updateRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:this.#room.id,data:{status:"countdown",seed}});}
   this.#watchMatch(row.$id);this.#events.emit("match:start",row);return row;
  }
+ async restoreActiveRoom(){
+  const user=await this.#auth();
+  const memberships=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"room_players",queries:[Query.equal("user_id",[user.$id]),Query.limit(25)]});
+  const rows=(memberships.rows||[]).filter(p=>p.ready!==false);
+  for(const membership of rows){
+   try{
+    const room=await db.getRow({databaseId:APPWRITE.databaseId,tableId:"rooms",rowId:membership.room_id});
+    if(!["countdown","playing"].includes(room.status))continue;
+    const players=await this.#players(room.$id);
+    if(!players.some(p=>p.user_id===user.$id))continue;
+    this.#room=this.#map(room,players);
+    await this.#setPresence(true);
+    this.#watch(room.$id);
+    const match=await this.watchCurrentMatch();
+    this.#events.emit("match:update",this.room);
+    return match?{room:this.room,match}:null;
+   }catch{}
+  }
+  return null;
+ }
  async watchCurrentMatch(){if(!this.#room)return null;const r=await db.listRows({databaseId:APPWRITE.databaseId,tableId:"matches",queries:[Query.equal("room_id",[this.#room.id]),Query.limit(1)]});const row=r.rows?.[0];if(row)this.#watchMatch(row.$id);return row||null;}
  #watchMatch(matchId){this.#matchUnsubscribe?.();this.#matchUnsubscribe=client.subscribe([`tablesdb.${APPWRITE.databaseId}.tables.matches.rows.${matchId}`],response=>{const row=response?.payload||response;this.#events.emit("match:state",row);});}
  #watch(roomId){
