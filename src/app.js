@@ -16,10 +16,21 @@ const loadOnline=async()=>{
   import("./core/match-client.js?v=20260920-48"),import("./services/auth.js?v=20260924-60"),import("./modules/auth-screen/index.js?v=20260924-57"),import("./modules/match-lobby/index.js?v=20260925-97")
  ]);
  auth=authService;match=new MatchClient({events});
+ const restoreActiveMatch=async()=>{
+  try{
+   const restored=await match.restoreActiveRoom();
+   if(!restored?.match||!["countdown","playing"].includes(restored.match.status))return false;
+   const gameId=restored.match.game_id||restored.room.gameId;
+   const game=registry.list().find(g=>g.id===gameId);if(!game)return false;
+   activeMatchId=restored.match.$id;activeGameId=gameId;
+   await startGame(gameId,{mode:"1v1",roomCode:restored.room.code,matchId:restored.match.$id,seed:restored.match.seed,startedAt:restored.match.started_at,durationMs:null,resumed:true});
+   return true;
+  }catch(error){console.warn("Active match restore failed",error);return false;}
+ };
  events.on("match:opponent-disconnected",()=>{if(activeMatchId)return;if(!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
  events.on("match:opponent-reconnected",()=>{if(activeMatchId||!window.Swal)return;Swal.close();});
  events.on("game:server-finished",({title,detail,payload,gameId})=>{if(!activeMatchId||resultShownFor===activeMatchId)return;clearTimeout(resultFallbackTimer);resultFallbackTimer=null;resultShownFor=activeMatchId;activeGameId=gameId||activeGameId;events.emit("game:match-finished",{title,detail,payload,source:"server"});showMatchResult(title,detail);});
- authScreen=new AuthScreen({auth,onReady:async user=>{events.emit("auth:ready",{user});const profile=await auth.profile(user.$id);panel.setProfile(profile||user);if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}else panel.show();},onClose:()=>{pendingGame=null;panel.show();}});
+ authScreen=new AuthScreen({auth,onReady:async user=>{events.emit("auth:ready",{user});const profile=await auth.profile(user.$id);panel.setProfile(profile||user);if(await restoreActiveMatch())return;if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}else panel.show();},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame,onExit:()=>panel.show()});
  events.on("match:update",async room=>{lobby?.refresh(room);if(room?.players?.length===2)await match.watchCurrentMatch();});
  events.on("match:state",async row=>{if(row?.status==="countdown"&&activeMatchId!==row.$id){const isHost=match?.room?.hostUserId===match?.userId;if(isHost)return;activeMatchId=row.$id;activeGameId=row.game_id;const game=registry.list().find(g=>g.id===row.game_id);if(game)startGame(game.id,{mode:"1v1",roomCode:match.room?.code,matchId:row.$id,seed:row.seed,startedAt:row.started_at,durationMs:activeDurationMs});return;}if(row?.status==="finished"&&activeMatchId===row.$id&&resultShownFor!==row.$id){clearTimeout(resultFallbackTimer);const matchId=row.$id;resultFallbackTimer=setTimeout(async()=>{resultFallbackTimer=null;if(activeMatchId!==matchId||resultShownFor===matchId)return;resultShownFor=matchId;const user=await auth.current();const mine=user?.$id;const title=!row.winner_user_id?"EMPATE":row.winner_user_id===mine?"VITÓRIA!":"DERROTA";const detail=`${row.score_a} × ${row.score_b} • ${row.result_reason==="survival"?"desempate por sobrevivência":row.result_reason==="score"?"maior pontuação":row.result_reason==="damage"?"desempate por dano":row.result_reason==="forfeit"?"desistência":row.result_reason==="abandonment"?"abandono por desconexão":"empate total"}`;events.emit("game:match-finished",{title,detail,row,source:"appwrite-fallback"});showMatchResult(title,detail);},1200);}});
@@ -52,7 +63,7 @@ const panel=new GamesPanel({games:registry.list(),onProfile:async()=>{try{await 
  startGame(id,{...options,replay:()=>startGame(id,{...options})});
 }});
 
-const openGamesPanel=async()=>{panel.show();try{await loadOnline();const user=await auth.current();const profile=user?await auth.profile(user.$id):null;panel.setProfile(profile||user);}catch{panel.setProfile(null)}};
+const openGamesPanel=async()=>{panel.show();try{await loadOnline();const user=await auth.current();const profile=user?await auth.profile(user.$id):null;panel.setProfile(profile||user);if(user){const restored=await match.restoreActiveRoom();if(restored?.match&&["countdown","playing"].includes(restored.match.status)){const gameId=restored.match.game_id||restored.room.gameId;activeMatchId=restored.match.$id;activeGameId=gameId;await startGame(gameId,{mode:"1v1",roomCode:restored.room.code,matchId:restored.match.$id,seed:restored.match.seed,startedAt:restored.match.started_at,durationMs:null,resumed:true});}}}catch(error){console.warn("Online restore unavailable",error);panel.setProfile(null)}};
 document.getElementById("open-games")?.addEventListener("click",openGamesPanel);
 document.querySelectorAll("[data-open-games]").forEach(button=>button.addEventListener("click",openGamesPanel));
 
