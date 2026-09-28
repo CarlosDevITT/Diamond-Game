@@ -1,5 +1,5 @@
 import { createTankUpgrades,tankSkillState } from "./tank-shared.js?v=20260924-67";
-import { drawTankArena } from "./tank-renderer.js?v=20260924-68";
+import { drawTankArena } from "./tank-renderer.js?v=20260928-106";
 import { TankViewport } from "./presentation/tank-viewport.js?v=20260928-105";
 import { TankSkillSystem } from "./skills/skill-system.js?v=20260925-90";
 import { BotProgression } from "./casual/bot-progression.js?v=20260925-91";
