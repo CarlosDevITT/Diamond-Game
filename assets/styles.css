@@ -433,3 +433,21 @@ html,body{max-width:100%;overflow-x:hidden}
  .tank-screen:fullscreen,.tank-screen.is-mobile-fullscreen{inset:0!important;padding:0!important}
  .tank-screen:fullscreen .tank-arena,.tank-screen.is-mobile-fullscreen .tank-arena{inset:0!important}
 }
+
+/* Tank presentation contract v108 — final authority */
+.tank-screen{box-sizing:border-box!important}
+.tank-screen .tank-arena{box-sizing:border-box!important}
+@media (pointer:fine){
+ .tank-screen{width:100%!important;max-width:none!important}
+ .tank-screen .tank-arena{width:min(100%,1800px)!important;max-width:1800px!important;height:auto!important;aspect-ratio:1800/1000!important;margin:0 auto!important}
+ .tank-screen .tank-arena>canvas{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;object-fit:fill!important}
+ .tank-screen:fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#050712!important}
+ .tank-screen:fullscreen .tank-arena{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;margin:0!important;border:0!important;border-radius:0!important}
+ .tank-screen:fullscreen .tank-arena>canvas{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important}
+ .tank-screen:fullscreen .tank-header{position:absolute!important;z-index:50!important;top:8px!important;left:50%!important;transform:translateX(-50%)!important;width:min(96vw,1200px)!important;margin:0!important}
+}
+@media (orientation:landscape) and (pointer:coarse){
+ .tank-screen:fullscreen,.tank-screen.is-mobile-fullscreen{position:fixed!important;inset:0!important;width:var(--tank-vw,100vw)!important;height:var(--tank-vh,100dvh)!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;overflow:hidden!important}
+ .tank-screen:fullscreen .tank-arena,.tank-screen.is-mobile-fullscreen .tank-arena{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;border:0!important;border-radius:0!important;display:block!important}
+ .tank-screen:fullscreen .tank-arena>canvas,.tank-screen.is-mobile-fullscreen .tank-arena>canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;object-fit:fill!important}
+}
