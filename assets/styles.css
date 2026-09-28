@@ -27,55 +27,8 @@ footer{padding:1.5rem;background:#0a0b12;color:#fff;text-align:center}.home__foo
 /* Tank Battle */
 .tank-screen{min-height:100dvh;background:#050712;color:#fff;padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom)}.tank-arena{position:relative;width:min(100%,900px);margin:auto;overflow:hidden;border-radius:20px;background:#080b17;touch-action:none}.tank-arena canvas{display:block;width:100%;aspect-ratio:900/560}.tank-controls-layer{position:absolute;inset:0;pointer-events:none}.tank-stick,.tank-fire{pointer-events:auto;position:absolute;bottom:22px}.tank-stick{width:96px;height:96px;border:2px solid #ffffff40;border-radius:50%;background:#ffffff0d}.tank-stick i{position:absolute;width:42px;height:42px;left:25px;top:25px;border-radius:50%;background:#ffffff55}.tank-stick--left{left:22px}.tank-stick--right{right:22px}.tank-fire{right:46px;bottom:132px;border:0;border-radius:50%;width:62px;height:62px;font-weight:900}.tank-countdown{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(42px,12vw,96px);font-weight:900;background:#050712aa}.tank-countdown[hidden]{display:none}@media(pointer:fine){.tank-stick,.tank-fire{display:none}}
 
-/* Tank mobile UX v2 */
-@media(max-width:767px){
- .tank-screen{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:hidden}
- .tank-screen .module-header{height:58px;padding:0 14px}
- .tank-screen .module-header button{width:40px;height:40px}
- .tank-screen .module-header strong{font-size:1rem}
- .tank-screen .module-header span{margin-left:auto;font-size:1.45rem;font-weight:800}
- .tank-arena{width:100%;height:calc(100dvh - 58px - env(safe-area-inset-top) - env(safe-area-inset-bottom));border-radius:0;margin:0}
- .tank-arena canvas{width:100%;height:100%;aspect-ratio:auto;object-fit:contain}
- .tank-controls-layer{inset:auto 0 0;height:42%;background:linear-gradient(transparent,rgba(5,7,18,.72));}
- .tank-stick{width:112px;height:112px;bottom:max(22px,env(safe-area-inset-bottom));background:rgba(15,20,42,.52);border:2px solid rgba(255,255,255,.28);backdrop-filter:blur(4px)}
- .tank-stick i{width:48px;height:48px;left:30px;top:30px;background:rgba(255,255,255,.35)}
- .tank-stick--left{left:22px}
- .tank-stick--right{right:22px}
- .tank-fire{right:39px;bottom:154px;width:72px;height:72px;background:#5153e6;color:#fff;border:2px solid rgba(255,255,255,.35);box-shadow:0 10px 30px rgba(81,83,230,.4);font-size:.78rem}
-}
-@media(max-width:380px){
- .tank-stick{width:96px;height:96px}.tank-stick i{width:42px;height:42px;left:25px;top:25px}.tank-fire{width:62px;height:62px;right:39px;bottom:132px}
-}
-
 /* Tank match scoreboard */
 .tank-header{justify-content:space-between}.tank-header>button{flex:0 0 auto}.tank-header .tank-score,.tank-header .tank-time{display:grid;place-items:center;min-width:72px;text-align:center}.tank-header .tank-score small,.tank-header .tank-time small{font-size:.5rem;letter-spacing:.12em;opacity:.5}.tank-header .tank-score strong,.tank-header .tank-time strong{font-size:1.25rem;line-height:1.1}.tank-header .tank-time strong{color:#52ffd2}@media(max-width:420px){.tank-header{gap:.35rem;padding-inline:8px}.tank-header>button{width:38px;height:38px}.tank-header .tank-score,.tank-header .tank-time{min-width:62px}.tank-header .tank-score strong,.tank-header .tank-time strong{font-size:1.1rem}}
-
-/* Tank mobile split layout v3 */
-@media(max-width:767px) and (pointer:coarse){
- .tank-screen{height:100dvh;min-height:0;display:grid;grid-template-rows:58px 1fr;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
- .tank-arena{height:auto;min-height:0;display:grid;grid-template-rows:50% 50%;overflow:hidden;background:#070a17}
- .tank-arena canvas{grid-row:1;width:100%;height:100%;object-fit:fill;border-bottom:1px solid rgba(255,255,255,.1)}
- .tank-controls-layer{grid-row:2;position:relative;inset:auto;height:100%;display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(180deg,#090c19,#11162b);pointer-events:auto;touch-action:none}
- .tank-control-zone{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;border-top:1px solid rgba(255,255,255,.06)}
- .tank-control-zone:first-child{border-right:1px solid rgba(255,255,255,.08)}
- .tank-control-zone>span{position:absolute;top:14px;font-size:.58rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.36)}
- .tank-stick{position:relative;left:auto;right:auto;bottom:auto;width:min(34vw,138px);height:min(34vw,138px);border:2px solid rgba(255,255,255,.22);background:rgba(255,255,255,.045);box-shadow:inset 0 0 32px rgba(81,83,230,.12)}
- .tank-stick i{width:54px;height:54px;left:50%;top:50%;margin:-27px 0 0 -27px;background:rgba(255,255,255,.3);box-shadow:0 4px 18px rgba(0,0,0,.35)}
- .tank-fire{right:14px;bottom:14px;width:68px;height:68px;background:#5153e6;color:#fff;border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 26px rgba(81,83,230,.4);z-index:3}
- .tank-countdown{grid-row:1;inset:0 0 50% 0}
-}
-
-/* Tank mobile arena/control balance v4 */
-@media(max-width:767px) and (pointer:coarse){
- .tank-arena{grid-template-rows:58% 42%}
- .tank-controls-layer{grid-row:2}
- .tank-arena canvas{grid-row:1}
- .tank-countdown{grid-row:1;inset:0 0 42% 0}
- .tank-control-zone>span{top:9px}
- .tank-stick{width:min(31vw,128px);height:min(31vw,128px)}
- .tank-fire{width:62px;height:62px;right:12px;bottom:10px}
-}
-
 
 /* Games panel banners v34 */
 .game-card__visual--banner{position:relative;min-height:0;aspect-ratio:16/9;padding:0;overflow:hidden;background:#080914;isolation:isolate}
@@ -282,17 +235,6 @@ html,body{max-width:100%;overflow-x:hidden}
 @media(pointer:fine){.tank-ability{display:none}}
 @media(max-width:767px) and (pointer:coarse){.tank-commands{display:none}.tank-ability{display:block}.tank-ability--shock{right:144px}.tank-ability--bomb{right:80px}}
 
-/* Tank desktop fullscreen: presentation only v88 */
-.tank-fullscreen{display:none!important}
-@media(min-width:900px) and (pointer:fine){
- .tank-fullscreen{display:grid!important;place-items:center;width:42px!important;height:42px!important;min-width:42px;border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important;background:#171b2e!important;color:#fff!important;font-size:1.25rem!important;cursor:pointer}
- .tank-fullscreen:hover{border-color:#7375ff!important;background:#202544!important}
- .tank-screen:fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#070812!important}
- .tank-screen:fullscreen .tank-header{position:absolute!important;z-index:30!important;top:10px!important;left:50%!important;transform:translateX(-50%)!important;width:min(96%,980px)!important}
- .tank-screen:fullscreen .tank-arena{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;min-height:0!important;margin:0!important;border-radius:0!important;overflow:hidden!important}
- .tank-screen:fullscreen .tank-arena canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;display:block!important}
- .tank-screen:fullscreen .tank-shop{top:68px!important;right:16px!important}
-}
 /* Tank adaptive combat HUD v75 */
 .tank-ammo{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:86px;padding:6px 10px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(9,12,28,.72)}.tank-ammo small{font-size:.58rem;letter-spacing:.1em;opacity:.65}.tank-ammo strong{font-size:.82rem;white-space:nowrap}.tank-ammo.is-reloading strong{animation:tankReloadPulse .55s ease-in-out infinite alternate}@keyframes tankReloadPulse{to{opacity:.42}}@media(max-width:700px){.tank-ammo{min-width:62px;padding:4px 6px}.tank-ammo strong{font-size:.68rem}.tank-ammo small{font-size:.48rem}}
 
@@ -329,52 +271,6 @@ html,body{max-width:100%;overflow-x:hidden}
  .tank-header>button[data-close]{width:34px!important;height:34px!important}
  .tank-shop{inset:4px!important}
 }
-
-/* Tank mobile landscape-first gameplay v79 */
-@media(max-width:767px) and (orientation:portrait){
- .tank-screen{height:100dvh!important;min-height:0!important}
- .tank-header{flex:0 0 auto}
- .tank-arena{flex:1!important;height:auto!important;min-height:0!important}
- .tank-arena canvas{height:100%!important}
- .tank-controls-layer{inset:0!important}
- .tank-stick{transform:scale(.72);transform-origin:bottom center}
- .tank-fire{transform:scale(.82);transform-origin:bottom right}
- .tank-ability{transform:scale(.78);transform-origin:bottom right}
-}
-@media(max-width:767px) and (orientation:landscape){
- .tank-screen{height:100dvh!important;min-height:0!important;padding:0 max(3px,env(safe-area-inset-right)) 0 max(3px,env(safe-area-inset-left))}
- .tank-header{position:absolute!important;z-index:14!important;top:6px;left:50%;transform:translateX(-50%);width:min(94%,720px);min-height:44px!important;padding:3px!important;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:rgba(5,7,17,.86);backdrop-filter:blur(10px);grid-template-columns:34px repeat(5,minmax(48px,1fr))}
- .tank-header>button[data-close]{width:34px!important;height:34px!important}
- .tank-header .tank-score,.tank-header .tank-time,.tank-header .tank-ammo,.tank-header .tank-wallet{height:34px!important}
- .tank-header small{font-size:.34rem!important}.tank-header strong{font-size:.58rem!important}
- .tank-arena{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
- .tank-arena canvas{width:100%!important;height:100%!important}
- .tank-shop{top:54px!important;bottom:6px!important}
-}
-
-
-/* Tank mobile immersive fullscreen v96 */
-@media(max-width:899px),(pointer:coarse){
- .tank-fullscreen{display:grid!important;place-items:center;width:36px!important;height:36px!important;min-width:36px;border:1px solid rgba(255,255,255,.12)!important;border-radius:10px!important;background:#171b2e!important;color:#fff!important;font-size:1.05rem!important;touch-action:manipulation}
- .tank-screen:fullscreen,.tank-screen.is-mobile-fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:0!important;margin:0!important;padding:max(2px,env(safe-area-inset-top)) max(3px,env(safe-area-inset-right)) max(2px,env(safe-area-inset-bottom)) max(3px,env(safe-area-inset-left))!important;overflow:hidden!important;background:#070812!important}
- .tank-screen:fullscreen .tank-arena,.tank-screen.is-mobile-fullscreen .tank-arena{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;border-radius:0!important}
- .tank-screen:fullscreen .tank-arena canvas,.tank-screen.is-mobile-fullscreen .tank-arena canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important}
- .tank-screen:fullscreen .tank-header,.tank-screen.is-mobile-fullscreen .tank-header{position:absolute!important;z-index:30!important;top:max(4px,env(safe-area-inset-top))!important;left:50%!important;transform:translateX(-50%)!important;width:min(96%,760px)!important;min-height:40px!important;padding:2px!important;grid-template-columns:32px 32px repeat(5,minmax(42px,1fr))!important;background:rgba(5,7,17,.82)!important;backdrop-filter:blur(8px)}
- .tank-screen:fullscreen .tank-controls-layer,.tank-screen.is-mobile-fullscreen .tank-controls-layer{position:absolute!important;z-index:20!important;inset:0!important;pointer-events:none!important}
- .tank-screen:fullscreen .tank-control-zone,.tank-screen.is-mobile-fullscreen .tank-control-zone{pointer-events:none!important}
- .tank-screen:fullscreen .tank-stick,.tank-screen:fullscreen .tank-fire,.tank-screen:fullscreen .tank-ability,.tank-screen.is-mobile-fullscreen .tank-stick,.tank-screen.is-mobile-fullscreen .tank-fire,.tank-screen.is-mobile-fullscreen .tank-ability{pointer-events:auto!important;touch-action:none!important}
- .tank-screen:fullscreen .tank-control-zone--move,.tank-screen.is-mobile-fullscreen .tank-control-zone--move{left:max(10px,env(safe-area-inset-left))!important;bottom:max(8px,env(safe-area-inset-bottom))!important}
- .tank-screen:fullscreen .tank-control-zone--aim,.tank-screen.is-mobile-fullscreen .tank-control-zone--aim{right:max(10px,env(safe-area-inset-right))!important;bottom:max(8px,env(safe-area-inset-bottom))!important}
- .tank-screen:fullscreen .tank-stick,.tank-screen.is-mobile-fullscreen .tank-stick{transform:scale(.78)!important;transform-origin:bottom center!important}
- .tank-screen:fullscreen .tank-fire,.tank-screen.is-mobile-fullscreen .tank-fire{transform:scale(.86)!important;transform-origin:bottom right!important}
- .tank-screen:fullscreen .tank-ability,.tank-screen.is-mobile-fullscreen .tank-ability{transform:scale(.82)!important;transform-origin:bottom right!important}
- .tank-screen:fullscreen .tank-commands,.tank-screen.is-mobile-fullscreen .tank-commands{display:none!important}
- .tank-screen:fullscreen .tank-shop,.tank-screen.is-mobile-fullscreen .tank-shop{z-index:40!important;top:48px!important;bottom:max(4px,env(safe-area-inset-bottom))!important;max-height:none!important}
-}
-@media(max-width:899px) and (orientation:portrait){
- .tank-fullscreen{display:grid!important}
-}
-
 
 /* Tank mobile landscape controls fix v99 */
 @media (orientation:landscape) and (pointer:coarse){
