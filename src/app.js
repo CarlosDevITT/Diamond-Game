@@ -16,8 +16,8 @@ const loadOnline=async()=>{
   import("./core/match-client.js?v=20260920-48"),import("./services/auth.js?v=20260924-60"),import("./modules/auth-screen/index.js?v=20260924-57"),import("./modules/match-lobby/index.js?v=20260925-97")
  ]);
  auth=authService;match=new MatchClient({events});
- events.on("match:opponent-disconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão por até 8 segundos…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
- events.on("match:opponent-reconnected",()=>{if(!activeMatchId||!window.Swal)return;Swal.close();Swal.fire({title:"Oponente reconectado",text:"A partida pode continuar.",icon:"success",timer:1400,showConfirmButton:false,background:"#11162c",color:"#fff"});});
+ events.on("match:opponent-disconnected",()=>{if(activeMatchId)return;if(!window.Swal)return;Swal.fire({title:"Conexão do oponente perdida",text:"Aguardando reconexão…",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:8000,timerProgressBar:true,background:"#11162c",color:"#fff"});});
+ events.on("match:opponent-reconnected",()=>{if(activeMatchId||!window.Swal)return;Swal.close();});
  events.on("game:server-finished",({title,detail,payload,gameId})=>{if(!activeMatchId||resultShownFor===activeMatchId)return;clearTimeout(resultFallbackTimer);resultFallbackTimer=null;resultShownFor=activeMatchId;activeGameId=gameId||activeGameId;events.emit("game:match-finished",{title,detail,payload,source:"server"});showMatchResult(title,detail);});
  authScreen=new AuthScreen({auth,onReady:async user=>{events.emit("auth:ready",{user});const profile=await auth.profile(user.$id);panel.setProfile(profile||user);if(pendingGame){const game=pendingGame;pendingGame=null;lobby.show(game);}else panel.show();},onClose:()=>{pendingGame=null;panel.show();}});
  lobby=new MatchLobby({match,onStart:startGame,onExit:()=>panel.show()});
