@@ -115,5 +115,5 @@ if(!reduceMotion&&window.innerWidth>767&&"IntersectionObserver" in window){
 
 
 // Offline support v52
-if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js?v=97");await reg.update()}catch(error){console.warn("Offline support unavailable",error)}})}
+if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js?v=101");await reg.update()}catch(error){console.warn("Offline support unavailable",error)}})}
 window.addEventListener("offline",()=>{if(!location.pathname.endsWith("/offline.html"))location.replace("./offline.html")});
