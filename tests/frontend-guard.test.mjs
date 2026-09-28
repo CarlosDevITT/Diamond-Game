@@ -157,3 +157,12 @@ test('Tank transient reconnect keeps authoritative session alive',async()=>{
  assert.match(tank,/estado continuam no servidor/);
  assert.match(tank,/engine\.onConnectionRestored/);
 });
+
+test('active 1v1 can be rediscovered after PWA reload without local gameplay state',async()=>{
+ const client=await readFile("src/core/match-client.js","utf8");
+ const app=await readFile("src/app.js","utf8");
+ assert.match(client,/restoreActiveRoom/);
+ assert.match(client,/\["countdown","playing"\]\.includes\(room\.status\)/);
+ assert.match(app,/resumed:true/);
+ assert.doesNotMatch(client,/localStorage|sessionStorage/);
+});
