@@ -171,7 +171,17 @@ test('Tank Q and E skills are isolated from browser keyboard behavior',async()=>
  const controls=await readFile("src/games/tank/tank-controls.js","utf8");
  assert.match(controls,/KeyQ/);
  assert.match(controls,/KeyE/);
- assert.match(controls,/stopImmediatePropagation/);
- assert.match(controls,/capture:true,passive:false/);
+ assert.match(controls,/e\.code==="KeyQ"\|\|e\.code==="KeyE"\)e\.stopPropagation/);
+ assert.doesNotMatch(controls,/stopImmediatePropagation/);
+ assert.doesNotMatch(controls,/capture:true/);
  assert.match(controls,/e\.ctrlKey\|\|e\.altKey\|\|e\.metaKey/);
+});
+
+test('Tank movement keys remain in normal keyboard flow',async()=>{
+ const controls=await readFile("src/games/tank/tank-controls.js","utf8");
+ assert.match(controls,/this\.#keys\.add\(e\.key\)/);
+ assert.match(controls,/k\.has\("w"\).*k\.has\("W"\).*ArrowUp/);
+ assert.match(controls,/k\.has\("a"\).*k\.has\("A"\).*ArrowLeft/);
+ assert.match(controls,/k\.has\("d"\).*k\.has\("D"\).*ArrowRight/);
+ assert.match(controls,/k\.has\("s"\).*k\.has\("S"\).*ArrowDown/);
 });
