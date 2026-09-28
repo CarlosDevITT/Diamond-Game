@@ -142,3 +142,18 @@ test('result lobby return awaits presence cleanup before reopening lobby',()=>{
  assert.match(app,/await match\?\.leaveRoom\?\.\(\)/);
  assert.match(app,/await registry\.close\(stage\)/);
 });
+
+test('game server exposes local socket reconnect lifecycle',async()=>{
+ const server=await readFile("src/services/game-server.js","utf8");
+ const engine=await readFile("src/games/tank/tank-authoritative-engine.js","utf8");
+ assert.match(server,/connectionEvents=new Set\(\["connect","disconnect","connect_error"\]\)/);
+ assert.match(engine,/onConnectionLost/);
+ assert.match(engine,/onConnectionRestored/);
+});
+
+test('Tank transient reconnect keeps authoritative session alive',async()=>{
+ const tank=await readFile("src/games/tank/index.js","utf8");
+ assert.match(tank,/Reconectando à partida/);
+ assert.match(tank,/estado continuam no servidor/);
+ assert.match(tank,/engine\.onConnectionRestored/);
+});
