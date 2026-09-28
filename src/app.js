@@ -1,6 +1,6 @@
 import { GameRegistry } from "./core/game-registry.js";
 import { GamesPanel } from "./modules/games-panel/index.js?v=20260924-62";
-import { GAME_CATALOG } from "./core/game-catalog.js?v=20260925-97";
+import { GAME_CATALOG } from "./core/game-catalog.js?v=20260928-107";
 import { EventBus } from "./core/event-bus.js";
 
 const events=new EventBus(), registry=new GameRegistry();
@@ -126,5 +126,5 @@ if(!reduceMotion&&window.innerWidth>767&&"IntersectionObserver" in window){
 
 
 // Offline support v52
-if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js?v=101");await reg.update()}catch(error){console.warn("Offline support unavailable",error)}})}
+if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js?v=107");await reg.update()}catch(error){console.warn("Offline support unavailable",error)}})}
 window.addEventListener("offline",()=>{if(!location.pathname.endsWith("/offline.html"))location.replace("./offline.html")});
