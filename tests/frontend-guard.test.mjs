@@ -229,3 +229,9 @@ test('PWA entry chain cannot serve stale Tank runtime after fixes',async()=>{
  assert.match(app,/sw\.js\?v=107/);
  assert.doesNotMatch(sw,/diamond-pwa-v101/);
 });
+
+test('legacy Tank layout generations stay removed',async()=>{
+ const css=await readFile("assets/styles.css","utf8");
+ for(const legacy of ["Tank mobile UX v2","Tank mobile split layout v3","Tank mobile arena/control balance v4","Tank desktop fullscreen: presentation only v88","Tank mobile landscape-first gameplay v79","Tank mobile immersive fullscreen v96"]) assert.ok(!css.includes(legacy),legacy);
+ assert.match(css,/Tank presentation contract v108/);
+});
