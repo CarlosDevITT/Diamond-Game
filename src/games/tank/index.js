@@ -29,6 +29,8 @@ export const tankGame={
    network.on("match_countdown",onCountdown);network.on("match_start",onStart);engine.onFinished=showResult;
    engine.onOpponentDisconnected=payload=>{if(!window.Swal)return;const remaining=Math.max(1000,Number(payload?.reconnectDeadline||0)-Date.now()),seconds=Math.max(1,Math.ceil(remaining/1000));Swal.fire({title:"Oponente desconectado",text:`Aguardando reconexão por até ${seconds}s…`,icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,timer:remaining,timerProgressBar:true,background:"#11162c",color:"#fff"});};
    engine.onOpponentReconnected=()=>{if(!ended)window.Swal?.close();};
+   engine.onConnectionLost=()=>{if(ended||!window.Swal)return;Swal.fire({title:"Reconectando à partida…",text:"Seus pontos e estado continuam no servidor. Não feche a partida.",icon:"warning",showConfirmButton:false,allowOutsideClick:false,allowEscapeKey:false,background:"#11162c",color:"#fff"});};
+   engine.onConnectionRestored=()=>{if(ended)return;window.Swal?.close();updateHud();};
   }
   root.querySelector("[data-close]").onclick=async()=>{if(!casual){const r=window.Swal?await Swal.fire({title:"Sair da partida?",text:"A desconexão inicia o período de reconexão; se você não voltar, o servidor aplica a derrota por abandono.",icon:"warning",showCancelButton:true,confirmButtonText:"Sair",cancelButtonText:"Continuar",background:"#11162c",color:"#fff"}):{isConfirmed:confirm("Deseja sair?")};if(!r.isConfirmed)return;}close();};
   return{start(){},destroy(){ended=true;clearInterval(timer);fullscreen.exit();fullscreen.destroy();controls.destroy();engine?.destroy?.();network?.close?.();}};
