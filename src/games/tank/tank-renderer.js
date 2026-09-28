@@ -8,8 +8,8 @@ export function drawTankSprite(c,t,color,{scale=1}={}){
 }
 
 export function drawTankArena({ctx,canvas,world,view,camera,local,remote,remotes=null,projectiles=[],pickups=[],effects=[],showLocal=true,showRemote=true}){
- const w=world.width||1800,h=world.height||1000,vw=view.width||1800,vh=view.height||1000,sx=canvas.clientWidth/vw,sy=canvas.clientHeight/vh;
- ctx.save();ctx.scale(sx,sy);ctx.clearRect(0,0,vw,vh);ctx.translate(-camera.x,-camera.y);
+ const w=world.width||1800,h=world.height||1000,vw=Math.max(1,view.width||1800),vh=Math.max(1,view.height||1000),cw=Math.max(1,canvas.clientWidth),ch=Math.max(1,canvas.clientHeight),scale=Math.min(cw/vw,ch/vh),drawW=cw/scale,drawH=ch/scale;
+ ctx.save();ctx.scale(scale,scale);ctx.clearRect(0,0,drawW,drawH);ctx.translate(-camera.x,-camera.y);
  const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#091126");g.addColorStop(.5,"#111936");g.addColorStop(1,"#090d1d");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
  ctx.strokeStyle="#27315f";ctx.lineWidth=1;for(let x=0;x<w;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=50){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
  ctx.strokeStyle="#6574c8";ctx.lineWidth=5;ctx.strokeRect(3,3,w-6,h-6);
