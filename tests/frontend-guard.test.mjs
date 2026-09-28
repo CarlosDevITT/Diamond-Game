@@ -216,3 +216,16 @@ test('Tank renderer cannot create non-uniform skill zoom',async()=>{
  assert.match(engine,/this\.#viewW=this\.#viewport\.view\.width;this\.#viewH=this\.#viewport\.view\.height;drawTankArena/);
  assert.doesNotMatch(skills,/camera|viewport|requestFullscreen|style\.transform|ctx\.scale/);
 });
+
+test('PWA entry chain cannot serve stale Tank runtime after fixes',async()=>{
+ const catalog=await readFile("src/core/game-catalog.js","utf8");
+ const app=await readFile("src/app.js","utf8");
+ const sw=await readFile("sw.js","utf8");
+ const html=await readFile("index.html","utf8");
+ assert.match(catalog,/tank\/index\.js\?v=20260928-107/);
+ assert.match(sw,/diamond-pwa-v107/);
+ assert.match(sw,/app\.js\?v=20260928-107/);
+ assert.match(html,/app\.js\?v=20260928-107/);
+ assert.match(app,/sw\.js\?v=107/);
+ assert.doesNotMatch(sw,/diamond-pwa-v101/);
+});
