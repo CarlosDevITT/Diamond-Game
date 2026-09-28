@@ -393,3 +393,25 @@ html,body{max-width:100%;overflow-x:hidden}
  .tank-screen:fullscreen .tank-control-zone,.tank-screen.is-mobile-fullscreen .tank-control-zone{width:220px!important;height:190px!important}
  .tank-screen:fullscreen .tank-stick,.tank-screen:fullscreen .tank-fire,.tank-screen:fullscreen .tank-ability,.tank-screen.is-mobile-fullscreen .tank-stick,.tank-screen.is-mobile-fullscreen .tank-fire,.tank-screen.is-mobile-fullscreen .tank-ability{transform:none!important}
 }
+
+/* Tank customizable mobile HUD + immersive viewport v104 */
+@media (pointer:coarse){
+ .tank-screen:fullscreen,.tank-screen.is-mobile-fullscreen{width:var(--tank-vw,100vw)!important;height:var(--tank-vh,100dvh)!important;max-width:none!important;max-height:none!important}
+ .tank-controls-config{display:block;position:absolute;z-index:28;right:max(8px,env(safe-area-inset-right));top:58px;padding:7px 10px;border:1px solid rgba(255,255,255,.14);border-radius:9px;background:rgba(7,10,24,.76);color:#fff;font:700 .46rem var(--font);letter-spacing:.08em;pointer-events:auto;touch-action:none}
+ .tank-controls-editor{position:absolute;z-index:60;left:50%;top:50%;transform:translate(-50%,-50%);width:min(310px,78vw);padding:14px;border:1px solid rgba(120,125,255,.38);border-radius:16px;background:rgba(8,11,28,.94);backdrop-filter:blur(14px);color:#fff;pointer-events:auto}
+ .tank-controls-editor strong{display:block;margin-bottom:10px;font-size:.7rem}.tank-controls-editor label{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:8px;margin:8px 0;font-size:.58rem}.tank-controls-editor input{width:100%}.tank-controls-editor small{display:block;margin:8px 0;opacity:.65;font-size:.5rem}.tank-controls-editor>div{display:flex;justify-content:flex-end;gap:7px}.tank-controls-editor button{padding:7px 10px;border:0;border-radius:8px;font-size:.5rem;font-weight:800}
+ .tank-controls-layer [data-control-id].is-customized{translate:var(--control-x,0px) var(--control-y,0px)!important;scale:var(--control-scale,1)!important;opacity:var(--control-opacity,.85)!important}
+ .tank-controls-layer.is-editing-controls [data-control-id]{outline:1px dashed rgba(110,255,220,.75)!important;outline-offset:4px!important;pointer-events:auto!important}
+ .tank-controls-layer.is-editing-controls [data-control-id].is-selected-control{outline:2px solid #52ffd2!important;filter:drop-shadow(0 0 8px rgba(82,255,210,.5))}
+ .tank-controls-layer.is-editing-controls [data-control-id]{touch-action:none!important}
+}
+@media (orientation:landscape) and (pointer:coarse){
+ .tank-control-zone--move{left:max(24px,env(safe-area-inset-left))!important;bottom:max(20px,env(safe-area-inset-bottom))!important}
+ .tank-control-zone--aim{right:max(28px,env(safe-area-inset-right))!important;bottom:max(20px,env(safe-area-inset-bottom))!important}
+ .tank-stick{width:104px!important;height:104px!important;opacity:.72}
+ .tank-fire{width:62px!important;height:62px!important;opacity:.88}
+ .tank-ability{bottom:70px!important;width:54px!important;height:40px!important;opacity:.88}
+ .tank-ability--shock{right:60px!important}.tank-ability--dash{right:120px!important}
+ .tank-controls-config{top:auto;bottom:max(8px,env(safe-area-inset-bottom));left:50%;right:auto;transform:translateX(-50%)}
+}
+@media(pointer:fine){.tank-controls-config,.tank-controls-editor{display:none!important}}
