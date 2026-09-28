@@ -128,3 +128,17 @@ test("online Tank result renders authoritative server score",async()=>{
  assert.match(tank,/Array\.isArray\(payload\.score\)/);
  assert.match(tank,/resultado validado pelo servidor/);
 });
+
+test('server result owns 1v1 finish while Appwrite is delayed fallback',()=>{
+ const app=read('src/app.js');
+ assert.match(app,/source:"server"/);
+ assert.match(app,/source:"appwrite-fallback"/);
+ assert.match(app,/},1200\);/);
+ assert.match(app,/clearTimeout\(resultFallbackTimer\)/);
+});
+
+test('result lobby return awaits presence cleanup before reopening lobby',()=>{
+ const app=read('src/app.js');
+ assert.match(app,/await match\?\.leaveRoom\?\.\(\)/);
+ assert.match(app,/await registry\.close\(stage\)/);
+});
