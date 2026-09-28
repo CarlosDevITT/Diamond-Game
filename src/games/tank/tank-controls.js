@@ -3,9 +3,9 @@ export class TankControls{
  constructor(canvas,layer){this.#canvas=canvas;this.#layer=layer;}
  start(){
   const on=(t,e,f,o)=>{t.addEventListener(e,f,o);this.#clean.push(()=>t.removeEventListener(e,f,o))};
-  const gameKeys=new Set(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space","KeyQ","KeyE","ShiftLeft","ShiftRight"]);
-  on(window,"keydown",e=>{if(!gameKeys.has(e.code))return;if(e.ctrlKey||e.altKey||e.metaKey)return;e.preventDefault();e.stopImmediatePropagation();this.#keys.add(e.key);if(e.code==="Space")this.#shoot=true;if(!e.repeat&&e.code==="KeyQ")this.#action="bomb";if(!e.repeat&&e.code==="KeyE")this.#action="shock";if(!e.repeat&&(e.code==="ShiftLeft"||e.code==="ShiftRight"))this.#action="dash"},{capture:true,passive:false});
-  on(window,"keyup",e=>{if(!gameKeys.has(e.code))return;if(e.ctrlKey||e.altKey||e.metaKey)return;e.preventDefault();e.stopImmediatePropagation();this.#keys.delete(e.key);if(e.code==="Space")this.#shoot=false},{capture:true,passive:false});on(window,"blur",()=>{this.#keys.clear();this.#shoot=false;this.#action=null;this.touchActive=false;this.touchX=0;this.touchY=0});this.#layer.style.touchAction="none";this.#canvas.style.touchAction="none";
+  const preventKeys=new Set(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space","KeyQ","KeyE"]);
+  on(window,"keydown",e=>{if(e.ctrlKey||e.altKey||e.metaKey)return;if(preventKeys.has(e.code))e.preventDefault();if(e.code==="KeyQ"||e.code==="KeyE")e.stopPropagation();this.#keys.add(e.key);if(e.code==="Space")this.#shoot=true;if(!e.repeat&&e.code==="KeyQ")this.#action="bomb";if(!e.repeat&&e.code==="KeyE")this.#action="shock";if(!e.repeat&&(e.code==="ShiftLeft"||e.code==="ShiftRight"))this.#action="dash"},{passive:false});
+  on(window,"keyup",e=>{if(e.ctrlKey||e.altKey||e.metaKey)return;if(preventKeys.has(e.code))e.preventDefault();if(e.code==="KeyQ"||e.code==="KeyE")e.stopPropagation();this.#keys.delete(e.key);if(e.code==="Space")this.#shoot=false},{passive:false});on(window,"blur",()=>{this.#keys.clear();this.#shoot=false;this.#action=null;this.touchActive=false;this.touchX=0;this.touchY=0});this.#layer.style.touchAction="none";this.#canvas.style.touchAction="none";
   on(this.#canvas,"pointermove",e=>{if(e.pointerType==="touch")return;const r=this.#canvas.getBoundingClientRect();this.#mouseAim={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height}});
   on(this.#canvas,"pointerdown",e=>{if(e.pointerType!=="touch"&&e.button===0)this.#shoot=true});
   on(window,"pointerup",e=>{if(e.pointerType!=="touch")this.#shoot=false});
